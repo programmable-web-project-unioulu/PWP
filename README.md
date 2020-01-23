@@ -1,7 +1,7 @@
 # PWP SPRING 2020
-# PROJECT NAME
+# Florida Man Generator
 # Group information
-* Student 1. Name and email
+* Student 1. Aleksi Hytönen, hytonenaleksi@gmail.com
 * Student 2. Name and email
 * Student 3. Name and email
 
