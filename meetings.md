@@ -4,6 +4,10 @@
 * **DATE:**
 * **ASSISTANTS:**
 
+
+Faisal Maqsood 
+Course # Restful api 
+
 ### Minutes
 *Summary of what was discussed during the meeting*
 
