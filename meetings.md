@@ -1,8 +1,8 @@
 # Meetings notes
 
 ## Meeting 1.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 13.06.2020
+* **ASSISTANTS:** Marta Cortés Orduña
 
 ### Minutes
 *Summary of what was discussed during the meeting*
