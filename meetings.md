@@ -6,9 +6,18 @@
 
 ### Minutes
 *Summary of what was discussed during the meeting*
+Probems in the wiki:
+Our overview is not about "selling" our API, it should focus on those aspects.
+Our main concepts and relations -part also needs some tuning...
+API uses -part is "okay", also related work is "ok".
+
+The main problem is, that there is not enough resources in our API.
+We need to add more.
 
 ### Action points
 *List here the actions points discussed with assistants*
+Find some more resources to add to the API.
+Fix the wiki.
 
 
 ### Comments from staff
