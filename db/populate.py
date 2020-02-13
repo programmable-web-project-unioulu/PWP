@@ -1497,85 +1497,85 @@ print("June added to database!")
 print("Adding July to database...")
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.rblandmark.com/News/Articles/7-9-2019/Florida-man-chants-as-police-try-to-arrest-him-%7C-Police-reports-July-1_7/', 
+    headline="Florida man chants as police try to arrest him", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.nbc-2.com/story/39486840/florida-man-accused-of-putting-semen-in-coworkers-water', 
+    headline="Florida man accused of putting semen in coworker's water", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.abcactionnews.com/news/state/florida-man-loses-2-fingers-in-fireworks-accident-on-3rd-of-july', 
+    headline="Florida man loses 2 fingers in fireworks accident on 3rd of July", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://eu.usatoday.com/story/news/nation-now/2018/07/05/florida-man-celebratory-gunfire-fourth-july-fireworks/759516002/', 
+    headline="Florida man hit by celebratory gunfire during Fourth of July fireworks show ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Florida-man-pretending-to-be-a-cop-pulls-over-real-deputy-sheriffs-office-says-512255742.html', 
+    headline="Florida man pretending to be a cop pulls over real deputy", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.nbcmiami.com/news/local/florida-man-allegedly-stole-pool-floats-from-homes-to-stop-himself-from-raping-women-police/128798/', 
+    headline="Florida Man Allegedly Stole Pool Floats From Homes to ‘Stop Himself From Raping Women’", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.tampabay.com/news/publicsafety/A-71-year-old-Florida-man-tied-a-gun-to-a-weather-balloon-to-fake-his-own-murder-police-say_170034046/', 
+    headline="A 71-year-old Florida man tied a gun to a weather balloon to fake his own murder", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/2019/07/08/florida-man-says-lighting-firecrackers-under-childs-bed-is-prank-gone-wrong/', 
+    headline="Florida man says lighting firecrackers under child’s bed is a ‘prank gone wrong’", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.bradenton.com/news/local/crime/article232487002.html', 
+    headline="Florida man runs off to drink a beer after mooning deputies", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.nbc-2.com/story/38612239/florida-man-runs-for-his-life-as-neighbor-chases-him-in-tractor', 
+    headline="Florida man runs for his life as neighbor chases him in tractor", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
-
+#july 11th next
 tmp = July(
     link='', 
     headline="", 
