@@ -728,3 +728,10 @@ def test_user(db_handle):
     test = Users.query.filter_by(code=147).first()
     assert test.article[0].headline == "First headline"
     assert test.article[1].headline == "Second headline"
+
+    # Test uniqueness of the user code
+    entry = Users(code=147, name="Erkki Errori")
+    db_handle.session.add(entry)
+    with pytest.raises(IntegrityError):
+        db_handle.session.commit()
+    db_handle.session.rollback()
