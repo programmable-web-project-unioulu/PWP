@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
 import db as app
-from db import January, February, March, April, May, June, July, August, September, October, November, December
+from db import January, February, March, April, May, June, July, August, September, October, November, December, Users, AddedArticle
 
 @pytest.fixture
 def db_handle():
@@ -681,3 +681,11 @@ def test_December(db_handle):
     entry.modtime = None
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
+
+def test_user(db_handle):
+    # Test creation of new user without article
+    entry = Users(code=1234, name="Aleksi Hytönen")
+    db_handle.session.add(entry)
+    db_handle.session.commit()
+    test = Users.query.filter_by(code=1234).first()
+    assert test.name == "Aleksi Hytönen"
