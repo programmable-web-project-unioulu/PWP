@@ -2736,248 +2736,248 @@ print("November added to database!")
 print("Adding December to database...")
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wtxl.com/news/police-florida-man-worried-about-vampires-intentionally-burns-down-his/article_da37be2c-093c-11e9-b150-1b29f7dd112f.html', 
+    headline="Police: Florida man worried about vampires intentionally burns down his home", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.orlandoweekly.com/Blogs/archives/2016/12/02/florida-man-breaks-into-neighbors-home-to-pet-thier-cat', 
+    headline="Florida man breaks into neighbor's home to pet their cat ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='http://www.thesmokinggun.com/buster/florida/hamburger-hooker-287593', 
+    headline="Florida Man Arrested After Offering Undercover Cop A Hamburger In Exchange For Sex Act", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/2019/12/04/florida-man-abandons-son-highway-because-he-thinks-boy-is-gay-police-say/', 
+    headline="Florida man abandons son on highway because he thinks boy is gay, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.kxxv.com/story/39610879/florida-man-arrested-for-shoplifting-after-job-interview', 
+    headline="Florida man arrested for shoplifting after job interview", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://abc11.com/family/man-recovering-from-paralysis-stands-for-first-time-to-propose/4847991/', 
+    headline="Florida man recovering from paralysis stands for first time during marriage proposal", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://bangordailynews.com/2018/12/18/news/nation/police-florida-man-tried-to-pay-for-mcdonalds-with-bag-of-weed/', 
+    headline="Police: Florida man tried to pay for McDonald’s with bag of weed", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.esquire.com/news-politics/news/a40288/florida-man-naked-3-women-cadillac/', 
+    headline="Florida Man Arrested After Driving 110 MPH While Naked with 3 Women in a Cadillac", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.nbcmiami.com/news/local/florida-man-steals-elderly-womans-purse-runs-her-over-in-mcdonalds-parking-lot/136320/', 
+    headline="Florida Man Steals Elderly Woman’s Purse, Runs Her Over in McDonald’s Parking Lot ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.theolympian.com/news/nation-world/national/article223086725.html', 
+    headline="Man tries to escape police by jumping head-first through window", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.thedrive.com/news/25407/florida-man-arrested-for-dui-while-lemur-and-wallaby-escape-from-truck-during-traffic-stop', 
+    headline="Florida Man Arrested for DUI While Lemur and Wallaby Escape from Truck During Traffic Stop", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://eu.pnj.com/story/news/2018/12/12/naked-florida-man-crossbow-who-claimed-aliens-were-after-him-shot-deputy/2292792002/', 
+    headline="Deputy cleared for shooting naked man armed with crossbow who claimed aliens were after him ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.upi.com/Odd_News/2018/12/13/Deputies-find-suspected-burglar-was-deer-trapped-in-bathroom/4181544730120/', 
+    headline="Deer gets trapped in Florida man's bathroom", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Florida-man-arrested-for-biting-boys-out-of-frustration-502803021.html', 
+    headline="Florida man arrested for biting boys out of frustration", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/news/state/florida/article225491760.html', 
+    headline="Florida man kills in-laws after posing as their murdered daughter for a year, cops say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Video-Florida-man-drops-stolen-TV-from-getaway-scooter-503606471.html', 
+    headline="Florida man drops stolen TV from getaway scooter", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.washingtontimes.com/news/2019/dec/17/florida-man-gets-prison-for-capturing-selling-wood/', 
+    headline="Florida man gets prison for capturing, selling wood turtles", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Florida-man-pays-electric-bills-of-families-about-to-lose-power-for-Christmas-566304871.html', 
+    headline="Florida man pays electric bills of families about to lose power for Christmas", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wftv.com/news/local/florida-man-kicked-out-window-pulled-himself-out-of-moving-patrol-car-deputies-say/891344342/', 
+    headline="Florida man kicked out window, hurled himself out of moving patrol car, deputies say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://6abc.com/florida-man-drags-police-officer-for-half-mile/2802388/', 
+    headline="Florida man drags police officer for half-mile", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.fox13news.com/news/florida-man-becomes-upset-over-cigarette-prices-brings-loaded-rifle-into-store-officials-say', 
+    headline="Florida man becomes upset over cigarette prices, brings loaded rifle into store, officials say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.thenewstribune.com/news/nation-world/national/article191312259.html', 
+    headline="The clams this diner ordered were ‘so small’ that he called 911 — twice, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://wsvn.com/news/local/police-florida-man-arrested-for-passing-out-marijuana-because-it-was-christmas/', 
+    headline="Police: Florida man arrested for passing out marijuana ‘because it was Christmas’", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://eu.floridatoday.com/story/news/local/2015/12/24/time-traveling-florida-man-crashes-car-building/77897760/', 
+    headline="‘Time traveling’ Florida man crashes car into building ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Police-Florida-man-in-Santa-hat-stole-baby-Jesus-figurine-from-nativity-scene-on-Christmas-467911623.html', 
+    headline="Police: Florida man in Santa hat stole baby Jesus figurine from nativity scene on Christmas", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-arrested-after-punching-atm-for-giving-him-too-much-money', 
+    headline="Florida man arrested after punching ATM for 'giving him too much money'", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.fox13news.com/news/florida-man-pretends-to-be-homeless-gives-100-to-those-who-tried-to-help', 
+    headline="Florida man pretends to be homeless, gives $100 to those who tried to help", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://abc6onyourside.com/news/nation-world/florida-man-charged-with-dui-says-gps-led-him-onto-railroad-tracks', 
+    headline="Florida man charged with DUI says GPS led him onto railroad tracks", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.10news.com/news/national/florida-man-arrested-for-rigging-door-to-electrocute-pregnant-wife', 
+    headline="Florida man arrested for rigging door to electrocute pregnant wife", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://www.hawaiinewsnow.com/2018/12/31/florida-man-locks-keys-car-keep-cops-searching-it/', 
+    headline="Florida man locks keys in car to keep cops from searching it", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = December(
-    link='', 
-    headline="", 
+    link='https://nypost.com/2019/12/31/florida-man-blows-hand-off-after-lighting-firework-in-truck/', 
+    headline="Florida man blows hand off after lighting firework in truck", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
