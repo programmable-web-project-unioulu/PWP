@@ -2242,248 +2242,248 @@ print("September added to database!")
 print("Adding October to database...")
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.wwnytv.com/2019/10/01/florida-man-tried-sell-beer-dolphins-game-police-say/', 
+    headline="Florida man tried to sell beer for $724 at Dolphins game, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.ksla.com/2018/10/02/florida-man-tries-buy-year-old-girl-walmart/', 
+    headline="Florida man tries to buy 8-year-old girl at Walmart", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.maritimeherald.com/2019/october-9-trending-a-florida-man-is-arrested-for-trying-to-get-a-caiman-drunk-viral-tweet-twitter/', 
+    headline="A Florida Man Is Arrested For Trying To Get A Caiman Drunk", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-claims-he-killed-dismembered-roommate-because-he-was-possibly-next-mass-killer-cops-say', 
+    headline="Florida man claims he killed, dismembered roommate because he was possibly ‘next mass killer,’ cops say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://time.com/5416674/florida-kavanaugh-vote-threat/', 
+    headline="Florida Man Arrested After Threatening To Kill Politicians Who Vote No on Kavanaugh's Confirmation", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://thecomeback.com/general/florida-man-interrupts-hurricane-matthew-live-tv-report-to-yell-dicks-out-for-harambe.html', 
+    headline="Florida Man interrupts Hurricane Matthew live TV report to yell ‘Dicks out for Harambe’", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/2019/10/07/police-florida-man-beats-rapes-pregnant-girlfriend-kill-fetus/', 
+    headline="Police: Florida man beats, rapes pregnant girlfriend to kill fetus", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-suspect-22-allegedly-attacked-mother-with-sausages', 
+    headline="Florida suspect, 22, allegedly attacked mother with sausages", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-shot-outside-bar-after-rejecting-shot-inside-bar-officials-say', 
+    headline="Florida man shot outside bar after rejecting shot inside bar, officials say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/hurricane-michael-florida-man-writes-name-on-arm-survive', 
+    headline="As Hurricane Michael hits, Florida man writes name on arm in case he doesn't survive storm", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/press-releases/october-11-2016-florida-man-pleads-guilty-manufacturing-distributing-performance-enhancing-drugs', 
+    headline="Florida Man Pleads Guilty to Manufacturing, Distributing Performance Enhancing Drugs", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://eu.pnj.com/story/news/2018/12/12/naked-florida-man-crossbow-who-claimed-aliens-were-after-him-shot-deputy/2292792002/', 
+    headline="Deputy cleared for shooting naked man armed with crossbow who claimed aliens were after him", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.winknews.com/2018/10/13/cops-florida-man-hides-heroin-drug-in-5-year-olds-shirt/?__cf_chl_captcha_tk__=feee3ef6cf5bd0245debee3d9a7558ec54592877-1581801600-0-AdK7yMcA7-Dd0qbyP3-ifXhAFen1Dch1WIZudvBsknZojctWRVxUUUEpzRc7jlsSXEXNf7UEFDBLODZ_p5J5G0ZbyWG4nOieOgOh9ij4FiE6kIQTxa8hARQAPOUZt8cFPVTSXdWFO-bj27-Lt6pBN1Ix5J0N5dYLmhYWkNhwYiXEG1alLwjwZEQRRG0XjncLBAj5wc2ADgOdW0GUIDlBUQnTNVfiYRYoaBDF76_4k0elswthXuHDTqsKmHAOD54WcKV3x8mnJp7kuqZQBwVMJ1D9qdGsv8FX5KaFPS85pv4ds4rucKFgdxrB7UvAg9Gmme6gL4mMsDZj2xh_ItuoDrVdLKWea_XY53wlek7qcqRWdgbDfmt2PRNhrHibyeQFr6GOtKnREtqKpUrJklzq-X0', 
+    headline="Cops: Florida man hides heroin, drug in 5-year-old’s shirt", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Man-run-over-by-lawn-mower-while-trying-to-kill-son-with-chainsaw-497538901.html', 
+    headline="Man run over by lawn mower while trying to kill son with chainsaw", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://wsvn.com/news/local/deputies-ask-florida-man-to-quit-calling-about-his-stolen-marijuana/', 
+    headline="Deputies ask Florida man to quit calling about his stolen marijuana", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://6abc.com/2540084/', 
+    headline="Police: Florida man commits murder over imaginary girlfriend", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://globalnews.ca/news/3013640/florida-man-with-half-a-head-arrested-on-attempted-murder-arson-charges/', 
+    headline="Florida man with ‘half a head’ arrested on attempted murder, arson charges", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.wptv.com/news/state/police-say-central-florida-man-shot-stranger-because-he-wouldnt-drink-alcohol-with-him', 
+    headline="Police say Central Florida man shot stranger because he wouldn't drink alcohol with him", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.abcactionnews.com/news/state/florida-man-climbs-up-cellphone-tower', 
+    headline="Florida man climbs up cellphone tower", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.newsweek.com/florida-man-offered-inmate-money-car-kill-four-people-feed-pigs-alligators-police-say-1475871', 
+    headline="Florida Man Offered Inmate $4,000 and a Car to Kill Four People and Feed Them to Pigs and Alligators, Police Say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/2019/10/21/florida-man-accused-killing-suspected-peeping-tom/', 
+    headline="Florida man accused of killing suspected ‘peeping Tom’", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://cbs12.com/news/local/florida-man-accused-of-having-sex-with-frozen-toy-at-target', 
+    headline="Florida man accused of having sex with 'Frozen' toy at Target", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.wifr.com/content/news/Florida-woman-hit-man-with-SUV-tried-to-urinate-on-deputy-cops-say-566850031.html', 
+    headline="Florida woman hit man with SUV, tried to urinate on deputy, cops say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.clickorlando.com/news/2017/10/24/florida-man-stabs-beats-man-with-stick-for-not-giving-him-beer-police-say/', 
+    headline="Florida man stabs, beats man with stick for not giving him beer, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.reuters.com/article/us-usa-packages/florida-man-charged-in-connection-with-14-bombs-sent-to-trump-critics-idUSKCN1MZ1CP', 
+    headline="Florida man charged in connection with 14 bombs sent to Trump critics", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://abc3340.com/news/offbeat/report-florida-man-allegedly-slaps-woman-with-a-bowl-of-chili', 
+    headline="Florida man allegedly slaps woman with a bowl of chili", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.wowt.com/content/news/Florida-man-demands-mug-shot-be-removed-from-Facebook-deputies-replace-it-with-booking-photo-564611021.html', 
+    headline="Florida man demands mug shot be removed from Facebook; deputies replace it with booking photo", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.upi.com/Odd_News/2019/10/28/Florida-man-jumps-off-surfboard-lands-on-shark/3671572276250/', 
+    headline="Florida man jumps off surfboard, lands on shark", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.newsweek.com/florida-man-spits-food-womans-mouth-road-rage-1473738', 
+    headline="Florida Man Spits Half-Eaten Food into Woman's Mouth During Road Rage Incident, Police Say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.inquisitr.com/5139197/florida-man-arrested-for-allegedly-assaulting-girlfriend-while-dressed-as-dinosaur/', 
+    headline="Florida Man Arrested For Allegedly Assaulting Girlfriend While Dressed As Dinosaur", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = October(
-    link='', 
-    headline="", 
+    link='https://www.clickorlando.com/news/2018/10/31/florida-man-gets-stuck-after-climbing-down-30-foot-well-for-bragging-rights/', 
+    headline="Florida man gets stuck after climbing down 30-foot well 'for bragging rights'", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
@@ -2493,240 +2493,240 @@ print("October added to database!")
 print("Adding November to database...")
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://eu.pnj.com/story/news/2018/11/01/pensacola-man-rampages-neighborhood-looking-fight/1849705002/', 
+    headline="Pensacola man arrested for barging into homes seeking someone to fight him ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://newschannel9.com/news/offbeat/florida-man-breaks-into-restaurant-strips-naked-eats-noodles-plays-bongos', 
+    headline="Florida man breaks into restaurant, strips naked, eats noodles, plays bongos", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.winknews.com/2016/11/03/police-naked-florida-man-drove-with-wires-on-penis/', 
+    headline="Police: Naked Florida man drove with wires on penis", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/news/state/florida/article221538185.html', 
+    headline="Florida man dressed like Fred Flintstone pulled over in his ‘footmobile’ ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://wsvn.com/news/local/florida/a-florida-man-says-his-pregnant-wife-saved-his-life-in-home-invasion-with-an-ar-15/', 
+    headline="A Florida man says his pregnant wife saved his life in home invasion – with an AR-15", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.complex.com/life/2018/11/florida-man-wearing-cros-leaps-into-crocodile-pit', 
+    headline="Florida Man Wearing Crocs Leaps Into Crocodile Pit", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://6abc.com/man-climbs-building-dives-into-pond-wrestles-with-crocodile-and-survives/4641551/', 
+    headline="Florida man climbs building, dives into pond, wrestles with crocodile, and survives", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='http://www.thesmokinggun.com/documents/florida/ben-dover-arrest-490172', 
+    headline="Cops Bust Man Who Said Name Was 'Ben Dover'", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://patch.com/florida/miami/florida-man-makes-himself-snack-while-robbing-taco-bell', 
+    headline="Florida Man Makes Himself A Snack While Robbing Taco Bell ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.clickorlando.com/news/2017/11/10/naked-florida-man-breaks-into-home-tries-on-womans-clothes-police-say/', 
+    headline="Naked Florida man breaks into home, tries on woman's clothes, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/video/2019/11/11/florida-man-sues-madonna/', 
+    headline="Florida man sues Madonna", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.tampabay.com/news/publicsafety/naked-florida-man-revealed-on-video-sneaking-into-restaurant-and-munching-on-ramen-20181112/', 
+    headline="Naked Florida man revealed on video sneaking into restaurant and munching on ramen", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Florida-man-accused-of-killing-man-after-losing-card-game-564865302.html', 
+    headline="Florida man accused of killing man after losing card game", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://abc7ny.com/4690382/', 
+    headline="Police: Man dresses as woman, buys puppy with stolen credit card", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://spacedoutradio.com/florida-man-tells-police-bag-of-cocaine-they-found-in-car-must-have-blown-in-from-the-wind/', 
+    headline="Florida Man Tells Police Bag Of Cocaine They Found In Car Must Have Blown In From The Wind", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/news/local/crime/article221780125.html', 
+    headline="Florida man steals vending machine", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://wsvn.com/news/local/police-florida-man-left-2-kids-in-car-while-in-strip-club/', 
+    headline="Police: Florida man left 2 kids in car while in strip club", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.nbc-2.com/story/39567762/florida-man-loses-his-shorts-while-breaking-into-a-car-dealership', 
+    headline="Florida man loses his shorts while breaking into a car dealership", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.fox4now.com/news/state/florida-man-arrested-for-having-sex-with-miniature-horse-on-multiple-occasions-deputies-say', 
+    headline="Florida man arrested for having sex with miniature horse on multiple occasions, deputies say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.mysuncoast.com/2019/11/20/florida-man-accused-fatally-beating-uncles-dog-with-shovel/', 
+    headline="Florida man accused of fatally beating uncle’s dog with a shovel", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.wwnytv.com/2019/11/22/florida-man-demands-less-money-during-bank-robbery-deputies-say/', 
+    headline="Florida man demands less money during bank robbery, deputies say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.wctv.tv/content/news/Florida-man-crashes-car-to-highlight-dangerous-intersection-459303423.html', 
+    headline="Florida man crashes car to highlight dangerous intersection", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.cbsnews.com/news/video-florida-man-runs-over-own-leg-with-truck-after-leaving-strip-club/', 
+    headline="Fla. man runs over own leg with truck after leaving strip club", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-tried-to-break-into-car-filled-with-cops-officials-say', 
+    headline="Florida man tried to break into car filled with cops, officials say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://thetakeout.com/florida-man-stole-footlong-sandwich-pants-1831173405', 
+    headline="Cops: Florida man stole footlong sandwich in his pants", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.bradenton.com/news/local/crime/article222198385.html', 
+    headline="Florida man charged with stabbing a woman with a fork over underdone potato", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.abcactionnews.com/news/state/deputies-florida-man-spends-birthday-in-jail-after-intentionally-cutting-the-tails-off-of-5-kittens', 
+    headline="Deputies: Florida man spends birthday in jail after intentionally cutting the tails off of 5 kittens", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.abcactionnews.com/news/state/florida-man-arrested-twice-this-month-for-bringing-loaded-gun-to-airport', 
+    headline="Florida man arrested twice this month for bringing loaded gun to airport", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://abc30.com/4797865/', 
+    headline="Suspect caught on camera with pants down during Florida car dealership burglary", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = November(
-    link='', 
-    headline="", 
+    link='https://www.usnews.com/news/best-states/florida/articles/2019-11-28/man-guilty-of-biting-police-officer', 
+    headline="Man Guilty of Biting Police Officer", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
