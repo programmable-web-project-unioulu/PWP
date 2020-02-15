@@ -1577,168 +1577,168 @@ db.session.add(tmp)
 db.session.commit()
 #july 11th next
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-72-tries-to-mow-down-neighbor-with-tractor-during-dispute-cops-say', 
+    headline="Florida man, 72, tries to mow down neighbor with tractor during dispute, cops say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.reuters.com/article/us-florida-crime/florida-man-with-no-arms-charged-with-stabbing-man-with-scissors-idUSKBN1K131O', 
+    headline="Florida man with no arms charged with stabbing man with scissors", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/latest-news/article213135699.html', 
+    headline="Florida man asks cops to test his illegal drugs", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://miami.cbslocal.com/2019/07/14/florida-man-luring-robbery-victims-dating-site/', 
+    headline="Florida Man Arrested For Luring Robbery Victims From Dating Site", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-samurai-sword-wheelbarrow', 
+    headline="Florida man arrested, caught on video using samurai sword to fight over wheelbarrow", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-taser-bystanders-crash', 
+    headline="Florida man used Taser to fend off bystanders following crash, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://wsvn.com/news/local/florida/deputies-florida-man-tied-up-wifes-lover-cut-off-penis/', 
+    headline="Deputies: Florida man tied up wife’s lover, cut off penis", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-stages-suicide-with-csi-las-vegas-balloon-scheme-to-make-it-appear-as-a-murder-cops-say', 
+    headline="Florida man stages suicide with 'CSI: Las Vegas' balloon scheme to make it appear as a murder", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.foxnews.com/us/florida-man-33-posed-as-housewife-to-lure-men-into-home-where-hed-secretly-film-sex-acts-for-web-cops-say', 
+    headline="lorida man, 33, posed as housewife to lure men into home where he'd secretly film sex acts for web", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://miami.cbslocal.com/2017/07/20/florida-man-bananas-shot-out-utility-workers-tires/', 
+    headline="Florida Man Says He Went ‘Bananas,’ Shot Out Utility Workers’ Tires", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://miami.cbslocal.com/2019/07/21/florida-man-arrested-armed-sexual-battery-miami-beach/', 
+    headline="Florida Man Arrested For Armed Sexual Battery In Miami Beach", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.bbc.com/news/world-us-canada-44917413', 
+    headline="Florida gunman who killed man in parking dispute free to go, police say", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/news/state/florida/article233006777.html', 
+    headline="Wanted Florida man gives cops his brother’s name — but he was wanted, too",
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://abc13.com/entertainment/florida-man-serves-hot-dogs-to-alligators-from-his-mouth/2247372/', 
+    headline="Brave Florida man serves up hot dog lunch for alligators straight from his mouth", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.cbsnews.com/news/florida-man-allegedly-stabs-alligator-to-death-tries-to-sell-the-meat/', 
+    headline="Florida man allegedly stabs alligator to death, tries to sell the meat", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.orlandoweekly.com/Blogs/archives/2017/07/26/florida-man-brandishes-samurai-sword-during-road-rage-incident', 
+    headline="Florida man brandishes samurai sword during road-rage incident ", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.wwnytv.com/2019/07/27/florida-man-nearly-killed-freak-lawn-furniture-accident/', 
+    headline="Florida man nearly killed in freak lawn furniture accident", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.nbc-2.com/story/38757824/florida-man-makes-beer-run-with-gator-in-hand', 
+    headline="Florida man makes beer run with gator in hand", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.wrcbtv.com/story/38371293/florida-man-gets-head-butted-by-alligator', 
+    headline="Florida man gets head-butted, knocked out by alligator", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.miamiherald.com/news/state/florida/article233288922.html', 
+    headline="A Florida man said he was chasing a kitten. But how did his best friend get beaten up?", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
 db.session.commit()
 
 tmp = July(
-    link='', 
-    headline="", 
+    link='https://www.fox4now.com/news/state/florida-man-hit-by-car-during-failed-in-my-feelings-challenge', 
+    headline="Florida man hit by car during failed 'In My Feelings' challenge", 
     modtime=datetime.now()
 )
 db.session.add(tmp)
