@@ -77,3 +77,17 @@ class December(db.Model):
     link = db.Column(db.String(256), nullable=True)
     headline = db.Column(db.String(128), nullable=False)
     modtime = db.Column(db.DateTime, nullable=False)
+
+class AddedArticle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    link = db.Column(db.String(256), nullable=True)
+    headline = db.Column(db.String(128), nullable=False)
+    modtime = db.Column(db.DateTime, nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    owner = db.relationship("Users", back_populates="article")
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.Integer, unique=True, nullable=False)
+    name = db.Column(db.String(32), nullable=False)
+    article = db.relationship("AddedArticle", back_populates="owner")

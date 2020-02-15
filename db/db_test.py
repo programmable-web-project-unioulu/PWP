@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
 import db as app
-from db import January, February, March, April, May, June, July, August, September, October, November, December
+from db import January, February, March, April, May, June, July, August, September, October, November, December, Users, AddedArticle
 
 @pytest.fixture
 def db_handle():
@@ -681,3 +681,57 @@ def test_December(db_handle):
     entry.modtime = None
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
+
+def test_user(db_handle):
+    # Test creation of new user without article
+    entry = Users(code=1234, name="Aleksi Hytönen")
+    db_handle.session.add(entry)
+    db_handle.session.commit()
+    test = Users.query.filter_by(code=1234).first()
+    assert test.name == "Aleksi Hytönen"
+
+    # Test deletion of a new user without article
+    entry = Users(code=456, name="Matti Meikäläinen")
+    db_handle.session.add(entry)
+    db_handle.session.commit()
+    assert Users.query.count() == 2
+
+    entry = Users.query.filter_by(code=456).first()
+    db_handle.session.delete(entry)
+    db_handle.session.commit()
+    assert Users.query.count() == 1
+
+    # Test modification of user without article
+    entry = Users.query.filter_by(code=1234).first()
+    entry.name = "Elli Esimerkki"
+    db_handle.session.commit()
+    test = Users.query.filter_by(code=1234).first()
+    assert test.name == "Elli Esimerkki"
+
+    # Test creation of an user with an article
+    other = Users(code=147, name="Olli Omistaja")
+    db_handle.session.add(other)
+    db_handle.session.commit()
+    entry = AddedArticle(link='https://www.google.com/', headline="First headline", modtime=datetime.now(), owner=other)
+    db_handle.session.add(entry)
+    db_handle.session.commit()
+    test = Users.query.filter_by(code=147).first()
+    assert test.name == "Olli Omistaja"
+    test = test.article[0]
+    assert test.headline == "First headline"
+
+    # Test adding another article to exising user
+    other = Users.query.filter_by(code=147).first()
+    entry = AddedArticle(link='https://www.google.com/', headline="Second headline", modtime=datetime.now(), owner=other)
+    db_handle.session.add(entry)
+    db_handle.session.commit()
+    test = Users.query.filter_by(code=147).first()
+    assert test.article[0].headline == "First headline"
+    assert test.article[1].headline == "Second headline"
+
+    # Test uniqueness of the user code
+    entry = Users(code=147, name="Erkki Errori")
+    db_handle.session.add(entry)
+    with pytest.raises(IntegrityError):
+        db_handle.session.commit()
+    db_handle.session.rollback()
