@@ -24,4 +24,4 @@ class AddedArticles(db.Model):
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
-    article = db.relationship("AddedArticle", back_populates="owner", cascade="all, delete-orphan")
+    article = db.relationship("AddedArticles", back_populates="owner", cascade="all, delete-orphan")
