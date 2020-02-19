@@ -18,10 +18,10 @@ class AddedArticle(db.Model):
     link = db.Column(db.String(256), nullable=True)
     headline = db.Column(db.String(128), nullable=False)
     modtime = db.Column(db.DateTime, nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
     owner = db.relationship("Users", back_populates="article")
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, nullable=False)
-    article = db.relationship("AddedArticle", back_populates="owner")
+    article = db.relationship("AddedArticle", back_populates="owner", cascade="all, delete-orphan")
