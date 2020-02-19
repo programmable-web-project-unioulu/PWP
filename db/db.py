@@ -13,7 +13,7 @@ class Articles(db.Model):
     headline = db.Column(db.String(128), nullable=False)
     modtime = db.Column(db.DateTime, nullable=False)
 
-class AddedArticle(db.Model):
+class AddedArticles(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     link = db.Column(db.String(256), nullable=True)
     headline = db.Column(db.String(128), nullable=False)
