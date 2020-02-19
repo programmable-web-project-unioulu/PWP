@@ -24,15 +24,41 @@ Fix the wiki.
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 2.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 19.2.2020
+* **ASSISTANTS:** Ivan Sanchez Milara (?)
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Discussion about the database and API.
+
+Why did we choose a number instead of nickname as unique?
+-We maybe should change nickname to be unique string, instead of number
+Change the month tables to just one, with month column?
+-Date is an unique attribute then in the table?
+Discussion about the changes, and what are needed...
+
+Ivan checked our populated database.
+Users and stuff are not populated yet.
+Only the monthly tables.
+
+We could use an excel file for example to populate the database instead of
+using row by row -python fill. CSV.
+Create a dictionary and call the .csv etc...
+
+We need to populate the users and added articles too, 4-5 users...
+
+Define what happens when user is deleted?
+Check what happens if unique field is tried to add with same value?
+That was already implemented in the tests...
+
+Checked running the pytest from our repo.
 
 ### Action points
-*List here the actions points discussed with assistants*
+Change users to be identified with unique string.
 
+Month-tables to just one table instead, with datetime or similar unique identifier.
+
+Populate users and added articles, 4-5 examples.
+Also in headlines-links a few examples is enough.
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
