@@ -26,21 +26,21 @@ def db_handle():
 def test_Articles(db_handle):
 
     # Test entry creation
-    entry = Articles(date='20.5.2011', link='https://www.google.com/', headline="First headline", modtime=datetime.now())
+    entry = Articles(date='20.05.2011', link='https://www.google.com/', headline="First headline", modtime=datetime.now())
     db_handle.session.add(entry)
     db_handle.session.commit()
     assert Articles.query.count() == 1
 
     # Test getting an entry
-    entry = Articles.query.filter_by(date='20.5.2011').first()
+    entry = Articles.query.filter_by(date='20.05.2011').first()
     assert entry.headline == "First headline"
 
     # Test deletion of an entry
-    entry = Articles(date='1.1.2001', link='https://www.google.com/', headline="Second headline", modtime=datetime.now())
+    entry = Articles(date='01.01.2001', link='https://www.google.com/', headline="Second headline", modtime=datetime.now())
     db_handle.session.add(entry)
     db_handle.session.commit()
     assert Articles.query.count() == 2
-    entry = Articles.query.filter_by(date='1.1.2001').first()
+    entry = Articles.query.filter_by(date='01.01.2001').first()
     db_handle.session.delete(entry)
     db_handle.session.commit()
     entry = Articles.query.first()
@@ -54,7 +54,7 @@ def test_Articles(db_handle):
     entry.headline = "New headline"
 
     # Test that date is unique
-    entry = Articles(date='20.5.2011', link='https://www.google.com/', headline="Second headline", modtime=datetime.now())
+    entry = Articles(date='20.05.2011', link='https://www.google.com/', headline="Second headline", modtime=datetime.now())
     db_handle.session.add(entry)
     with pytest.raises(IntegrityError):
         db_handle.session.commit()
