@@ -242,33 +242,8 @@ Get a list of all articles known to the API.
                             "required": ["date"]
                         }
                     },
-                    "floman:edit-article": {
-                        "href": "/api/articles/02.01.2019"
-                        "title": "Edit this article",
-                        "encoding": "json",
-                        "method": "PUT",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "date": {
-                                    "description": "Date of the article, that will be edited",
-                                    "type": "string",
-                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
-                                },
-                                "link": {
-                                    "description": "Link to the article",
-                                    "type": "string"
-                                },
-                                "headline": {
-                                    "description": "Headline of the article",
-                                    "type": "string"
-                                }
-                            },
-                            "required": []
-                        }
-                    },
                     "floman:article-by-date": {
-                        "href": "/api/articles/?{date}",
+                        "href": "/api/articles/?{date}/",
                         "title": "Article by date",
                         "isHrefTemplate": true,
                         "schema": {
@@ -286,7 +261,7 @@ Get a list of all articles known to the API.
                 },
                 "items": [
                     {
-                        "date": "02.01.2019"
+                        "date": "02.01.2019",
                         "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
                         "headline": "Florida man doesn't get straw, attacks McDonald's employee",
                         "modtime": "Some modificationg date"
@@ -321,7 +296,7 @@ Adds a new article. The article representation must be valid against the article
 
 + Response 400 (application/vnd.mason+json)
 
-    The client is trying to send a JSON document that doesn't validate against the schema, or has non-existent release date.
+    The client is trying to send a JSON document that doesn't validate against the schema.
 
     + Body
     
@@ -345,7 +320,7 @@ Adds a new article. The article representation must be valid against the article
     + Body
     
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Already exists",
                     "@messages": [
@@ -367,7 +342,7 @@ Adds a new article. The article representation must be valid against the article
     + Body
         
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -381,11 +356,83 @@ Adds a new article. The article representation must be valid against the article
                 }
             }
 
+## Article item [/api/articles/?{date}/]
+
+A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + date (string, required) - Date of the article to be fetched.
+
+### Get Article [GET]
+
+Gets the article from collection.
+
++ Relation: article-by-date
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "date": "02.01.2019",
+                "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
+                "headline": "Florida man doesn't get straw, attacks McDonald's employee"
+                "@controls": {
+                    "collection": {
+                        "href": "/api/articles/"
+                    },
+                    "self": {
+                        "href": "/api/articles/02.01.2019/"
+                    },
+                    "edit": {
+                        "href": "/api/articles/02.01.2019",
+                        "title": "Edit this article",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "description": "Date of the article",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the article",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the article",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": []
+                    },
+                    "floman:delete": {
+                        "href": "/api/articles/02.01.2019/",
+                        "title": "Delete this article",
+                        "method": "DELETE"
+                    }
+                }
+            }
+            
 ### Edit article [PUT]
 
 Replace the article's representation with a new one. Missing optinal fields will be set to null. Must validate against the article schema. 
 
-+ Relation: edit-article
++ Relation: edit
 + Request (application/json)
 
     + Headers
@@ -429,7 +476,7 @@ Replace the article's representation with a new one. Missing optinal fields will
     + Body
     
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Article not found",
                     "@messages": [null]
@@ -448,7 +495,7 @@ Replace the article's representation with a new one. Missing optinal fields will
     + Body
     
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Provided date is already in use.",
                     "@messages": ["Date '05.05.2015' is already used by other article"]
@@ -467,7 +514,7 @@ Replace the article's representation with a new one. Missing optinal fields will
     + Body
         
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -485,7 +532,7 @@ Replace the article's representation with a new one. Missing optinal fields will
 
 Deletes the article.
 
-+ Relation: delete-article
++ Relation: delete
 + Request
 
     + Headers
@@ -501,7 +548,7 @@ Deletes the article.
     + Body
     
             {
-                "resource_url": "/api/articles/05.05.2015",
+                "resource_url": "/api/articles/05.05.2015/",
                 "@error": {
                     "@message": "Article not found",
                     "@messages": [null]
@@ -511,57 +558,6 @@ Deletes the article.
                         "href": "/profiles/error/"
                     }
                 }
-            }
-
-## Article item [/api/articles/?{date}]
-
-A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
-
-+ Parameters
-
-    + date (string, required) - Date of the article to be fetched.
-    
-        + Members
-        
-            + `date`
-            + `link`
-            + `headline`
-            + `modtime`
-
-### Get Article [GET]
-
-Gets the article from collection.
-
-+ Relation: article-by-date
-+ Request
-
-    + Headers
-    
-            Accept: application/vnd.mason+json
-
-+ Response 200 (application/vnd.mason+json)
-    
-    + Body
-
-            {
-                "@namespaces": {
-                    "floman": {
-                        "name": "/floridaman/link-relations#"
-                    }
-                },
-                "@controls": {
-                    "collection": {
-                        "href": "/api/articles/"
-                    }
-                },
-                "items": [
-                    {
-                        "date": "02.01.2019"
-                        "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
-                        "headline": "Florida man doesn't get straw, attacks McDonald's employee",
-                        "modtime": "Some modificationg date"
-                    }
-                ]
             }
 
 # Group Users
@@ -595,15 +591,125 @@ Gets all users from collection.
                 },
                 "@controls": {
                     "floman:user-by-name": {
-                        "href": "/api/users/?{username}"
+                        "href": "/api/users/?{username}/",
+                        "title": "Get a user by name",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the user",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["username"]
+                        }
+                    },
+                    "floman:add-user": {
+                        "href": "/api/users/",
+                        "title": "Add a new user",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the user",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["username"]
+                        }
                     }
                 },
                 "items": [
                     {
-                        "date": "02.01.2019"
-                        "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
-                        "headline": "Florida man doesn't get straw, attacks McDonald's employee",
-                        "modtime": "Some modificationg date"
+                        "username": "sample1"
                     }
                 ]
+            }
+            
+### Add user [POST]
+
+Adds a new user. The user representation must be valid against the user schema.
+
++ Relation: add-user
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "username": "svenskapojkarna"
+            }
+
++ Response 201
+
+    + Headers
+    
+            Location: /api/users/svenskapojkarna/
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'username' is a required property"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to add a user with a username that's already used by another user.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Already exists",
+                    "@messages": [
+                        "The username is already used by another user."
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+            
+
++ Response 415 (application/vnd.mason+json)
+
+    The client did not use the proper content type, or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
             }
