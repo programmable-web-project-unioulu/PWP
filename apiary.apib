@@ -771,6 +771,21 @@ Gets the user from collection.
                         "href": "/api/users/sample1/",
                         "title": "Delete this user",
                         "method": "DELETE"
+                    },
+                    "floman:addedarticle-by-owner": {
+                        "href": "/api/users/?{username}/added-articles",
+                        "title": "Get articles by owner name",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the user",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["username"]
+                        }
                     }
                 }
             }
@@ -873,6 +888,7 @@ Replace the user's name with a new one. Must validate against the article schema
                 }
             }
             
+            
 ### Delete user [DELETE]
 
 Deletes the user.
@@ -904,6 +920,51 @@ Deletes the user.
                     }
                 }
             }
+
+### Articles owned [/api/added-articles-by-user]
+
+Added articles by a username. TODO: THIS NEEDS to be checked, contains errors.
+Should this be defined only in "added-articles"?!?
+
++ Relation: owned-article
++ Request
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+            
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "username": "sample1",
+                "@controls": {
+                    "collection": {
+                        "href": "/api/added-articles/"
+                    },
+                    "self": {
+                        "href": "/api/users/sample1/added-articles/"
+                    }
+                },
+                {"items": [
+                    "username": "sample1",
+                    "date": "06.05.2019",
+                    "link": "https://www.google.com",
+                    "headline": "Florida man fights with API",
+                    "modtime": "3.2.2020"
+                    ]
+            }
+
+# Group Added Articles 
+
+All of these resources use the [Added Article Profile](reference/profiles/added-article-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
+
 
 
 ## Added article collection [/api/added-articles/]
@@ -983,7 +1044,32 @@ Gets all added articles from collection.
                         "date": "06.05.2019",
                         "link": "https://www.google.com",
                         "headline": "Florida man fights with API",
-                        "modtime": "Some modification date"
+                        "modtime": "3.2.2020"
                     }
                 ]
             }
+            
+### Add added article [POST]
+
+Adds an added article. The added article representation must be valid against the article schema.
+The user must be valid?!?
+
++ Relation: add-addedarticle
+
+
+
+## Added article item [/api/added-articles/?{owner}/]
+
+A single added-article known to the API. The article is fetched using the owner of the article. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + owner (string, required) - Owner of the article to be fetched.
+
+### Get Added Article [GET]
+
+Gets the article from collection.
+
++ Relation: addedarticle-by-owner
+
++ Request
