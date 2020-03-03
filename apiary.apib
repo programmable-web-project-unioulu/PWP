@@ -14,14 +14,6 @@ This section described custom link relations defined in this API. These are not 
 
 This is a control that is used to add an article to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
 
-## edit-article
-
-This is a control that is used to edit an article in associated collection resource. The control includes a JSON schema and must be accessed with PUT.
-
-## delete-article
-
-This is a control that is used to delete an article in associated collection resource. Must be accessed with DELETE.
-
 ## articles-all
 
 Leads to the root level articles collection which is a list of all articles known to the API.
@@ -33,14 +25,6 @@ Leads to an article item resource associated with the date provided.
 ## add-user
 
 This is a control that is used to add a user to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
-
-## edit-user
-
-This is a control that is used to edit a user in associated collection resource. The control includes a JSON schema and must be accessed with PUT.
-
-## delete-user
-
-This is a control that is used to delete a user in associated collection resource. Must be accessed with DELETE.
 
 ## users-all
 
@@ -57,14 +41,6 @@ Leads to an user item resource associated with the username provided.
 ## add-addedarticle
 
 This is a control that is used to add an added article to the associated collection resource. The control includes a JSON schema and must be accessed with POST. 
-
-## edit-addedarticle
-
-This is a control that is used to edit an added article in associated collection resource. The control includes a JSON schema and must be accessed with PUT.
-
-## delete-user
-
-This is a control that is used to delete an added article in associated collection resource. Must be accessed with DELETE.
 
 ## addedarticles-all
 
@@ -87,8 +63,6 @@ Profile definition for all article related resources.
 This section lists all possible link relations associated with articles; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
 
  * [add-article](reference/link-relations/add-article)
- * [edit-article](reference/link-relations/edit-article)
- * [delete-article](reference/link-relations/delete-article)
  * [articles-all](reference/link-relations/articles-add)
  * [article-by-date](reference/link-relations/article-by-date)
  
@@ -96,57 +70,18 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
 
  * collection
  * items
- * up
- 
+ * self
+ * edit
+ * delete
+
 ### Semantic Descriptors
 
 #### Data Type Article
 
- * `id`: ID of the entry. Mandatory
  * `date`: Date of the article. Mandatory and unique.
  * `link`: Link to the article. Optional.
  * `headline`: Headline of the article. Mandatory
- * `modtime`: Modification date. Mandatory.
 
-## Error Profile
-
-Profile definition for all errors returned by the API. See [Mason error control](https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
-
-+ Attributes
-
-    + resource_url (string, required) - URI of the resource the error was generated from. 
- 
-## Added article Profile
-
-Profile definition for all added article related resources.
-
-### Link Relations
-
-This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
-
- * [add-addedarticle](reference/link-relations/add-addedarticle)
- * [edit-addedarticle](reference/link-relations/edit-addedarticle)
- * [delete-addedarticle](reference/link-relations/delete-addedarticle)
- * [addedarticles-all](reference/link-relations/addedarticles-all)
- * [addedarticle-by-owner](reference/link-relations/addedarticle-by-owner)
- 
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
-
- * collection
- * items
- * up
-
-### Semantic Descriptors
-
-#### Data Type Track
-
- * `id`: ID of the added article. Mandatory
- * `date`: Date of the article. Optional.
- * `link`: Link to the article. Optional.
- * `headline`: headline of the article. Mandatory.
- * `modtime`: Modification date. Mandatory.
- * `owner_id`: ID of the owner of the article. Mandatory. Points to some user.
- 
 ## User Profile
 
 Profile definition for all user related resources.
@@ -156,8 +91,6 @@ Profile definition for all user related resources.
 This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
 
  * [add-user](reference/link-relations/add-user)
- * [edit-user](reference/link-relations/edit-user)
- * [delete-user](reference/link-relations/delete-user)
  * [users-all](reference/link-relations/users-all)
  * [user-by-name](reference/link-relations/user-by-name)
  * [owned-article](reference/link-relations/owned-article)
@@ -166,15 +99,54 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
 
  * collection
  * items
- * up
+ * self
+ * edit
+ * delete
 
 ### Semantic Descriptors
 
 #### Data Type Track
 
- * `id`: ID of the user. Mandatory
  * `username`: Name of the user. Mandatory and unique.
+
+## Added article Profile
+
+Profile definition for all added article related resources.
+
+### Link Relations
+
+This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
+
+ * [add-addedarticle](reference/link-relations/add-addedarticle)
+ * [addedarticles-all](reference/link-relations/addedarticles-all)
+ * [addedarticle-by-owner](reference/link-relations/addedarticle-by-owner)
  
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
+
+ * collection
+ * items
+ * self
+ * edit
+ * delete
+ * owner
+
+### Semantic Descriptors
+
+#### Data Type Track
+
+ * `date`: Date of the article. Optional.
+ * `link`: Link to the article. Optional.
+ * `headline`: headline of the article. Mandatory.
+ * `owner_id`: ID of the owner of the article. Mandatory. Points to some user.
+
+## Error Profile
+
+Profile definition for all errors returned by the API. See [Mason error control](https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
+
++ Attributes
+
+    + resource_url (string, required) - URI of the resource the error was generated from. 
+
 # Group Entry
 
 This group contains the entry point of the API
@@ -245,6 +217,56 @@ Get a list of all articles known to the API.
                     }
                 },
                 "@controls": {
+                    "floman:add-article": {
+                        "href": "/api/articles/",
+                        "title": "Add a new article",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "description": "Date of the article",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the article",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the article",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["date"]
+                        }
+                    },
+                    "floman:edit-article": {
+                        "href": "/api/articles/02.01.2019"
+                        "title": "Edit this article",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "description": "Date of the article, that will be edited",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the article",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the article",
+                                    "type": "string"
+                                }
+                            },
+                            "required": []
+                        }
+                    },
                     "floman:article-by-date": {
                         "href": "/api/articles/?{date}",
                         "title": "Article by date",
@@ -255,8 +277,7 @@ Get a list of all articles known to the API.
                                 "date": {
                                     "description": "Date of the article you want to find",
                                     "type": "string",
-                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$",
-                                    "enum": ["date"]
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
                                 }
                             },
                             "required": ["date"]
@@ -265,16 +286,10 @@ Get a list of all articles known to the API.
                 },
                 "items": [
                     {
-                        "id": 1,
-                        "date": "02.01.2019",
+                        "date": "02.01.2019"
                         "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
                         "headline": "Florida man doesn't get straw, attacks McDonald's employee",
                         "modtime": "Some modificationg date"
-                        "@controls": {
-                            "up": {
-                                "href": "/api/articles/"
-                            }
-                        },
                     }
                 ]
             }
@@ -496,4 +511,99 @@ Deletes the article.
                         "href": "/profiles/error/"
                     }
                 }
+            }
+
+## Article item [/api/articles/?{date}]
+
+A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + date (string, required) - Date of the article to be fetched.
+    
+        + Members
+        
+            + `date`
+            + `link`
+            + `headline`
+            + `modtime`
+
+### Get Article [GET]
+
+Gets the article from collection.
+
++ Relation: article-by-date
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "collection": {
+                        "href": "/api/articles/"
+                    }
+                },
+                "items": [
+                    {
+                        "date": "02.01.2019"
+                        "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
+                        "headline": "Florida man doesn't get straw, attacks McDonald's employee",
+                        "modtime": "Some modificationg date"
+                    }
+                ]
+            }
+
+# Group Users
+
+All of these resources use the [User Profile](reference/profiles/user-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
+
+## User Collection [/api/users/]
+
+A list of all users known to the API. You can also add new user with POST, edit existing user using PUT and delete existing user using DELETE.
+
+### Get Users [GET]
+
+Gets all users from collection.
+
++ Relation: users-all
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "floman:user-by-name": {
+                        "href": "/api/users/?{username}"
+                    }
+                },
+                "items": [
+                    {
+                        "date": "02.01.2019"
+                        "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
+                        "headline": "Florida man doesn't get straw, attacks McDonald's employee",
+                        "modtime": "Some modificationg date"
+                    }
+                ]
             }
