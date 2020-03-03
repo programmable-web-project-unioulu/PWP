@@ -714,6 +714,67 @@ Adds a new user. The user representation must be valid against the user schema.
                 }
             }
             
+## User item [/api/users/?{username}/]
+
+A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + username (string, required) - Name of the user to be fetched.
+
+### Get User [GET]
+
+Gets the user from collection.
+
++ Relation: user-by-name
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "username": "sample1",
+                "@controls": {
+                    "collection": {
+                        "href": "/api/users/"
+                    },
+                    "self": {
+                        "href": "/api/users/sample1/"
+                    },
+                    "edit": {
+                        "href": "/api/users/sample1",
+                        "title": "Edit this user",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the user",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": ["username"]
+                    },
+                    "floman:delete": {
+                        "href": "/api/users/sample1/",
+                        "title": "Delete this user",
+                        "method": "DELETE"
+                    }
+                }
+            }
+
             
 ### Edit user [PUT]
 
@@ -755,7 +816,7 @@ Replace the user's name with a new one. Must validate against the article schema
             }
 + Response 404 (application/vnd.mason+json)
 
-    The client is trying to edit an user that doesn't exist. 
+    The client is trying to edit a user that doesn't exist. 
 
     + Body
     
@@ -808,6 +869,38 @@ Replace the user's name with a new one. Must validate against the article schema
                 "@controls": {
                     "profile": {
                         "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+            
+### Delete user [DELETE]
+
+Deletes the user.
+
++ Relation: delete
++ Request
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete a user that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "User not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
                     }
                 }
             }
