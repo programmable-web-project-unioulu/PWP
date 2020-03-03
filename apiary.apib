@@ -713,3 +713,101 @@ Adds a new user. The user representation must be valid against the user schema.
                     }
                 }
             }
+            
+            
+### Edit user [PUT]
+
+Replace the user's name with a new one. Must validate against the article schema. 
+
++ Relation: edit
++ Request (application/json)
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "user": "svenskapojkarna",
+            }
+        
++ Response 204
+
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'username' is a required property"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit an user that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "User not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+            
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to change the name of the user to a one that is already in use.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Provided name is already in use.",
+                    "@messages": ["'svenskapojkarna' is already used by other user"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+        
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
