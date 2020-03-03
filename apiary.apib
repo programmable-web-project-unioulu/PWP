@@ -716,7 +716,7 @@ Adds a new user. The user representation must be valid against the user schema.
             
 ## User item [/api/users/?{username}/]
 
-A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
+A single user known to the API. The user is fetched using the username. You can only get the user from associated collection using GET.
 
 + Parameters
 
@@ -903,4 +903,87 @@ Deletes the user.
                         "href": "/profiles/error/"
                     }
                 }
+            }
+
+
+## Added article collection [/api/added-articles/]
+
+A list of all added articles known to the API. You can also add new articles with POST, edit existing article using PUT and delete existing article using DELETE.
+
+### Get added articles [GET]
+
+Gets all added articles from collection.
+
++ Relation: addedarticles-all
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "floman:add-addedarticle": {
+                        "href": "/api/addedarticles/",
+                        "title": "Add a new addedarticle",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Name of the owner",
+                                    "type": "string"
+                                },
+                                "date": {
+                                    "description": "Date of the addedarticle",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the addedarticle",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the addedarticle",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["username", "headline", "date"]
+                        }
+                    },
+                    "floman:addedarticle-by-owner": {
+                        "href": "/api/addedarticles/?{username}/",
+                        "title": "Addedarticle by owner",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Owner of the article you want to find",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["username"]
+                        }
+                    }
+                },
+                "items": [
+                    {
+                        "username": "sample1",
+                        "date": "06.05.2019",
+                        "link": "https://www.google.com",
+                        "headline": "Florida man fights with API",
+                        "modtime": "Some modification date"
+                    }
+                ]
             }
