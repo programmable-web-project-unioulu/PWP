@@ -624,6 +624,7 @@ Gets all users from collection.
                 },
                 "items": [
                     {
+                        "id": 1,
                         "username": "sample1"
                     }
                 ]
@@ -713,7 +714,7 @@ Adds a new user. The user representation must be valid against the user schema.
                     }
                 }
             }
-            
+
 ## User item [/api/users/?{username}/]
 
 A single user known to the API. The user is fetched using the username. You can only get the user from associated collection using GET.
@@ -743,6 +744,7 @@ Gets the user from collection.
                         "name": "/floridaman/link-relations#"
                     }
                 },
+                "id": 1,
                 "username": "sample1",
                 "@controls": {
                     "collection": {
@@ -752,7 +754,7 @@ Gets the user from collection.
                         "href": "/api/users/sample1/"
                     },
                     "edit": {
-                        "href": "/api/users/sample1",
+                        "href": "/api/users/sample1/",
                         "title": "Edit this user",
                         "encoding": "json",
                         "method": "PUT",
@@ -772,20 +774,20 @@ Gets the user from collection.
                         "title": "Delete this user",
                         "method": "DELETE"
                     },
-                    "floman:addedarticle-by-owner": {
-                        "href": "/api/users/?{username}/added-articles",
-                        "title": "Get articles by owner name",
+                    "floman:owned-article": {
+                        "href": "/api/addedarticles/?{owner}/",
+                        "title": "Get articles owned by this user",
                         "isHrefTemplate": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "username": {
-                                    "description": "Username of the user",
-                                    "type": "string"
+                                "owner": {
+                                    "description": "ID of the owner of the article",
+                                    "type": "number"
                                 }
-                            },
-                            "required": ["username"]
-                        }
+                            }
+                        },
+                        "required": ["owner"]
                     }
                 }
             }
@@ -805,7 +807,7 @@ Replace the user's name with a new one. Must validate against the article schema
     + Body
     
             {
-                "user": "svenskapojkarna",
+                "username": "svenskapojkarna"
             }
         
 + Response 204
@@ -887,8 +889,7 @@ Replace the user's name with a new one. Must validate against the article schema
                     }
                 }
             }
-            
-            
+
 ### Delete user [DELETE]
 
 Deletes the user.
@@ -921,53 +922,11 @@ Deletes the user.
                 }
             }
 
-### Articles owned [/api/added-articles-by-user]
-
-Added articles by a username. TODO: THIS NEEDS to be checked, contains errors.
-Should this be defined only in "added-articles"?!?
-
-+ Relation: owned-article
-+ Request
-
-    + Headers
-        
-            Accept: application/vnd.mason+json
-            
-+ Response 200 (application/vnd.mason+json)
-    
-    + Body
-
-            {
-                "@namespaces": {
-                    "floman": {
-                        "name": "/floridaman/link-relations#"
-                    }
-                },
-                "username": "sample1",
-                "@controls": {
-                    "collection": {
-                        "href": "/api/added-articles/"
-                    },
-                    "self": {
-                        "href": "/api/users/sample1/added-articles/"
-                    }
-                },
-                {"items": [
-                    "username": "sample1",
-                    "date": "06.05.2019",
-                    "link": "https://www.google.com",
-                    "headline": "Florida man fights with API",
-                    "modtime": "3.2.2020"
-                    ]
-            }
-
 # Group Added Articles 
 
-All of these resources use the [Added Article Profile](reference/profiles/added-article-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
+All of these resources use the [Added Article Profile](reference/profiles/addedarticle-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
 
-
-
-## Added article collection [/api/added-articles/]
+## Added article collection [/api/addedarticles/]
 
 A list of all added articles known to the API. You can also add new articles with POST, edit existing article using PUT and delete existing article using DELETE.
 
@@ -1001,10 +960,6 @@ Gets all added articles from collection.
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "username": {
-                                    "description": "Name of the owner",
-                                    "type": "string"
-                                },
                                 "date": {
                                     "description": "Date of the addedarticle",
                                     "type": "string",
@@ -1019,32 +974,31 @@ Gets all added articles from collection.
                                     "type": "string"
                                 }
                             },
-                            "required": ["username", "headline", "date"]
+                            "required": ["headline"]
                         }
                     },
                     "floman:addedarticle-by-owner": {
-                        "href": "/api/addedarticles/?{username}/",
-                        "title": "Addedarticle by owner",
+                        "href": "/api/addedarticles/?{owner}/",
+                        "title": "Added article by owner",
                         "isHrefTemplate": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "username": {
+                                "owner": {
                                     "description": "Owner of the article you want to find",
-                                    "type": "string"
+                                    "type": "number"
                                 }
-                            },
-                            "required": ["username"]
-                        }
+                            }
+                        },
+                        "required": ["owner"]
                     }
                 },
                 "items": [
                     {
-                        "username": "sample1",
                         "date": "06.05.2019",
                         "link": "https://www.google.com",
                         "headline": "Florida man fights with API",
-                        "modtime": "3.2.2020"
+                        "owner_id": "1"
                     }
                 ]
             }
@@ -1052,19 +1006,18 @@ Gets all added articles from collection.
 ### Add added article [POST]
 
 Adds an added article. The added article representation must be valid against the article schema.
-The user must be valid?!?
 
 + Relation: add-addedarticle
 
 
 
-## Added article item [/api/added-articles/?{owner}/]
+## Added article item [/api/addedarticles/?{owner}/]
 
 A single added-article known to the API. The article is fetched using the owner of the article. You can only get the article from associated collection using GET.
 
 + Parameters
 
-    + owner (string, required) - Owner of the article to be fetched.
+    + owner (number, required) - Owner of the article to be fetched.
 
 ### Get Added Article [GET]
 
