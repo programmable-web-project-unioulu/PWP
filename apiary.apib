@@ -1009,6 +1009,66 @@ Adds an added article. The added article representation must be valid against th
 
 + Relation: add-addedarticle
 
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "date": "05.05.2015",
+                "link": "http://google.com",
+                "headline": "Some Headline"
+                "owner:id": "1"
+            }
+
++ Response 201
+
+    + Headers
+    
+            Location: /api/addedarticles/1/
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/1/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'headline' is a required property"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client did not use the proper content type, or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/addedarticles/1/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
 
 
 ## Added article item [/api/addedarticles/?{owner}/]
