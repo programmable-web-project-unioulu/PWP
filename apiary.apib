@@ -30,7 +30,7 @@ This is a control that is used to add a user to the associated collection resour
 
 Leads to the root level users collection which is a list of all users known to the API.
 
-## owned-article
+## owned-articles
 
 Leads to an added article item resource associated with the user provided.
 
@@ -88,12 +88,12 @@ Profile definition for all user related resources.
 
 ### Link Relations
 
-This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
+This section lists all possible link relations associated with users; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
 
  * [add-user](reference/link-relations/add-user)
  * [users-all](reference/link-relations/users-all)
  * [user-by-name](reference/link-relations/user-by-name)
- * [owned-article](reference/link-relations/owned-article)
+ * [owned-articles](reference/link-relations/owned-articles)
  
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
@@ -115,7 +115,7 @@ Profile definition for all added article related resources.
 
 ### Link Relations
 
-This section lists all possible link relations associated with tracks; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
+This section lists all possible link relations associated with added articles; not all of them are necessarily present on each resource type. The following link relations from the floman namespace are used:
 
  * [add-addedarticle](reference/link-relations/add-addedarticle)
  * [addedarticles-all](reference/link-relations/addedarticles-all)
@@ -137,7 +137,7 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  * `date`: Date of the article. Optional.
  * `link`: Link to the article. Optional.
  * `headline`: headline of the article. Mandatory.
- * `owner_id`: ID of the owner of the article. Mandatory. Points to some user.
+ * `owner_username`: Username of the owner of the article. Mandatory. Points to some user.
 
 ## Error Profile
 
@@ -774,7 +774,7 @@ Gets the user from collection.
                         "title": "Delete this user",
                         "method": "DELETE"
                     },
-                    "floman:owned-article": {
+                    "floman:owned-articles": {
                         "href": "/api/addedarticles/?{owner}/",
                         "title": "Get articles owned by this user",
                         "isHrefTemplate": true,
@@ -782,8 +782,8 @@ Gets the user from collection.
                             "type": "object",
                             "properties": {
                                 "owner": {
-                                    "description": "ID of the owner of the article",
-                                    "type": "number"
+                                    "description": "Username of the owner of the article",
+                                    "type": "String"
                                 }
                             }
                         },
@@ -972,9 +972,13 @@ Gets all added articles from collection.
                                 "headline": {
                                     "description": "Headline of the addedarticle",
                                     "type": "string"
+                                },
+                                "owner_username": {
+                                    "description": "Username of the user who has created this article.",
+                                    "type": "String"
                                 }
                             },
-                            "required": ["headline"]
+                            "required": ["headline", "owner_username"]
                         }
                     },
                     "floman:addedarticle-by-owner": {
@@ -986,11 +990,11 @@ Gets all added articles from collection.
                             "properties": {
                                 "owner": {
                                     "description": "Owner of the article you want to find",
-                                    "type": "number"
+                                    "type": "String"
                                 }
-                            }
-                        },
-                        "required": ["owner"]
+                            },
+                            "required": ["owner"]
+                        }
                     }
                 },
                 "items": [
@@ -998,7 +1002,7 @@ Gets all added articles from collection.
                         "date": "06.05.2019",
                         "link": "https://www.google.com",
                         "headline": "Florida man fights with API",
-                        "owner_id": "1"
+                        "owner_username": "sample1"
                     }
                 ]
             }
@@ -1021,14 +1025,14 @@ Adds an added article. The added article representation must be valid against th
                 "date": "05.05.2015",
                 "link": "http://google.com",
                 "headline": "Some Headline"
-                "owner:id": "1"
+                "owner_username": "sample2"
             }
 
 + Response 201
 
     + Headers
     
-            Location: /api/addedarticles/1/
+            Location: /api/addedarticles/2/
 
 + Response 400 (application/vnd.mason+json)
 
@@ -1037,10 +1041,10 @@ Adds an added article. The added article representation must be valid against th
     + Body
     
             {
-                "resource_url": "/api/addedarticles/1/",
+                "resource_url": "/api/addedarticles/2/",
                 "@error": {
                     "@message": "Invalid JSON document",
-                    "@messages": ["'headline' is a required property"]
+                    "@messages": ["'headline' and 'owner_username' are required properties"]
                 },
                 "@controls": {
                     "profile": {
@@ -1056,7 +1060,7 @@ Adds an added article. The added article representation must be valid against th
     + Body
         
             {
-                "resource_url": "/api/addedarticles/1/",
+                "resource_url": "/api/addedarticles/2/",
                 "@error": {
                     "@message": "Unsupported media type",
                     "@messages": [
@@ -1071,18 +1075,99 @@ Adds an added article. The added article representation must be valid against th
             }
 
 
-## Added article item [/api/addedarticles/?{owner}/]
+## Added article item [/api/addedarticles/?{id}/]
 
-A single added-article known to the API. The article is fetched using the owner of the article. You can only get the article from associated collection using GET.
+A single added-article known to the API. The article is fetched using the articles ID. You can only get the article from associated collection using GET.
 
 + Parameters
 
-    + owner (number, required) - Owner of the article to be fetched.
+    + id (number, required) - ID of the article to be fetched.
 
 ### Get Added Article [GET]
 
 Gets the article from collection.
 
 + Relation: addedarticle-by-owner
-
 + Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "id": 1,
+                "date": "06.05.2019",
+                "link": "https://www.google.com",
+                "headline": "Florida man fights with API",
+                "owner_username": "sample1"
+                "@controls": {
+                    "collection": {
+                        "href": "/api/addedarticles/"
+                    },
+                    "self": {
+                        "href": "/api/addedarticles/1/"
+                    },
+                    "floman:addedarticles-all": {
+                        "href": "/api/addedarticles/",
+                        "title": "Get all added articles"
+                    },
+                    "floman:owner": {
+                        "href": "/api/users/?{username}/",
+                        "title": "Get owner of this article",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the owner of the article",
+                                    "type": "String"
+                                }
+                            }
+                        },
+                        "required": ["username"]
+                    },
+                    "edit": {
+                        "href": "/api/addedarticles/1/",
+                        "title": "Edit this added article",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object"
+                            "properties": {
+                                "date": {
+                                    "description": "Date of the addedarticle",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the addedarticle",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the addedarticle",
+                                    "type": "string"
+                                },
+                                "owner_username": {
+                                    "description": "Username of the user who has created this article.",
+                                    "type": "String"
+                                }
+                            }
+                        },
+                        "required": ["headline", "owner_username"]
+                    },
+                    "floman:delete": {
+                        "href": "/api/addedarticles/1/",
+                        "title": "Delete this added article",
+                        "method": "DELETE"
+                    }
+                }
+            }
