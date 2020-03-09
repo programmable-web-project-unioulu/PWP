@@ -624,6 +624,7 @@ Gets all users from collection.
                 },
                 "items": [
                     {
+                        "id": 1,
                         "username": "sample1"
                     }
                 ]
@@ -713,3 +714,375 @@ Adds a new user. The user representation must be valid against the user schema.
                     }
                 }
             }
+
+## User item [/api/users/?{username}/]
+
+A single user known to the API. The user is fetched using the username. You can only get the user from associated collection using GET.
+
++ Parameters
+
+    + username (string, required) - Name of the user to be fetched.
+
+### Get User [GET]
+
+Gets the user from collection.
+
++ Relation: user-by-name
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "id": 1,
+                "username": "sample1",
+                "@controls": {
+                    "collection": {
+                        "href": "/api/users/"
+                    },
+                    "self": {
+                        "href": "/api/users/sample1/"
+                    },
+                    "edit": {
+                        "href": "/api/users/sample1/",
+                        "title": "Edit this user",
+                        "encoding": "json",
+                        "method": "PUT",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "description": "Username of the user",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": ["username"]
+                    },
+                    "floman:delete": {
+                        "href": "/api/users/sample1/",
+                        "title": "Delete this user",
+                        "method": "DELETE"
+                    },
+                    "floman:owned-article": {
+                        "href": "/api/addedarticles/?{owner}/",
+                        "title": "Get articles owned by this user",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "owner": {
+                                    "description": "ID of the owner of the article",
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "required": ["owner"]
+                    }
+                }
+            }
+
+            
+### Edit user [PUT]
+
+Replace the user's name with a new one. Must validate against the article schema. 
+
++ Relation: edit
++ Request (application/json)
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "username": "svenskapojkarna"
+            }
+        
++ Response 204
+
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'username' is a required property"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit a user that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "User not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+            
++ Response 409 (application/vnd.mason+json)
+
+    The client is trying to change the name of the user to a one that is already in use.
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Provided name is already in use.",
+                    "@messages": ["'svenskapojkarna' is already used by other user"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+        
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+### Delete user [DELETE]
+
+Deletes the user.
+
++ Relation: delete
++ Request
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete a user that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "User not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
+# Group Added Articles 
+
+All of these resources use the [Added Article Profile](reference/profiles/addedarticle-profile). In error scenarios [Error Profile](reference/profiles/error-profile) is used.
+
+## Added article collection [/api/addedarticles/]
+
+A list of all added articles known to the API. You can also add new articles with POST, edit existing article using PUT and delete existing article using DELETE.
+
+### Get added articles [GET]
+
+Gets all added articles from collection.
+
++ Relation: addedarticles-all
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "floman:add-addedarticle": {
+                        "href": "/api/addedarticles/",
+                        "title": "Add a new addedarticle",
+                        "encoding": "json",
+                        "method": "POST",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "description": "Date of the addedarticle",
+                                    "type": "string",
+                                    "pattern": "^[0-3][0-9]\.[0-1][0-9]\.[0-9][0-9][0-9][0-9]$"
+                                },
+                                "link": {
+                                    "description": "Link to the addedarticle",
+                                    "type": "string"
+                                },
+                                "headline": {
+                                    "description": "Headline of the addedarticle",
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["headline"]
+                        }
+                    },
+                    "floman:addedarticle-by-owner": {
+                        "href": "/api/addedarticles/?{owner}/",
+                        "title": "Added article by owner",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "owner": {
+                                    "description": "Owner of the article you want to find",
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "required": ["owner"]
+                    }
+                },
+                "items": [
+                    {
+                        "date": "06.05.2019",
+                        "link": "https://www.google.com",
+                        "headline": "Florida man fights with API",
+                        "owner_id": "1"
+                    }
+                ]
+            }
+            
+### Add added article [POST]
+
+Adds an added article. The added article representation must be valid against the article schema.
+
++ Relation: add-addedarticle
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "date": "05.05.2015",
+                "link": "http://google.com",
+                "headline": "Some Headline"
+                "owner:id": "1"
+            }
+
++ Response 201
+
+    + Headers
+    
+            Location: /api/addedarticles/1/
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/1/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'headline' is a required property"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client did not use the proper content type, or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/addedarticles/1/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
+
+
+## Added article item [/api/addedarticles/?{owner}/]
+
+A single added-article known to the API. The article is fetched using the owner of the article. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + owner (number, required) - Owner of the article to be fetched.
+
+### Get Added Article [GET]
+
+Gets the article from collection.
+
++ Relation: addedarticle-by-owner
+
++ Request
