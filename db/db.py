@@ -18,7 +18,7 @@ class AddedArticles(db.Model):
     link = db.Column(db.String(256), nullable=True)
     headline = db.Column(db.String(128), nullable=False)
     modtime = db.Column(db.DateTime, nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
+    owner_username = db.Column(db.String(32), db.ForeignKey("users.username", ondelete="CASCADE"))
     owner = db.relationship("Users", back_populates="article")
 
 class Users(db.Model):
