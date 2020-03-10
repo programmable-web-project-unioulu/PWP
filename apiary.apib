@@ -1171,3 +1171,84 @@ Gets the article from collection.
                     }
                 }
             }
+
+### Edit added article [PUT]
+
+Modify an added article. Must validate against the added article schema. 
+
++ Relation: edit
++ Request (application/json)
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
+    + Body
+    
+            {
+                "date": "05.05.2015",
+                "link": "http://google.com",
+                "headline": "Some Headline"
+                "owner_username": "sample2"
+            }
+        
++ Response 204
+
+
++ Response 400 (application/vnd.mason+json)
+
+    The client is trying to send a JSON document that doesn't validate against the schema.
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/2/",
+                "@error": {
+                    "@message": "Invalid JSON document",
+                    "@messages": ["'headline' and 'owner_username' are required properties"]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit an added article that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/2/",
+                "@error": {
+                    "@message": "Article not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
++ Response 415 (application/vnd.mason+json)
+
+    The client sent a request with the wrong content type or the request body was not valid JSON.
+
+    + Body
+        
+            {
+                "resource_url": "/api/users/svenskapojkarna/",
+                "@error": {
+                    "@message": "Unsupported media type",
+                    "@messages": [
+                        "Use JSON"
+                    ]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error-profile/"
+                    }
+                }
+            }
