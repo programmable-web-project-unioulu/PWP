@@ -1252,3 +1252,35 @@ Modify an added article. Must validate against the added article schema.
                     }
                 }
             }
+
+### Delete added article [DELETE]
+
+Deletes the added article.
+
++ Relation: delete
++ Request
+
+    + Headers
+        
+            Accept: application/vnd.mason+json
+        
++ Response 204
+
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to delete an added article that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/3/",
+                "@error": {
+                    "@message": "Article not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
