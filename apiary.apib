@@ -1284,3 +1284,47 @@ Deletes the added article.
                     }
                 }
             }
+
+## Added article by owner [/api/addedarticles/?{username}/]
+
+A collection of added articles known to the API. The articles are fetched using the articles owner username. You can only get the article from associated collection using GET.
+
++ Parameters
+
+    + username (string, required) - username of the article owner.
+
+### Get Added Article [GET]
+
+Gets the articles.
+
++ Relation: owned-articles
++ Request
+
+    + Headers
+    
+            Accept: application/vnd.mason+json
+
++ Response 200 (application/vnd.mason+json)
+    
+    + Body
+
+            {
+                "@namespaces": {
+                    "floman": {
+                        "name": "/floridaman/link-relations#"
+                    }
+                },
+                "@controls": {
+                    "floman:addedarticles-all": {
+                        "href": "/api/addedarticles/",
+                        "title": "Get all added articles"
+                    }
+                },
+                "items": [
+                    {
+                        "date": "06.05.2019",
+                        "link": "https://www.google.com",
+                        "headline": "Florida man fights with API"
+                    }
+                ]
+            }
