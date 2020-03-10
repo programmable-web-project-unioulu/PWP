@@ -1315,13 +1315,25 @@ Gets the articles.
                     }
                 },
                 "@controls": {
-                    "floman:addedarticles-all": {
-                        "href": "/api/addedarticles/",
-                        "title": "Get all added articles"
+                    "floman:addedarticle-by-id": {
+                        "href": "/api/addedarticles/?(id)",
+                        "title": "Get an added article by id",
+                        "isHrefTemplate": true,
+                        "schema": (
+                            "type": "object",
+                            "properties": (
+                                "id": (
+                                    "description": "Id of the article",
+                                    "type": "number"
+                                )
+                            )
+                        ),
+                        "required": ["id"]
                     }
                 },
                 "items": [
                     {
+                        "id": 1,
                         "date": "06.05.2019",
                         "link": "https://www.google.com",
                         "headline": "Florida man fights with API"
