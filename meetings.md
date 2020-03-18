@@ -25,7 +25,7 @@ Fix the wiki.
 
 ## Meeting 2.
 * **DATE:** 19.2.2020
-* **ASSISTANTS:** Ivan Sanchez Milara (?)
+* **ASSISTANTS:** Ivan Sanchez Milara
 
 ### Minutes
 Discussion about the database and API.
@@ -64,8 +64,8 @@ Also in headlines-links a few examples is enough.
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 3.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 18.3.2020
+* **ASSISTANTS:** Ivan Sanchez Milara
 
 ### Minutes
 *Summary of what was discussed during the meeting*
