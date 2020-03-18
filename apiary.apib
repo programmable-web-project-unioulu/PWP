@@ -68,7 +68,7 @@ This section lists all possible link relations associated with articles; not all
  
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
- * collection
+ * profile
  * items
  * self
  * edit
@@ -97,7 +97,7 @@ This section lists all possible link relations associated with users; not all of
  
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
- * collection
+ * profile
  * items
  * self
  * edit
@@ -123,7 +123,7 @@ This section lists all possible link relations associated with added articles; n
  
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
- * collection
+ * profile
  * items
  * self
  * edit
@@ -217,6 +217,9 @@ Get a list of all articles known to the API.
                     }
                 },
                 "@controls": {
+                    "profile": {
+                        "href": "/profiles/article/"
+                    },
                     "floman:add-article": {
                         "href": "/api/articles/",
                         "title": "Add a new article",
@@ -356,13 +359,13 @@ Adds a new article. The article representation must be valid against the article
                 }
             }
 
-## Article item [/api/articles/?{date}/]
+## Article item [/api/articles/{date}/]
 
 A single article known to the API. The article is fetched using the date of the article. You can only get the article from associated collection using GET.
 
 + Parameters
 
-    + date (string, required) - Date of the article to be fetched.
+    + date (string, required) - Date of the article
 
 ### Get Article [GET]
 
@@ -389,14 +392,17 @@ Gets the article from collection.
                 "link": "https://www.wcjb.com/content/news/Florida-man-doesnt-get-straw-attacks-McDonalds-employee-503812581.html",
                 "headline": "Florida man doesn't get straw, attacks McDonald's employee"
                 "@controls": {
-                    "collection": {
+                    "floman:articles-all": {
                         "href": "/api/articles/"
+                    },
+                    "profile": {
+                        "href": "/profiles/article/"  
                     },
                     "self": {
                         "href": "/api/articles/02.01.2019/"
                     },
                     "edit": {
-                        "href": "/api/articles/02.01.2019",
+                        "href": "/api/articles/02.01.2019/",
                         "title": "Edit this article",
                         "encoding": "json",
                         "method": "PUT",
@@ -428,6 +434,25 @@ Gets the article from collection.
                 }
             }
             
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to edit an article that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/articles/date/",
+                "@error": {
+                    "@message": "Article not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
+            }
+
 ### Edit article [PUT]
 
 Replace the article's representation with a new one. Missing optinal fields will be set to null. Must validate against the article schema. 
@@ -590,6 +615,9 @@ Gets all users from collection.
                     }
                 },
                 "@controls": {
+                    "profile": {
+                        "href": "/profiles/user/"  
+                    },
                     "floman:user-by-name": {
                         "href": "/api/users/?{username}/",
                         "title": "Get a user by name",
@@ -715,7 +743,7 @@ Adds a new user. The user representation must be valid against the user schema.
                 }
             }
 
-## User item [/api/users/?{username}/]
+## User item [/api/users/{username}/]
 
 A single user known to the API. The user is fetched using the username. You can only get the user from associated collection using GET.
 
@@ -747,8 +775,11 @@ Gets the user from collection.
                 "id": 1,
                 "username": "sample1",
                 "@controls": {
-                    "collection": {
+                    "floman:users-all": {
                         "href": "/api/users/"
+                    },
+                    "profile": {
+                        "href": "/profiles/user/"
                     },
                     "self": {
                         "href": "/api/users/sample1/"
@@ -775,19 +806,19 @@ Gets the user from collection.
                         "method": "DELETE"
                     },
                     "floman:owned-articles": {
-                        "href": "/api/addedarticles/?{owner}/",
+                        "href": "/api/addedarticles/?owner={someOwner}",
                         "title": "Get articles owned by this user",
                         "isHrefTemplate": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "owner": {
+                                "someOwner": {
                                     "description": "Username of the owner of the article",
                                     "type": "String"
                                 }
                             }
                         },
-                        "required": ["owner"]
+                        "required": ["someOwner"]
                     }
                 }
             }
@@ -982,18 +1013,18 @@ Gets all added articles from collection.
                         }
                     },
                     "floman:addedarticle-by-owner": {
-                        "href": "/api/addedarticles/?{owner}/",
+                        "href": "/api/addedarticles/?owner={someOwner}",
                         "title": "Added article by owner",
                         "isHrefTemplate": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "owner": {
+                                "someOwner": {
                                     "description": "Owner of the article you want to find",
                                     "type": "String"
                                 }
                             },
-                            "required": ["owner"]
+                            "required": ["someOwner"]
                         }
                     }
                 },
@@ -1110,8 +1141,11 @@ Gets the article from collection.
                 "headline": "Florida man fights with API",
                 "owner_username": "sample1"
                 "@controls": {
-                    "collection": {
+                    "floman:addedarticles-all": {
                         "href": "/api/addedarticles/"
+                    },
+                    "profile": {
+                        "href": "/profiles/addedarticle/"
                     },
                     "self": {
                         "href": "/api/addedarticles/1/"
@@ -1285,15 +1319,15 @@ Deletes the added article.
                 }
             }
 
-## Added article by owner [/api/addedarticles/?{username}/]
+## Added article by owner [/api/addedarticles/?owner={someOwner}]
 
 A collection of added articles known to the API. The articles are fetched using the articles owner username. You can only get the article from associated collection using GET.
 
 + Parameters
 
-    + username (string, required) - username of the article owner.
+    + someOwner (string, required) - username of the article owner.
 
-### Get Added Article [GET]
+### Get Added Article by owner [GET]
 
 Gets the articles.
 
@@ -1316,7 +1350,7 @@ Gets the articles.
                 },
                 "@controls": {
                     "floman:addedarticle-by-id": {
-                        "href": "/api/addedarticles/?(id)",
+                        "href": "/api/addedarticles/{id}/",
                         "title": "Get an added article by id",
                         "isHrefTemplate": true,
                         "schema": (
@@ -1339,4 +1373,23 @@ Gets the articles.
                         "headline": "Florida man fights with API"
                     }
                 ]
+            }
+            
++ Response 404 (application/vnd.mason+json)
+
+    The client is trying to find owned articles that doesn't exist. 
+
+    + Body
+    
+            {
+                "resource_url": "/api/addedarticles/?owner=owner",
+                "@error": {
+                    "@message": "Articles not found",
+                    "@messages": [null]
+                },
+                "@controls": {
+                    "profile": {
+                        "href": "/profiles/error/"
+                    }
+                }
             }
