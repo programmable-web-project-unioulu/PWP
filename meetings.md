@@ -68,11 +68,38 @@ Also in headlines-links a few examples is enough.
 * **ASSISTANTS:** Ivan Sanchez Milara
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Zoom meeting because of the coronavirus episode.
+We could have used URIs like /api/users?date=12.02.2019 instead of /api/articles/{date}/.
+It's not wrong though.
+Same with the addedarticles/{id}/ and addedarticles/{owner}/ -> addedarticles?owner="myself"...
+ --> this date was ok, those others not
+ 
+Link the 2 parts of the api-diagram, if it's done with a entry point draw it to the diagram.
+
+Remove added article-by-date or some other unnecessary links.
+Those arrows are not needed.
+
+In the GET-patch-post...
+Added article by owner -> only GET?
+
+Remember to add the entry point to the diagram.
+
+We are missing the profiles from the Apiary.
+One of the @controls can be profile.
 
 ### Action points
 *List here the actions points discussed with assistants*
 
+Think about changing URIs to the ?-format
+
+Draw the Entry point to the diagram (box and 2 arrows).
+
+Remove unnecessary links (arrows) in the diagram (article-collection...)
+
+In the GET-patch-post...
+Added article by owner -> only GET?
+
+Add the profile to Apiary.
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
