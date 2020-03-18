@@ -79,13 +79,34 @@ Link the 2 parts of the api-diagram, if it's done with a entry point draw it to 
 Remove added article-by-date or some other unnecessary links.
 Those arrows are not needed.
 
-In the GET-patch-post...
+In the GET-patch-post diagram...
 Added article by owner -> only GET?
 
 Remember to add the entry point to the diagram.
 
 We are missing the profiles from the Apiary.
 One of the @controls can be profile.
+
+We are using collection in article-item instead of articles-all.
+Don't use both, use only one. Fix drawing or the Apiary.
+
+Some confusion with {} and ? in the Apiary.
+
+Be consistent with the names of the links.
+
+How the API meets REST:
+ give examples how
+
+ Stateless: No exception with the adding.
+ 
+ Connectedness: Example.
+
+Client-server: Client can command.. Not "user" because it's not user...
+
+Code-on-demand:;
+ Actually telling the client how to create the new URI can be said to be Code-on-demand.
+ 
+Dont round the hours used down...
 
 ### Action points
 *List here the actions points discussed with assistants*
@@ -96,10 +117,16 @@ Draw the Entry point to the diagram (box and 2 arrows).
 
 Remove unnecessary links (arrows) in the diagram (article-collection...)
 
-In the GET-patch-post...
+In the GET-patch-post diagram...
 Added article by owner -> only GET?
 
-Add the profile to Apiary.
+Add the profiles to Apiary.
+
+We are using collection in article-item instead of articles-all.
+Don't use both, use only one. Fix drawing or the Apiary.
+
+Article-by-date, get article had problems.
+
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
