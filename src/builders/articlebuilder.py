@@ -1,6 +1,8 @@
 from flask import request, Response, json
 from masonbuilder import MasonBuilder
 
+MASON = "application/vnd.mason+json"
+
 class ArticleBuilder(MasonBuilder):
     @staticmethod
     def create_error_response(status_code, title, message=None):
