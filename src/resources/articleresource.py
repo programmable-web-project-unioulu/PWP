@@ -50,52 +50,52 @@ class ArticleCollection(Resource):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            return ArticleBuilder.create_error_response(409, "Already exists", "Product with date '{}' already exists.".format(request.json["date"]))
+            return ArticleBuilder.create_error_response(409, "Already exists", "Article with date '{}' already exists.".format(request.json["date"]))
         return Response(status=201, headers={
             "Location": api.url_for(ArticleItem, date=request.json["date"])
         })
 
 class ArticleItem(Resource):
-    def get(self, handle):
-        product = Product.query.filter_by(handle=handle).first()
-        if product is None:
-            return InventoryBuilder.create_error_response(404, "Not found", "Product with handle '{}' doesn't exist.".format(handle))
-        body = InventoryBuilder(
-            handle=product.handle,
-            weight=product.weight,
-            price=product.price
+    def get(self, date):
+        article = Articles.query.filter_by(date=date).first()
+        if article is None:
+            return ArticleBuilder.create_error_response(404, "Not found", "Article with date '{}' doesn't exist.".format(date))
+        body = ArticleBuilder(
+            date=article.date,
+            link=article.link,
+            headline=article.headline
         )
-        body.add_control("self", "/api/products/{}/".format(product.handle))
-        body.add_control("profile", "/profiles/product/")
-        body.add_control("collection", "/api/products/")
-        body.add_control_edit_product(product.handle)
-        body.add_control_delete_product(product.handle)
+        body.add_control_all_articles()
+        body.add_control("profile", "/profiles/articles/")
+        body.add_control("self", "/api/articles/{}/".format(article.date))
+        body.add_control_edit_article(article.date)
+        body.add_control_delete_article(article.date)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
-    def put(self, handle):
+    def put(self, date):
         if not request.json:
-            return InventoryBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
+            return ArticleBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
-            validate(request.json, InventoryBuilder.product_schema())
+            validate(request.json, ArticleBuilder.article_schema())
         except ValidationError as e:
-            return InventoryBuilder.create_error_response(400, "Invalid JSON document", str(e))
-        product = Product.query.filter_by(handle=handle).first()
-        if product is None:
-            return InventoryBuilder.create_error_response(404, "Not found", "Product with handle '{}' doesn't exist.".format(handle))
-        product.handle = request.json["handle"]
-        product.weight = request.json["weight"]
-        product.price = request.json["weight"]
+            return ArticleBuilder.create_error_response(400, "Invalid JSON document", str(e))
+        article = Articles.query.filter_by(date=date).first()
+        if article is None:
+            return ArticleBuilder.create_error_response(404, "Not found", "Article with date '{}' doesn't exist.".format(date))
+        article.date = request.json["date"]
+        article.link = request.json["link"]
+        article.headline = request.json["headline"]
         try:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            return InventoryBuilder.create_error_response(409, "Already exists", "Product with handle '{}' already exists.".format(request.json["handle"]))
+            return ArticleBuilder.create_error_response(409, "Already exists", "Article with date '{}' already exists.".format(request.json["date"]))
         return Response(status=204)
 
-    def delete(self, handle):
-        product = Product.query.filter_by(handle=handle).first()
-        if product is None:
-            return InventoryBuilder.create_error_response(404, "Not found", "Product with handle '{}' doesn't exist.".format(handle))
-        db.session.delete(product)
+    def delete(self, date):
+        article = Articles.query.filter_by(date=date).first()
+        if article is None:
+            return ArticleBuilder.create_error_response(404, "Not found", "Article with date '{}' doesn't exist.".format(date))
+        db.session.delete(article)
         db.session.commit()
         return Response(status=204)
