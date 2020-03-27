@@ -1,28 +1,19 @@
-from flask import Flask, request, json, abort, Response
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
-from flask_restful import Api, Resource
-from jsonschema import validate, ValidationError
-from db.db import Articles, AddedArticles, Users
-from builders.masonbuilder import MasonBuilder
-from builders.addedarticlebuilder import AddedArticleBuilder
-from builders.articlebuilder import ArticleBuilder
-from builders.userbuilder import UserBuilder
+from flask import Flask
+from flask_restful import Api
+from src.resources.entrypoint import EntryPoint
+from src.resources.articleresource import ArticleCollection, ArticleItem
+from src.resources.userresource import UserCollection, UserItem
 
 app = Flask(__name__)
 api = Api(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-
-LINK_RELATIONS_URL = "/floridaman/link-relations/"
-MASON = "application/vnd.mason+json"
 
 api.add_resource(EntryPoint, "/api/")
-api.add_resource(ProductCollection, "/api/products/")
-api.add_resource(ProductItem, "/api/products/<handle>/")
+api.add_resource(ArticleCollection, "/api/articles/")
+api.add_resource(ArticleItem, "/api/articles/<date>/")
+api.add_resource(UserCollection, "/api/users/")
+api.add_resource(UserItem, "/api/users/<username>/")
 
-@app.route("/storage/link-relations/")
+@app.route("/floridaman/link-relations/")
 def send_link_relations_html():
     return "Terve"
 
