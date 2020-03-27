@@ -1,7 +1,7 @@
 from flask import request, Response, json
 from masonbuilder import MasonBuilder
 
-class ArticleBuilder(MasonBuilder):
+class UserBuilder(MasonBuilder):
     @staticmethod
     def create_error_response(status_code, title, message=None):
         resource_url = request.path
@@ -10,58 +10,59 @@ class ArticleBuilder(MasonBuilder):
         return Response(json.dumps(body), status_code, mimetype=MASON)
 
     @staticmethod
-    def article_schema():
+    def user_schema():
         schema = {
             "type": "object",
-            "required": ["date", "headline"]
+            "required": ["username"]
         }
         props = schema["properties"] = {}
-        props["date"] = {
-            "type": "string"
-        }
-        props["link"] = {
-            "type": "string"
-        }
-        props["headline"] = {
+        props["username"] = {
             "type": "string"
         }
         return schema
 
-    def add_control_all_articles(self):
+    def add_control_all_users(self):
         self.add_control(
-            "floman:articles-all",
+            "floman:users-all",
             href='/api/articles/',
             method="GET"
         )
 
-    def add_control_article_by_date(self, date):
+    def add_control_user_by_name(self, username):
         self.add_control(
-            "floman:article-by-date",
-            href='/api/articles/{}/'.format(date),
+            "floman:user-by-name",
+            href='/api/users/{}/'.format(username),
             method='GET'
         )
 
-    def add_control_delete_article(self, date):
+    def add_control_owned_article(self, username):
+        self.add_control(
+            "floman:owned-articles",
+            href='/api/addedarticles/?owner={}'.format(username),
+            method='GET'
+        )
+
+    def add_control_delete_user(self, username):
         self.add_control(
             "floman:delete",
-            href='/api/articles/{}/'.format(date),
+            href='/api/users/{}/'.format(username),
             method="DELETE"
         )
 
-    def add_control_add_article(self):
+    def add_control_add_user(self):
         self.add_control(
-            "floman:add-article",
-            "/api/articles/",
+            "floman:add-user",
+            "/api/users/",
             method="POST",
             encoding="json",
-            schema=self.article_schema()
+            schema=self.user_schema()
         )
 
-    def add_control_edit_article(self, date):
+    def add_control_edit_user(self, username):
         self.add_control(
             "edit",
-            href='/api/articles/{}/'.format(date),
+            href='/api/uers/{}/'.format(username),
             method="PUT",
             encoding="json",
-            schema=self.article_schema()
+            schema=self.user_schema()
         )
