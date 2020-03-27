@@ -20,17 +20,16 @@ class ArticleCollection(Resource):
     def get(self):
         body = ArticleBuilder(items = [])
         body.add_namespace("floman", LINK_RELATIONS_URL)
+        body.add_control("profile", "/profiles/articles/")
+        body.add_control_add_article()
+        ## Tähän pitää kirjotella article-by-id
         for article in Articles.query.all():
             item = MasonBuilder(
                 date=article.date,
                 link=article.link,
                 headline=article.headline
             )
-            item.add_control("self", api.url_for(ArticleItem, date=article.date))
-            item.add_control("profile", "/profiles/articles/")
             body["items"].append(item)
-        body.add_control_add_article()
-        ## Tähän pitää kirjotella article-by-id
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
