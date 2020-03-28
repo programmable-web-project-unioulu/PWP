@@ -246,7 +246,7 @@ Get a list of all articles known to the API.
                         }
                     },
                     "floman:article-by-date": {
-                        "href": "/api/articles/?{date}/",
+                        "href": "/api/articles/{date}/",
                         "title": "Article by date",
                         "isHrefTemplate": true,
                         "schema": {
@@ -619,7 +619,7 @@ Gets all users from collection.
                         "href": "/profiles/user/"  
                     },
                     "floman:user-by-name": {
-                        "href": "/api/users/?{username}/",
+                        "href": "/api/users/{username}/",
                         "title": "Get a user by name",
                         "isHrefTemplate": true,
                         "schema": {
@@ -652,7 +652,6 @@ Gets all users from collection.
                 },
                 "items": [
                     {
-                        "id": 1,
                         "username": "sample1"
                     }
                 ]
@@ -772,7 +771,6 @@ Gets the user from collection.
                         "name": "/floridaman/link-relations#"
                     }
                 },
-                "id": 1,
                 "username": "sample1",
                 "@controls": {
                     "floman:users-all": {
