@@ -1010,6 +1010,21 @@ Gets all added articles from collection.
                             "required": ["headline", "owner_username"]
                         }
                     },
+                    "floman:addedarticle-by-id": {
+                        "href": "/api/addedarticles/{id}/",
+                        "title": "Get added article by id",
+                        "isHrefTemplate": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "description": "ID of the added article",
+                                    "type": "number"
+                                }
+                            },
+                            "required": ["id"]
+                        }
+                    },
                     "floman:addedarticle-by-owner": {
                         "href": "/api/addedarticles/?owner={someOwner}",
                         "title": "Added article by owner",
@@ -1104,7 +1119,7 @@ Adds an added article. The added article representation must be valid against th
             }
 
 
-## Added article item [/api/addedarticles/?{id}/]
+## Added article item [/api/addedarticles/{id}/]
 
 A single added-article known to the API. The article is fetched using the articles ID. You can only get the article from associated collection using GET.
 
@@ -1116,7 +1131,7 @@ A single added-article known to the API. The article is fetched using the articl
 
 Gets the article from collection.
 
-+ Relation: addedarticle-by-owner
++ Relation: addedarticle-by-id
 + Request
 
     + Headers
@@ -1133,7 +1148,6 @@ Gets the article from collection.
                         "name": "/floridaman/link-relations#"
                     }
                 },
-                "id": 1,
                 "date": "06.05.2019",
                 "link": "https://www.google.com",
                 "headline": "Florida man fights with API",
@@ -1147,10 +1161,6 @@ Gets the article from collection.
                     },
                     "self": {
                         "href": "/api/addedarticles/1/"
-                    },
-                    "floman:addedarticles-all": {
-                        "href": "/api/addedarticles/",
-                        "title": "Get all added articles"
                     },
                     "floman:owner": {
                         "href": "/api/users/?{username}/",
