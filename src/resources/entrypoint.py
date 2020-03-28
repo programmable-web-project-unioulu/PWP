@@ -1,9 +1,9 @@
 from flask import Flask, json, Response
 from flask_restful import Api, Resource
 from src.builders.masonbuilder import MasonBuilder
-from articleresource import ArticleCollection
-from userresource import UserCollection
-from addedarticleresource import AddedArticleCollection
+from src.resources.articleresource import ArticleCollection
+from src.resources.userresource import UserCollection
+from src.resources.addedarticleresource import AddedArticleCollection
 
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"

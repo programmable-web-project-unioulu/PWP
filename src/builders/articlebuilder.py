@@ -1,5 +1,5 @@
 from flask import request, Response, json
-from masonbuilder import MasonBuilder
+from src.builders.masonbuilder import MasonBuilder
 
 MASON = "application/vnd.mason+json"
 
