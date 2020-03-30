@@ -7,6 +7,7 @@ from src.resources.addedarticleresource import AddedArticleCollection
 
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
+
 app = Flask(__name__)
 api = Api(app)
 

@@ -9,9 +9,6 @@ from db.db import Users
 
 app = Flask(__name__)
 api = Api(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
 
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"

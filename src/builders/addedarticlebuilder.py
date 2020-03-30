@@ -18,9 +18,6 @@ class AddedArticleBuilder(MasonBuilder):
             "required": ["headline", "owner_username"]
         }
         props = schema["properties"] = {}
-        props["date"] = {
-            "type": "string"
-        }
         props["link"] = {
             "type": "string"
         }

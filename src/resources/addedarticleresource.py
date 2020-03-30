@@ -7,14 +7,11 @@ from src.builders.addedarticlebuilder import AddedArticleBuilder
 from src.builders.masonbuilder import MasonBuilder
 from db.db import AddedArticles
 
-app = Flask(__name__)
-api = Api(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
+
+app = Flask(__name__)
+api = Api(app)
 
 class AddedArticleCollection(Resource):
     def get(self):
@@ -27,7 +24,6 @@ class AddedArticleCollection(Resource):
         for article in AddedArticles.query.all():
             item = MasonBuilder(
                 id=article.id,
-                date=article.date,
                 link=article.link,
                 headline=article.headline,
                 owner_username=article.owner_username
@@ -43,7 +39,6 @@ class AddedArticleCollection(Resource):
         except ValidationError as e:
             return AddedArticleBuilder.create_error_response(400, "Invalid JSON document", str(e))
         article = AddedArticles(
-            date = request.json["date"],
             link = request.json["link"],
             headline = request.json["headline"],
             owner_username = request.json["owner_username"]
@@ -62,7 +57,6 @@ class AddedArticleItem(Resource):
             return AddedArticleBuilder.create_error_response(404, "Not found", "Article with ID '{}' doesn't exist.".format(id))
         body = AddedArticleBuilder(
             id=article.id,
-            date=article.date,
             link=article.link,
             headline=article.headline,
             owner_username=article.owner_username
@@ -72,7 +66,7 @@ class AddedArticleItem(Resource):
         body.add_control("self", "/api/addedarticles/{}/".format(article.id))
         body.add_control_owner(article.owner_username)
         body.add_control_edit_addedarticle(article.id)
-        body.add_control_delete_user(article.id)
+        body.add_control_delete_addedarticle(article.id)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, id):
@@ -85,7 +79,6 @@ class AddedArticleItem(Resource):
         article = AddedArticles.query.filter_by(id=id).first()
         if article is None:
             return AddedArticleBuilder.create_error_response(404, "Not found", "Article with ID '{}' doesn't exist.".format(article.id))
-        article.date = request.json["date"]
         article.link = request.json["link"]
         article.headline = request.json["headline"]
         article.owner_username = request.json["owner_username"]

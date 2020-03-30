@@ -1,20 +1,16 @@
 from flask import request, json, Response, Flask
 from flask_restful import Api, Resource
 from jsonschema import validate, ValidationError
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from src.builders.articlebuilder import ArticleBuilder
 from src.builders.masonbuilder import MasonBuilder
 from db.db import Articles
 
-app = Flask(__name__)
-api = Api(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
-
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
+
+app = Flask(__name__)
+api = Api(app)
 
 class ArticleCollection(Resource):
     def get(self):
