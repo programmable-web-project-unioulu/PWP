@@ -1,3 +1,6 @@
+## Application entrypoint
+
+## Import required libraries and classes from modules
 from flask import Flask, json, Response
 from flask_restful import Api, Resource
 from src.builders.masonbuilder import MasonBuilder
@@ -5,13 +8,17 @@ from src.resources.articleresource import ArticleCollection
 from src.resources.userresource import UserCollection
 from src.resources.addedarticleresource import AddedArticleCollection
 
+## Set constants
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
 
+## Initialize the resource
 app = Flask(__name__)
 api = Api(app)
 
 class EntryPoint(Resource):
+
+    ## Get paths to all resources
     def get(self):
         body = MasonBuilder()
         body.add_namespace("floman", LINK_RELATIONS_URL)

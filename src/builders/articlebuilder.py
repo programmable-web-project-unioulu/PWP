@@ -1,9 +1,15 @@
+## Builder for Articles
+
+## import required libraries and classes from modules
 from flask import request, Response, json
 from src.builders.masonbuilder import MasonBuilder
 
+## Set constants
 MASON = "application/vnd.mason+json"
 
 class ArticleBuilder(MasonBuilder):
+
+    ## Static method to generate error message
     @staticmethod
     def create_error_response(status_code, title, message=None):
         resource_url = request.path
@@ -11,6 +17,7 @@ class ArticleBuilder(MasonBuilder):
         body.add_error(title, message)
         return Response(json.dumps(body), status_code, mimetype=MASON)
 
+    ## Static method to fetch the article schema
     @staticmethod
     def article_schema():
         schema = {
@@ -29,6 +36,7 @@ class ArticleBuilder(MasonBuilder):
         }
         return schema
 
+    ## Static method to fetch the article by date schema
     @staticmethod
     def article_by_date_schema():
         schema = {
@@ -41,6 +49,7 @@ class ArticleBuilder(MasonBuilder):
         }
         return schema
 
+    ## Get all articles
     def add_control_all_articles(self):
         self.add_control(
             "floman:articles-all",
@@ -48,6 +57,7 @@ class ArticleBuilder(MasonBuilder):
             method="GET"
         )
 
+    ## Get an article by date
     def add_control_article_by_date(self):
         self.add_control(
             "floman:article-by-date",
@@ -57,6 +67,7 @@ class ArticleBuilder(MasonBuilder):
             schema=self.article_by_date_schema()
         )
 
+    ## Delete an article
     def add_control_delete_article(self, date):
         self.add_control(
             "floman:delete",
@@ -64,6 +75,7 @@ class ArticleBuilder(MasonBuilder):
             method="DELETE"
         )
 
+    ## Add new article
     def add_control_add_article(self):
         self.add_control(
             "floman:add-article",
@@ -73,6 +85,7 @@ class ArticleBuilder(MasonBuilder):
             schema=self.article_schema()
         )
 
+    ## Edit existing article
     def add_control_edit_article(self, date):
         self.add_control(
             "edit",

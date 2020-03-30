@@ -1,3 +1,6 @@
+## Resources for Added article collection and Added Article item
+
+## Import required libraries and classes from modules
 from flask import request, json, Response, Flask
 from flask_restful import Api, Resource
 from jsonschema import validate, ValidationError
@@ -7,13 +10,18 @@ from src.builders.addedarticlebuilder import AddedArticleBuilder
 from src.builders.masonbuilder import MasonBuilder
 from db.db import AddedArticles
 
+## Set constants
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
 
+## Initialize the resource
 app = Flask(__name__)
 api = Api(app)
 
+## Added Article collection
 class AddedArticleCollection(Resource):
+
+    ## Get added article collection
     def get(self):
         body = AddedArticleBuilder(items = [])
         body.add_namespace("floman", LINK_RELATIONS_URL)
@@ -31,6 +39,7 @@ class AddedArticleCollection(Resource):
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
+    ## Add a new added article
     def post(self):
         if not request.json:
             return AddedArticleBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -50,7 +59,10 @@ class AddedArticleCollection(Resource):
             "Location": api.url_for(AddedArticleItem, id=article.id)
         })
 
+## Added Article item
 class AddedArticleItem(Resource):
+
+    ## Get one added article
     def get(self, id):
         article = AddedArticles.query.filter_by(id=id).first()
         if article is None:
@@ -64,11 +76,11 @@ class AddedArticleItem(Resource):
         body.add_control_all_addedarticles()
         body.add_control("profile", "/profiles/addedarticles/")
         body.add_control("self", "/api/addedarticles/{}/".format(article.id))
-        body.add_control_owner(article.owner_username)
         body.add_control_edit_addedarticle(article.id)
         body.add_control_delete_addedarticle(article.id)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
+    ## Edit an added article
     def put(self, id):
         if not request.json:
             return AddedArticleBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -85,6 +97,7 @@ class AddedArticleItem(Resource):
         db.session.commit()
         return Response(status=204)
 
+    ## Delete an added article
     def delete(self, id):
         article = AddedArticles.query.filter_by(id=id).first()
         if article is None:

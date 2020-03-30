@@ -1,3 +1,6 @@
+## Resource for article collection and article item
+
+## Import required libraries and classes from modules
 from flask import request, json, Response, Flask
 from flask_restful import Api, Resource
 from jsonschema import validate, ValidationError
@@ -6,13 +9,18 @@ from src.builders.articlebuilder import ArticleBuilder
 from src.builders.masonbuilder import MasonBuilder
 from db.db import Articles
 
+## Set constants
 LINK_RELATIONS_URL = "/floridaman/link-relations/"
 MASON = "application/vnd.mason+json"
 
+## Initialize the resource
 app = Flask(__name__)
 api = Api(app)
 
+## Article collection
 class ArticleCollection(Resource):
+
+    ## Get all articles
     def get(self):
         body = ArticleBuilder(items = [])
         body.add_namespace("floman", LINK_RELATIONS_URL)
@@ -28,6 +36,7 @@ class ArticleCollection(Resource):
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
+    ## Add new article
     def post(self):
         if not request.json:
             return ArticleBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -50,7 +59,10 @@ class ArticleCollection(Resource):
             "Location": api.url_for(ArticleItem, date=request.json["date"])
         })
 
+## Article item
 class ArticleItem(Resource):
+
+    ## Get one article
     def get(self, date):
         article = Articles.query.filter_by(date=date).first()
         if article is None:
@@ -67,6 +79,7 @@ class ArticleItem(Resource):
         body.add_control_delete_article(article.date)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
+    ## Modify existing article
     def put(self, date):
         if not request.json:
             return ArticleBuilder.create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -87,6 +100,7 @@ class ArticleItem(Resource):
             return ArticleBuilder.create_error_response(409, "Already exists", "Article with date '{}' already exists.".format(request.json["date"]))
         return Response(status=204)
 
+    ## Delete an article
     def delete(self, date):
         article = Articles.query.filter_by(date=date).first()
         if article is None:
