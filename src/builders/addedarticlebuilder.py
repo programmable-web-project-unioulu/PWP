@@ -29,6 +29,30 @@ class AddedArticleBuilder(MasonBuilder):
         }
         return schema
 
+    @staticmethod
+    def addedarticle_by_id_schema():
+        schema = {
+            "type": "object",
+            "required": ["id"]
+        }
+        props = schema["properties"] = {}
+        props["id"] = {
+            "type": "number"
+        }
+        return schema
+
+    @staticmethod
+    def addedarticle_by_owner_schema():
+        schema = {
+            "type": "object",
+            "required": ["username"]
+        }
+        props = schema["properties"] = {}
+        props["username"] = {
+            "type": "string"
+        }
+        return schema
+
     def add_control_all_addedarticles(self):
         self.add_control(
             "floman:addedarticles-all",
@@ -36,18 +60,22 @@ class AddedArticleBuilder(MasonBuilder):
             method="GET"
         )
 
-    def add_control_addedarticle_by_id(self, id):
+    def add_control_addedarticle_by_id(self):
         self.add_control(
             "floman:addedarticle-by-id",
-            href='/api/addedarticles/{}/'.format(id),
-            method='GET'
+            href='/api/addedarticles/<id>/',
+            method='GET',
+            encoding="json",
+            schema=self.addedarticle_by_id_schema()
         )
 
-    def add_control_owner(self, owner_username):
+    def add_control_addedarticle_by_owner(self):
         self.add_control(
             "floman:owner",
-            href='/api/users/?owner={}'.format(owner_username),
-            method='GET'
+            href='/api/addedarticles/?owner=<owner>',
+            method='GET',
+            encoding="json",
+            schema=self.addedarticle_by_owner_schema()
         )
 
     def add_control_delete_addedarticle(self, id):

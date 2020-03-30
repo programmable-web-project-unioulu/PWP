@@ -30,11 +30,13 @@ class UserBuilder(MasonBuilder):
             method="GET"
         )
 
-    def add_control_user_by_name(self, username):
+    def add_control_user_by_name(self):
         self.add_control(
             "floman:user-by-name",
-            href='/api/users/{}/'.format(username),
-            method='GET'
+            href='/api/users/<username>/',
+            encoding="json",
+            method='GET',
+            schema=self.user_schema()
         )
 
     def add_control_owned_article(self, username):

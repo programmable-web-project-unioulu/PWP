@@ -19,8 +19,8 @@ class AddedArticleCollection(Resource):
         body.add_namespace("floman", LINK_RELATIONS_URL)
         body.add_control("profile", "/profiles/addedarticles/")
         body.add_control_add_addedarticle()
-        ## Tähän tulee addedarticle-by-id
-        ## Tähän tulee addedarticle-by-owner
+        body.add_control_addedarticle_by_id()
+        body.add_control_addedarticle_by_owner()
         for article in AddedArticles.query.all():
             item = MasonBuilder(
                 id=article.id,

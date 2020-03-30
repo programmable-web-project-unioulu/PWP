@@ -29,6 +29,18 @@ class ArticleBuilder(MasonBuilder):
         }
         return schema
 
+    @staticmethod
+    def article_by_date_schema():
+        schema = {
+            "type": "object",
+            "required": ["date"]
+        }
+        props = schema["properties"] = {}
+        props["date"] = {
+            "type": "string"
+        }
+        return schema
+
     def add_control_all_articles(self):
         self.add_control(
             "floman:articles-all",
@@ -36,11 +48,13 @@ class ArticleBuilder(MasonBuilder):
             method="GET"
         )
 
-    def add_control_article_by_date(self, date):
+    def add_control_article_by_date(self):
         self.add_control(
             "floman:article-by-date",
-            href='/api/articles/{}/'.format(date),
-            method='GET'
+            href='/api/articles/<date>/',
+            method='GET',
+            encoding="json",
+            schema=self.article_by_date_schema()
         )
 
     def add_control_delete_article(self, date):

@@ -18,7 +18,7 @@ class ArticleCollection(Resource):
         body.add_namespace("floman", LINK_RELATIONS_URL)
         body.add_control("profile", "/profiles/articles/")
         body.add_control_add_article()
-        ## Tähän pitää kirjotella article-by-id
+        body.add_control_article_by_date()
         for article in Articles.query.all():
             item = MasonBuilder(
                 date=article.date,

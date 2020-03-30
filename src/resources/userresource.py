@@ -18,7 +18,7 @@ class UserCollection(Resource):
         body = UserBuilder(items = [])
         body.add_namespace("floman", LINK_RELATIONS_URL)
         body.add_control("profile", "/profiles/articles/")
-        ## Tähän tulee user-by-name
+        body.add_control_user_by_name()
         body.add_control_add_user()
         for user in Users.query.all():
             item = MasonBuilder(
