@@ -29,14 +29,25 @@ class AddedArticleCollection(Resource):
         body.add_control_add_addedarticle()
         body.add_control_addedarticle_by_id()
         body.add_control_addedarticle_by_owner()
-        for article in AddedArticles.query.all():
-            item = MasonBuilder(
-                id=article.id,
-                link=article.link,
-                headline=article.headline,
-                owner_username=article.owner_username
-            )
-            body["items"].append(item)
+        owner = request.args.get('owner')
+        if owner:
+            for article in AddedArticles.query.filter_by(owner_username=owner):
+                item = MasonBuilder(
+                    id=article.id,
+                    link=article.link,
+                    headline=article.headline,
+                    owner_username=article.owner_username
+                )
+                body["items"].append(item)
+        else:
+            for article in AddedArticles.query.all():
+                item = MasonBuilder(
+                    id=article.id,
+                    link=article.link,
+                    headline=article.headline,
+                    owner_username=article.owner_username
+                )
+                body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     ## Add a new added article

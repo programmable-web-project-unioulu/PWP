@@ -27,7 +27,7 @@ api.add_resource(ArticleItem, "/api/articles/<date>/")
 api.add_resource(UserCollection, "/api/users/")
 api.add_resource(UserItem, "/api/users/<username>/")
 api.add_resource(AddedArticleCollection, "/api/addedarticles/")
-api.add_resource(AddedArticleItem, "/api/addedarticles/<int:id>/", "/api/addedarticles/?owner=<user>")
+api.add_resource(AddedArticleItem, "/api/addedarticles/<int:id>/")
 
 ## Set routing to API documentation
 @app.route("/floridaman/link-relations/")
