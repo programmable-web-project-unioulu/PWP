@@ -35,4 +35,14 @@ pip install -r requirements.txt
 flask run
 ```
 ## Test the API
-# Kirjota Markus tänne, miten ne testit ajetaan ku saat ne kirjotettua.
+
+# apitest:
+
+This empties the database...
+
+Run apitest with pytest in the root folder
+(no need for flask to run (not at the moment at least))
+```shell
+pytest apitest.py
+```
+
