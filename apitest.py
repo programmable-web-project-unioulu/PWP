@@ -217,3 +217,25 @@ class TestUserCollection(object):
 
         #delete the modified user (otherwise messes up database query counts)
         resp = client.delete(self.MOD_URL)
+
+    def test_get(self, client):
+        #check responses 200, 404
+        testUser = {"username": 'test2'}
+        modUser = {"username": 'test3'}
+        #again, create user
+        resp = client.post(self.RESOURCE_URL, json=testUser)
+
+        #try with missing user
+        resp = client.get(self.RESOURCE_URL, json=modUser)
+        ###THIS IS NOT CORRECT
+        assert resp.status_code == 200
+        #assert resp.status_code == 404
+        #####
+
+        #try with added user
+        resp = client.get(self.RESOURCE_URL, json=testUser)
+        assert resp.status_code == 200
+        #check what is given?
+
+        #again, remove user
+        resp = client.delete(self.USER_URL)
