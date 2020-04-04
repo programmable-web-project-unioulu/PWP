@@ -180,7 +180,7 @@ class TestUserCollection(object):
         assert resp.status_code == 409
 
         #delete the user (otherwise messes up database query counts)
-        resp = client.delete(self.USER_URL)
+        client.delete(self.USER_URL)
         
         
     def test_put(self, client):
@@ -189,7 +189,7 @@ class TestUserCollection(object):
         modUser = {"username": 'test3'}
         
         #add the user first
-        resp = client.post(self.RESOURCE_URL, json=testUser)
+        client.post(self.RESOURCE_URL, json=testUser)
 
         #try to modify nonexisting user
         resp = client.put(self.MOD_URL, json=modUser)
@@ -197,11 +197,11 @@ class TestUserCollection(object):
 
         #try to change name into already existing
         #add another user for this
-        resp = client.post(self.RESOURCE_URL, json=modUser)
+        client.post(self.RESOURCE_URL, json=modUser)
         resp = client.put(self.USER_URL, json=modUser)
         assert resp.status_code == 409
         #remove this user again
-        resp = client.delete(self.MOD_URL)
+        client.delete(self.MOD_URL)
 
         #try to put with wrong json
         resp = client.put(self.USER_URL, json={"asd": "false"})
@@ -216,15 +216,15 @@ class TestUserCollection(object):
         assert resp.status_code == 204
 
         #delete the modified user (otherwise messes up database query counts)
-        resp = client.delete(self.MOD_URL)
+        client.delete(self.MOD_URL)
 
     def test_get(self, client):
         #check responses 200, 404
         testUser = {"username": 'test2'}
         modUser = {"username": 'test3'}
         #again, create user
-        resp = client.post(self.RESOURCE_URL, json=testUser)
-
+        client.post(self.RESOURCE_URL, json=testUser)
+        
         #try with missing user
         resp = client.get(self.RESOURCE_URL, json=modUser)
         ###THIS IS NOT CORRECT
@@ -238,4 +238,4 @@ class TestUserCollection(object):
         #check what is given?
 
         #again, remove user
-        resp = client.delete(self.USER_URL)
+        client.delete(self.USER_URL)
