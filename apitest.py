@@ -147,12 +147,15 @@ class TestUserCollection(object):
     Checks that the user collection work properly
     '''
     RESOURCE_URL = "/api/users/"
+    USER_URL = "/api/users/test2/"
+    MOD_URL = "/api/users/test3/"
 
     def test_post(self, client):
         #checks responses:
         #201, 400, 409, 415
-        #also deletes at the end
+        #url validation
 
+        #also deletes at the end
         testUser = {"username": 'test2'}
 
         ##check with wrong content type
@@ -170,13 +173,47 @@ class TestUserCollection(object):
         #should be found from 
         #'/api/users/{}/'.format(username)
         #http://127.0.0.1:5000/api/users/test2/
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "test2" + "/")
+        assert resp.headers["Location"].endswith(self.USER_URL)
 
         #check posting with the same name
         resp = client.post(self.RESOURCE_URL, json=testUser)
         assert resp.status_code == 409
 
         #delete the user (otherwise messes up database query counts)
-        resp = client.delete(self.RESOURCE_URL + "test2" + "/")
+        resp = client.delete(self.USER_URL)
         
         
+    def test_put(self, client):
+        #204, 400, 404, 409, _415
+        testUser = {"username": 'test2'}
+        modUser = {"username": 'test3'}
+        
+        #add the user first
+        resp = client.post(self.RESOURCE_URL, json=testUser)
+
+        #try to modify nonexisting user
+        resp = client.put(self.MOD_URL, json=modUser)
+        assert resp.status_code == 404
+
+        #try to change name into already existing
+        #add another user for this
+        resp = client.post(self.RESOURCE_URL, json=modUser)
+        resp = client.put(self.USER_URL, json=modUser)
+        assert resp.status_code == 409
+        #remove this user again
+        resp = client.delete(self.MOD_URL)
+
+        #try to put with wrong json
+        resp = client.put(self.USER_URL, json={"asd": "false"})
+        assert resp.status_code == 400
+
+        #try to put with wrong format
+        resp = client.put(self.USER_URL, data=json.dumps(modUser))
+        assert resp.status_code == 415
+
+        #modify user successfully
+        resp = client.put(self.USER_URL, json=modUser)
+        assert resp.status_code == 204
+
+        #delete the modified user (otherwise messes up database query counts)
+        resp = client.delete(self.MOD_URL)
