@@ -8,7 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from src.builders.userbuilder import UserBuilder
 from src.builders.masonbuilder import MasonBuilder
-from db.db import Users
+#added import db, otherwise adding user from apitest.py didnt work
+from db.db import Users, db
 
 ## Initialize the resource
 app = Flask(__name__)
