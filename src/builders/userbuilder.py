@@ -78,7 +78,7 @@ class UserBuilder(MasonBuilder):
     def add_control_edit_user(self, username):
         self.add_control(
             "edit",
-            href='/api/uers/{}/'.format(username),
+            href='/api/users/{}/'.format(username),
             method="PUT",
             encoding="json",
             schema=self.user_schema()
