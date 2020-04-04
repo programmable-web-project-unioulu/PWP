@@ -12,9 +12,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError, StatementError
 
+#import app and db-builder
 from app import app
-#app = Flask(__name__), db = SQLAlchemy(app)
-
 from db.db import db, Articles, Users, AddedArticles
 
 ##imports that are in app.py
@@ -26,27 +25,36 @@ from src.resources.articleresource import ArticleCollection, ArticleItem
 from src.resources.userresource import UserCollection, UserItem
 from src.resources.addedarticleresource import AddedArticleCollection, AddedArticleItem
 
-##listener for? (from example)
+## forgot what this was for?
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
-## Test for the database
+## Pytest setup
 @pytest.fixture
-def client():
+def client():   
+    #clean database before running
+    #(had issues with previous data)
+    ##CLEANS ALL DB!
+    db.drop_all()
+    
     db_fd, db_fname = tempfile.mkstemp()
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_fname
     app.config["TESTING"] = True
 
     db.create_all()
+    
     populate_db()
-    #note that the db exists already...
 
     yield app.test_client()
 
     db.session.remove()
+
+    #clean db after also, unless debugging problems in this file
+    #db.drop_all()
+    
     os.close(db_fd)
     os.unlink(db_fname)
 
@@ -59,31 +67,60 @@ def populate_db():
 
 def _article_populate():
     article = Articles(
-        date='02.01.2026',
+        date='01.01.2020',
         link='https://justtesting.com', 
-        headline="API coder is angry", 
+        headline="Tests are running", 
         modtime=datetime.now()
     )
     db.session.add(article)
     db.session.commit()
 
 def _user_populate():
-    user = Users(username='sample500')
+    user = Users(username='user1')
     db.session.add(user)
     db.session.commit()
     
 def _added_article_populate():
-    user = Users(username='sample505')
 
     addedarticle = AddedArticles(
-        headline="Test added article", 
-        modtime=datetime.now(), 
-        owner=user
+        link='https://added.test',
+        headline="This is an added article", 
+        modtime=datetime.now(),
+        owner_username="user1"
+        ##use either of these:
+        #owner=Users(username="") creates new user
+        #owner_username="" uses existing user
+        #file conffed for 1 user
     )
     db.session.add(addedarticle)
     db.session.commit()
 
 ### TESTS
+#pytest runs all function starting with "test"
+
+#check that the populated database exists now
+def test_check_db():
+    ##I don't understand what is the order of the tests
+    #if there is other test that adds and doesn't remove, this may fail
+
+    #check article
+    assert Articles.query.count() == 1
+    testArticle = Articles.query.first()
+    assert testArticle.date == '01.01.2020'
+
+    #check user
+    assert Users.query.count() == 1
+    testUser = Users.query.first()
+    assert testUser.username == 'user1'
+
+    #check added article
+    assert AddedArticles.query.count() == 1
+    testAdded = AddedArticles.query.first()
+    assert testAdded.headline == 'This is an added article'
+
+    
+
+'''
 #build tests for classes
 
 def _check_control_post(self, client):
@@ -98,10 +135,11 @@ def _check_control_post(self, client):
     assert encoding == "json"
     
     #check with json formatted user data, not used before, could use function/argument...
-    body = {"username": 'sample501'}
+    body = {"username": 'test1'}
     validate(body, schema)
     resp = client.post(href, json=body)
     assert resp.status_code == 201
+'''
 
 
 class TestUserCollection(object):
@@ -111,10 +149,34 @@ class TestUserCollection(object):
     RESOURCE_URL = "/api/users/"
 
     def test_post(self, client):
+        #checks responses:
+        #201, 400, 409, 415
+        #also deletes at the end
 
-        ##todo: function
-        valid = {"username": 'sample503'}
+        testUser = {"username": 'test2'}
 
         ##check with wrong content type
-        resp = client.post(self.RESOURCE_URL, data=json.dumps(valid))
+        resp = client.post(self.RESOURCE_URL, data=json.dumps(testUser))
         assert resp.status_code == 415
+
+        #check without username (without data gives 415)
+        resp = client.post(self.RESOURCE_URL, json={"asd": "false"})
+        assert resp.status_code == 400
+
+        #test with valid, verify
+        resp = client.post(self.RESOURCE_URL, json=testUser)
+        assert resp.status_code == 201
+
+        #should be found from 
+        #'/api/users/{}/'.format(username)
+        #http://127.0.0.1:5000/api/users/test2/
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "test2" + "/")
+
+        #check posting with the same name
+        resp = client.post(self.RESOURCE_URL, json=testUser)
+        assert resp.status_code == 409
+
+        #delete the user (otherwise messes up database query counts)
+        resp = client.delete(self.RESOURCE_URL + "test2" + "/")
+        
+        
