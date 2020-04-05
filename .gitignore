@@ -1,2 +1,5 @@
 pwp/
 .vscode/
+__pycache__/
+.pytest_cache/
+db/test.db
