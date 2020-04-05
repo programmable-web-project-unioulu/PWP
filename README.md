@@ -35,19 +35,35 @@ articleresource.py = Resource for article collection and item.<br>
 entrypoint.py = Application entrypoint.<br>
 userresource.py = Resource for user collection and item.
 ## Usage
-1. Install dependencies
+### Installing dependencies
+0. (Install virtualenv)
+(virtualenv is not in requirements)
+(in case with problems on Windows, try first installing with)
+```shell
+python -m pip install virtualenv --user
+```
+
+1. Activate python virtual environment in command line
+```shell
+virtualenv pwp
+```
+
+2. Activate virtual environment
+```shell
+pwp\Scripts\activate.bat
+```
+3. install dependencies
 ```shell
 pip install -r requirements.txt
 ```
-2. start the API
+4. start the API
 ```shell
 flask run
 ```
 ## Test the API
 Run apitest and db_test with pytest in the root folder.
 Configure it to check both app.py and src folder.
-To do this;
-In the python virtual environment (instructions above), run command:
+To do this:
 ```shell
 pytest --cov=app --cov=src
 ```
