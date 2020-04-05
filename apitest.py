@@ -94,6 +94,16 @@ def _added_article_populate():
     db.session.add(addedarticle)
     db.session.commit()
 
+
+### COMMON FUNCTIONS
+class _TestUser:
+    #create json and url for user
+    def __init__(self, name):
+        self.name = name
+        self.url = "{}/".format(name)
+        self.json = {"username":"{}".format(name)}
+
+
 ### TESTS
 #pytest runs all function starting with "test"
 
@@ -122,11 +132,10 @@ def test_check_db():
 class TestUserCollection(object):
     '''
     Checks that the user collection work properly
+    Uses _TestUser -class to simplify user creation codes
     '''
 
     RESOURCE_URL = "/api/users/"
-    USER_URL = "/api/users/test2/"
-    MOD_URL = "/api/users/test3/"
 
     def test_post(self, client):
         '''
@@ -138,35 +147,30 @@ class TestUserCollection(object):
         409
         Also check that the URL exists
         '''
-        #checks responses:
-        #201, 400, 409, 415
-        #url validation
 
-        #also deletes at the end
-        testUser = {"username": 'test2'}
+        user1 = _TestUser("test1")
+        wrongJson = {"asd":user1.name}
 
         ##check with wrong content type
-        resp = client.post(self.RESOURCE_URL, data=json.dumps(testUser))
+        resp = client.post(self.RESOURCE_URL, data=json.dumps(user1.json))
         assert resp.status_code == 415
 
         #check without username (without data gives 415)
-        resp = client.post(self.RESOURCE_URL, json={"asd": "false"})
+        resp = client.post(self.RESOURCE_URL, json=wrongJson)
         assert resp.status_code == 400
 
         #test with valid, verify
-        resp = client.post(self.RESOURCE_URL, json=testUser)
+        resp = client.post(self.RESOURCE_URL, json=user1.json)
         assert resp.status_code == 201
-
         #this url should be found from 
-        #'/api/users/{}/'.format(username)/
-        assert resp.headers["Location"].endswith(self.USER_URL)
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + user1.url)
 
         #check posting with the same name
-        resp = client.post(self.RESOURCE_URL, json=testUser)
+        resp = client.post(self.RESOURCE_URL, json=user1.json)
         assert resp.status_code == 409
 
         #delete the user (otherwise messes up database query counts)
-        client.delete(self.USER_URL)
+        client.delete(self.RESOURCE_URL + user1.url)
         
         
     def test_put(self, client):
@@ -179,39 +183,41 @@ class TestUserCollection(object):
         415
         204
         '''
-
-        testUser = {"username": 'test2'}
-        modUser = {"username": 'test3'}
         
-        #add the user first
-        client.post(self.RESOURCE_URL, json=testUser)
+        user1 = _TestUser("put1")
+        user2 = _TestUser("put2")
+        wrongJson = {"asd":user2.name}
+        
+        #add the user1 first
+        client.post(self.RESOURCE_URL, json=user1.json)
 
         #try to modify nonexisting user
-        resp = client.put(self.MOD_URL, json=modUser)
+        resp = client.put(self.RESOURCE_URL + user2.url, json=user2.json)
         assert resp.status_code == 404
 
         #try to change name into already existing
-        #add another user for this
-        client.post(self.RESOURCE_URL, json=modUser)
-        resp = client.put(self.USER_URL, json=modUser)
+        #add user2 for this
+        client.post(self.RESOURCE_URL, json=user2.json)
+        resp = client.put(self.RESOURCE_URL + user1.url, json=user2.json)
         assert resp.status_code == 409
-        #remove this user again
-        client.delete(self.MOD_URL)
+
+        #remove this user2 again
+        client.delete(self.RESOURCE_URL + user2.url)
 
         #try to put with wrong json
-        resp = client.put(self.USER_URL, json={"asd": "false"})
+        resp = client.put(self.RESOURCE_URL + user1.url, json=wrongJson)
         assert resp.status_code == 400
 
         #try to put with wrong format
-        resp = client.put(self.USER_URL, data=json.dumps(modUser))
+        resp = client.put(self.RESOURCE_URL + user1.url, data=json.dumps(user2.json))
         assert resp.status_code == 415
 
         #modify user successfully
-        resp = client.put(self.USER_URL, json=modUser)
+        resp = client.put(self.RESOURCE_URL + user1.url, json=user2.json)
         assert resp.status_code == 204
 
         #delete the modified user (otherwise messes up database query counts)
-        client.delete(self.MOD_URL)
+        client.delete(self.RESOURCE_URL + user2.url)
 
     def test_get(self, client):
         '''
@@ -220,24 +226,24 @@ class TestUserCollection(object):
         404
         200 
         '''
+        
+        noUser = _TestUser("get0")
+        user1 = _TestUser("get1")
 
-        testUser = {"username": 'test2'}
-        modUser = {"username": 'test3'}
-
-        #again, create user
-        client.post(self.RESOURCE_URL, json=testUser)
+        #create user to test with
+        client.post(self.RESOURCE_URL, json=user1.json)
         
         #try with missing user
-        resp = client.get(self.MOD_URL)
+        resp = client.get(self.RESOURCE_URL + noUser.url)
         assert resp.status_code == 404
 
         #try with added user
-        resp = client.get(self.USER_URL)
+        resp = client.get(self.RESOURCE_URL + user1.url)
         assert resp.status_code == 200
         #check what is given?
 
-        #again, remove user
-        client.delete(self.USER_URL)
+        #delete the modified user (otherwise messes up database query counts)
+        client.delete(self.RESOURCE_URL + user1.url)
 
     def test_delete(self, client):
         '''
@@ -246,15 +252,17 @@ class TestUserCollection(object):
         404
         204 
         '''
-        testUser = {"username": 'test2'}
 
-        #again, create user
-        client.post(self.RESOURCE_URL, json=testUser)
+        noUser = _TestUser("delete0")
+        user1 = _TestUser("delete1")
+
+        #create user
+        client.post(self.RESOURCE_URL, json=user1.json)
 
         #try with missing user
-        resp = client.delete(self.MOD_URL)
+        resp = client.delete(self.RESOURCE_URL + noUser.url)
         assert resp.status_code == 404
 
         #try with correct user
-        resp = client.delete(self.USER_URL)
+        resp = client.delete(self.RESOURCE_URL + user1.url)
         assert resp.status_code == 204
