@@ -4,8 +4,8 @@ import tempfile
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
-import db as app
-from db import Articles, Users, AddedArticles
+import db.db as app
+from db.db import Articles, Users, AddedArticles
 
 @pytest.fixture
 def db_handle():
