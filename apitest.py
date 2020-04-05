@@ -118,39 +118,25 @@ def test_check_db():
     testAdded = AddedArticles.query.first()
     assert testAdded.headline == 'This is an added article'
 
-    
-
-'''
-#build tests for classes
-
-def _check_control_post(self, client):
-    #Validate controls
-    ctrl_obj = obj["@controls"][ctrl]
-    href = ctrl_obj["href"]
-    method = ctrl_obj["method"].lower()
-    encoding = ctrl_obj["encoding"].lower()
-    schema = ctrl_obj["schema"]
-    
-    assert method == "post"
-    assert encoding == "json"
-    
-    #check with json formatted user data, not used before, could use function/argument...
-    body = {"username": 'test1'}
-    validate(body, schema)
-    resp = client.post(href, json=body)
-    assert resp.status_code == 201
-'''
-
-
 class TestUserCollection(object):
     '''
     Checks that the user collection work properly
     '''
+
     RESOURCE_URL = "/api/users/"
     USER_URL = "/api/users/test2/"
     MOD_URL = "/api/users/test3/"
 
     def test_post(self, client):
+        '''
+        Test POST-method for user
+        Responses:
+        415
+        400
+        201
+        409
+        Also check that the URL exists
+        '''
         #checks responses:
         #201, 400, 409, 415
         #url validation
@@ -170,9 +156,8 @@ class TestUserCollection(object):
         resp = client.post(self.RESOURCE_URL, json=testUser)
         assert resp.status_code == 201
 
-        #should be found from 
-        #'/api/users/{}/'.format(username)
-        #http://127.0.0.1:5000/api/users/test2/
+        #this url should be found from 
+        #'/api/users/{}/'.format(username)/
         assert resp.headers["Location"].endswith(self.USER_URL)
 
         #check posting with the same name
@@ -184,6 +169,15 @@ class TestUserCollection(object):
         
         
     def test_put(self, client):
+        '''
+        Test PUT-method for user
+        Responses checked:
+        404
+        409
+        400
+        415
+        204
+        '''
         #204, 400, 404, 409, _415
         testUser = {"username": 'test2'}
         modUser = {"username": 'test3'}
@@ -219,22 +213,27 @@ class TestUserCollection(object):
         client.delete(self.MOD_URL)
 
     def test_get(self, client):
+        '''
+        Test GET-method for user
+        responses:
+        404
+        200 
+        '''
+
+
         #check responses 200, 404
         testUser = {"username": 'test2'}
         modUser = {"username": 'test3'}
+
         #again, create user
         client.post(self.RESOURCE_URL, json=testUser)
         
         #try with missing user
-        #resp = client.get(self.RESOURCE_URL, json=modUser)
         resp = client.get(self.MOD_URL)
-        ###THIS IS NOT CORRECT
         assert resp.status_code == 404
-        #assert resp.status_code == 404
         #####
 
         #try with added user
-        #resp = client.get(self.RESOURCE_URL, json=testUser)
         resp = client.get(self.USER_URL)
         assert resp.status_code == 200
         #check what is given?
