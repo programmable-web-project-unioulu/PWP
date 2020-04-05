@@ -226,14 +226,16 @@ class TestUserCollection(object):
         client.post(self.RESOURCE_URL, json=testUser)
         
         #try with missing user
-        resp = client.get(self.RESOURCE_URL, json=modUser)
+        #resp = client.get(self.RESOURCE_URL, json=modUser)
+        resp = client.get(self.MOD_URL)
         ###THIS IS NOT CORRECT
-        assert resp.status_code == 200
+        assert resp.status_code == 404
         #assert resp.status_code == 404
         #####
 
         #try with added user
-        resp = client.get(self.RESOURCE_URL, json=testUser)
+        #resp = client.get(self.RESOURCE_URL, json=testUser)
+        resp = client.get(self.USER_URL)
         assert resp.status_code == 200
         #check what is given?
 
