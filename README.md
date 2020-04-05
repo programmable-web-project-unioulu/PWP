@@ -8,6 +8,15 @@ __Remember to include all required documentation and HOWTOs, including how to cr
 
 # Overview of the API
 ## Structure
+### (root)
+LICENSE = License of the project<br>
+README.md. = THIS readmefile.<br>
+api_test.py = Test file for api-method testing.<br>
+apiary.apib. = Blueprint from Apiary<br>
+app.py =  Main function(?).<br>
+db_test.py = Test file for database testing.<br>
+meetings.md = File containing meeting notes.<br>
+requirements.txt = Requirements file for installation.<br>
 ### db <Database>
 db_test.py = Unit tests for the database.<br>
 db.py = Database models.<br>
@@ -35,37 +44,24 @@ pip install -r requirements.txt
 flask run
 ```
 ## Test the API
-
 Run apitest and db_test with pytest in the root folder.
 Configure it to check both app.py and src folder.
 To do this;
-
 In the python virtual environment (instructions above), run command:
 ```shell
 pytest --cov=app --cov=src
 ```
-
 ## Tests
-
-# db_test
-
+### db_test
 ```shell
 pytest db_test.py
 ```
-
 This command will test CRUD operations in each model.
-
 In addition, uniqueness of the date will be tested.
-
 The tests will also check that the headline and the modification date are not null.
-
-# api_test
-
+### api_test
 ```shell
 pytest api_test.py
 ```
-
 This command will test the API methods for each resource.
-
 (At the moment it tests only user)
-
