@@ -87,10 +87,9 @@ def _added_article_populate():
         headline="This is an added article", 
         modtime=datetime.now(),
         owner_username="user1"
-        ##use either of these:
         #owner=Users(username="") creates new user
-        #owner_username="" uses existing user
-        #file conffed for 1 user
+        #as its a link to Users table
+
     )
     db.session.add(addedarticle)
     db.session.commit()
@@ -98,10 +97,12 @@ def _added_article_populate():
 ### TESTS
 #pytest runs all function starting with "test"
 
-#check that the populated database exists now
 def test_check_db():
-    ##I don't understand what is the order of the tests
-    #if there is other test that adds and doesn't remove, this may fail
+    '''
+    Check that the database is populated with the test data
+    I don't understand what is the order of the tests
+    if there is other test that adds things and doesn't remove, this may fail
+    '''
 
     #check article
     assert Articles.query.count() == 1
@@ -178,7 +179,7 @@ class TestUserCollection(object):
         415
         204
         '''
-        #204, 400, 404, 409, _415
+
         testUser = {"username": 'test2'}
         modUser = {"username": 'test3'}
         
@@ -220,8 +221,6 @@ class TestUserCollection(object):
         200 
         '''
 
-
-        #check responses 200, 404
         testUser = {"username": 'test2'}
         modUser = {"username": 'test3'}
 
@@ -231,7 +230,6 @@ class TestUserCollection(object):
         #try with missing user
         resp = client.get(self.MOD_URL)
         assert resp.status_code == 404
-        #####
 
         #try with added user
         resp = client.get(self.USER_URL)
@@ -240,3 +238,23 @@ class TestUserCollection(object):
 
         #again, remove user
         client.delete(self.USER_URL)
+
+    def test_delete(self, client):
+        '''
+        Test DELETE-method for user
+        responses:
+        404
+        204 
+        '''
+        testUser = {"username": 'test2'}
+
+        #again, create user
+        client.post(self.RESOURCE_URL, json=testUser)
+
+        #try with missing user
+        resp = client.delete(self.MOD_URL)
+        assert resp.status_code == 404
+
+        #try with correct user
+        resp = client.delete(self.USER_URL)
+        assert resp.status_code == 204
