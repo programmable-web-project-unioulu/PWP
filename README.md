@@ -36,13 +36,36 @@ flask run
 ```
 ## Test the API
 
-# apitest:
+Run apitest and db_test with pytest in the root folder.
+Configure it to check both app.py and src folder.
+To do this;
 
-This empties the database...
-
-Run apitest with pytest in the root folder
-(no need for flask to run (not at the moment at least))
+In the python virtual environment (instructions above), run command:
 ```shell
-pytest apitest.py
+pytest --cov=app --cov=src
 ```
+
+## Tests
+
+# db_test
+
+```shell
+pytest db_test.py
+```
+
+This command will test CRUD operations in each model.
+
+In addition, uniqueness of the date will be tested.
+
+The tests will also check that the headline and the modification date are not null.
+
+# api_test
+
+```shell
+pytest api_test.py
+```
+
+This command will test the API methods for each resource.
+
+(At the moment it tests only user)
 

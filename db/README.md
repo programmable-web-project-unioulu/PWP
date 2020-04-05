@@ -1,7 +1,7 @@
 # Database implementation (DL 2)
 
 ## Dependencies
-All debendencies can be found from requirements.txt.
+All dependencies can be found from requirements.txt.
 
 ### Installing dependencies
 1. Activate python virtual environment in command line
@@ -32,13 +32,4 @@ This script will create and populate the database.
 
 There will be a new entry for each day of the year.
 
-## Running tests
-In the python virtual environment (instructions above), run command:
-```shell
-pytest
-```
-This command will test CRUD operations in each model.
 
-In addition, uniqueness of the date will be tested.
-
-The tests will also check that the headline and the modification date are not null.
