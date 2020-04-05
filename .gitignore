@@ -2,4 +2,5 @@ pwp/
 .vscode/
 __pycache__/
 .pytest_cache/
-db/test.db
+test.db
+.coverage
