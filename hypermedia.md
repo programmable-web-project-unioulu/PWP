@@ -158,7 +158,7 @@ namespace are used:
  * [job-seeker-delete](reference/link-relations/job-seeker-delete)
  * [job-seeker-add](reference/link-relations/job-seeker-add)
  
-The following[IANA RFC5988(http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
+The following[IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -192,6 +192,7 @@ namespace are used:
  * [companys-by](reference/link-relations/companys-by)
  * [company-edit](reference/link-relations/company-edit)
  * [company-delete](reference/link-relations/company-delete)
+ 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
@@ -222,6 +223,7 @@ namespace are used:
  * [jobs-by-seeker](reference/link-relations/jobs-by-seeker)
  * [seekers-by-job](reference/link-relations/seeders-by-job)
  * [seeker-edit](reference/link-relations/seeker-edit) 
+ 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
