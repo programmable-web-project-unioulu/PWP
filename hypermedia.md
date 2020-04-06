@@ -258,6 +258,7 @@ namespace are used:
  * [category-edit](reference/link-relations/category-edit) 
  * [category-delete](reference/link-relations/category-delete) 
  * [add-category](reference/link-relations/add-category) 
+ 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
@@ -286,6 +287,7 @@ namespace are used:
  * [region-edit](reference/link-relations/region-edit) 
  * [region-delete](reference/link-relations/region-delete) 
  * [add-region](reference/link-relations/add-region) 
+ 
 The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
@@ -299,9 +301,7 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  
 ## Error Profile
 
-Profile definition for all errors returned by the API. See [Mason error control]
-
-(https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
+Profile definition for all errors returned by the API. See [Mason error control] https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
 
 + Attributes
 
