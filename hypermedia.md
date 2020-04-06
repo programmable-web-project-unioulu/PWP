@@ -301,7 +301,7 @@ The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link
  
 ## Error Profile
 
-Profile definition for all errors returned by the API. See [Mason error control] (https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
+Profile definition for all errors returned by the API. See [Mason error control](https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
 
 + Attributes
 
