@@ -156,10 +156,9 @@ namespace are used:
  * [seekers-by-job](reference/link-relations/seekers-by-job)
  * [job-delete](reference/link-relations/job-delete)
  * [job-seeker-delete](reference/link-relations/job-seeker-delete)
+ * [job-seeker-add](reference/link-relations/job-seeker-add)
  
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-
-
-relations.xhtml) link relations are also used:
+The following[IANA RFC5988(http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -193,9 +192,7 @@ namespace are used:
  * [companys-by](reference/link-relations/companys-by)
  * [company-edit](reference/link-relations/company-edit)
  * [company-delete](reference/link-relations/company-delete)
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-
-
-relations.xhtml) link relations are also used:
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -225,9 +222,7 @@ namespace are used:
  * [jobs-by-seeker](reference/link-relations/jobs-by-seeker)
  * [seekers-by-job](reference/link-relations/seeders-by-job)
  * [seeker-edit](reference/link-relations/seeker-edit) 
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-
-
-relations.xhtml) link relations are also used:
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -246,16 +241,14 @@ relations.xhtml) link relations are also used:
  * `desired position`:Desired position. Mandatory.
  * `desired region`:Desired region. 
  
- ## Category Profile
+## Category Profile
 
 Profile definition for all category related resources.
 
 ### Link Relations
 
 This section lists all possible link relations associated with categories; not all of them 
-
-are necessarily present on each resource type. The following link relations from the mumeta 
-
+are necessarily present on each resource type. The following link relations from the mumeta
 namespace are used:
 
  * [jobs-by-category](reference/link-relations/jobs-by-category)
@@ -263,9 +256,7 @@ namespace are used:
  * [category-edit](reference/link-relations/category-edit) 
  * [category-delete](reference/link-relations/category-delete) 
  * [add-category](reference/link-relations/add-category) 
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-
-
-relations.xhtml) link relations are also used:
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -293,9 +284,7 @@ namespace are used:
  * [region-edit](reference/link-relations/region-edit) 
  * [region-delete](reference/link-relations/region-delete) 
  * [add-region](reference/link-relations/add-region) 
-The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-
-
-relations.xhtml) link relations are also used:
+The following [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml) link relations are also used:
 
  * profile
  * self
@@ -310,9 +299,7 @@ relations.xhtml) link relations are also used:
 
 Profile definition for all errors returned by the API. See [Mason error control]
 
-(https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-
-
-name-error) for more information about errors.
+(https://github.com/JornWildt/Mason/blob/master/Documentation/Mason-draft-2.md#property-name-error) for more information about errors.
 
 + Attributes
 
@@ -362,7 +349,7 @@ Get the API entry point
 
 # Group Jobs
 
-All of these resources use the [Artist Profile](reference/profiles/artist-profile). In 
+All of these resources use the [Job Profile](reference/profiles/Job-profile). In 
 
 error scenarios [Error Profile](reference/profiles/error-profile) is used.
 
