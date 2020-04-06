@@ -340,10 +340,10 @@ Get the API entry point
                     "mumeta:companys-all": {
                         "href": "/api/companys/"
                     },
-					 "mumeta:categorys-all": {
+		    "mumeta:categorys-all": {
                         "href": "/api/categorys/"
                     },
-					 "mumeta:regions-all": {
+		    "mumeta:regions-all": {
                         "href": "/api/regions/"
                     }
                 }
@@ -397,7 +397,7 @@ Get a list of all artists known to the API.
                             "required": []
                         }
                     },
-					 "mumeta:categorys-all": {
+		    "mumeta:categorys-all": {
                         "href": "/api/categorys/",
                         "title": "All categories",
                         "isHrefTemplate": true,
@@ -406,7 +406,7 @@ Get a list of all artists known to the API.
                             "required": []
                         }
                     },
-					 "mumeta:regions-all": {
+		    "mumeta:regions-all": {
                         "href": "/api/regions/",
                         "title": "All regions",
                         "isHrefTemplate": true,
@@ -415,15 +415,15 @@ Get a list of all artists known to the API.
                             "required": []
                         }
                     },
-					"mumeta:jobs-by-company": {
+		    "mumeta:jobs-by-company": {
                         "href": "/api/companys/{company}/jobs/",
                         "title": "All jobs of the company"
                     },
-					mumeta:jobs-by-category": {
+		    mumeta:jobs-by-category": {
                         "href": "/api/categorys/{category}/jobs/",
                         "title": "All jobs of the category"
                     },
-					mumeta:jobs-by-region": {
+		    mumeta:jobs-by-region": {
                         "href": "/api/regions/{region}/jobs/",
                         "title": "All jobs of the region"
                     },
@@ -455,31 +455,29 @@ Get a list of all artists known to the API.
                                     "description": "Company ID",
                                     "type": "Integer"
                                 },
-								"id_category": {
+				"id_category": {
                                     "description": "Category ID",
                                     "type": "Integer"
                                 },
-								"id_region": {
+				"id_region": {
                                     "description": "Region ID",
                                     "type": "Integer"
                                 }
                             },
-                            "required": ["job_name", 
-
-"description","salary","id_company","id_category","id_region"]
+                            "required": ["job_name","description","salary","id_company","id_category","id_region"]
                         }
                     }
                 },
                 "items": [
                     {
                         "id_job":"1",
-						"job_name": "programmer",
+			"job_name": "programmer",
                         "description":"Python",
                         "salary":"3000",
                         "number of application":"3",
                         "id_company": "1",
-						"id_category": "1",
-						"id_region": "1",
+			"id_category": "1",
+			"id_region": "1",
                         "@controls": {
                             "self": {
                                 "href": "/api/jobs/1/"
@@ -494,7 +492,7 @@ Get a list of all artists known to the API.
 
 ### Add job [POST]
 
-Adds a new artist. The artist representation must be valid against the album schema.
+Adds a new job. The job representation must be valid.
 
 + Relation: add-job
 + Request (application/json)
@@ -507,13 +505,13 @@ Adds a new artist. The artist representation must be valid against the album sch
     
             {
                  "id_job":"1",
-				 "job_name": "programmer",
+		 "job_name": "programmer",
                  "description":"Python",
                  "salary":"3000",
-                  "number of application":"3",
-                  "id_company": "1",
-				  "id_category": "1",
-				  "id_region": "1"
+                 "number of application":"3",
+                 "id_company": "1",
+		 "id_category": "1",
+		 "id_region": "1"
             }
 
 + Response 201
@@ -547,15 +545,11 @@ or has non-existent release date.
                         'type': 'Integer'},
                         'id_company': {'description': 'Company ID',
                         'type': 'Integer'},
-						'id_category': {'description': 'Category 
-
-ID',
+			'id_category': {'description': 'Category ID',
                         'type': 'Integer'},
-						'id_region': {'description': 'Rgion ID',
+			'id_region': {'description': 'Rgion ID',
                         'type': 'Integer'}},
-                        'required':["job_name", 
-
-"description","salary","id_company","id_category","id_region"],
+                        'required':["job_name","description","salary","id_company","id_category","id_region"],
                         'type': 'object'}
                     ]
                 },
@@ -587,15 +581,13 @@ ID',
                 }
             } 
 
-## Artist [/api/jobs/{id_job}/]
+## Job [/api/jobs/{job}/]
 
-This resource represents an aritst by a artist name, as identified by the artist's unique 
-
-name. 
+This resource represents a job by a job ID. 
 
 + Parameters
 
-    + id_job: 1 (integer) - job ID(id_job)
+    + job: 1 (integer) - job ID(id_job)
 
 
 
@@ -620,14 +612,14 @@ Get the job representation.
                         "name": "/jobseek/link-relations#"
                     }
                 },
-				"id_job":"1",
-				"job_name": "programmer",
+		"id_job":"1",
+		"job_name": "programmer",
                 "description":"Python",
                 "salary":"3000",
-                 "number of application":"3",
-                 "id_company": "1",
-				 "id_category": "1",
-				 "id_region": "1",               
+                "number of application":"3",
+                "id_company": "1",
+		"id_category": "1",
+		"id_region": "1",               
                 "@controls": {
                     "mumeta:seekers-by-job": {
                         "href": "/api/jobs/1/seekers/"
@@ -645,15 +637,15 @@ Get the job representation.
                         "href": "/api/jobs/",
                         "title": "All artists"
                     },
-					"mumeta:jobs-by-company": {
+		    "mumeta:jobs-by-company": {
                         "href": "/api/companys/{company}/jobs/",
                         "title": "All jobs of the company"
                     },
-					mumeta:jobs-by-category": {
+		    "mumeta:jobs-by-category": {
                         "href": "/api/categorys/{category}/jobs/",
                         "title": "All jobs of the category"
                     },
-					mumeta:jobs-by-region": {
+		    "mumeta:jobs-by-region": {
                         "href": "/api/regions/{region}/jobs/",
                         "title": "All jobs of the region"
                     },
@@ -662,7 +654,7 @@ Get the job representation.
                         "title": "Edit this artist",
                         "encoding": "json",
                         "method": "PUT",
-						 "schema": {
+			"schema": {
                             "type": "object",
                             "properties": {
                                 "job_name": {
@@ -685,18 +677,16 @@ Get the job representation.
                                     "description": "Company ID",
                                     "type": "Integer"
                                 },
-								"id_category": {
+				"id_category": {
                                     "description": "Category ID",
                                     "type": "Integer"
                                 },
-								"id_region": {
+				"id_region": {
                                     "description": "Region ID",
                                     "type": "Integer"
                                 }
                             },
-                            "required": ["job_name", 
-
-"description","salary","id_company","id_category","id_region"]
+			    "required": ["job_name","description","salary","id_company","id_category","id_region"]
                         }                      
                     },
                     "mumeta:job-delete": {
