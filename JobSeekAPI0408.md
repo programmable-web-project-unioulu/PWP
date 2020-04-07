@@ -113,15 +113,11 @@ Edit the job. Must be accessed with PUT.
 
 Edit the seeker. Must be accessed with PUT.
 
-##seekers-by-job
+## job-seeker
 
-Leads to the seeker collection which is a list of all seekers applying the job. 
+Leads to the collection which is a list of all seekers applying the job or a list of all jobs applied by the seeker.
 
-##jobs-by-seeker
-
-Leads to the job collection which is a list of all jobs applied by the seeker. 
-
-##job-seeker-add
+## job-seeker-add
 
 A seeker want to apply the job. Must be accessed with POST.
 
