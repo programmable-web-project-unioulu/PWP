@@ -132,11 +132,40 @@ Article-by-date, get article had problems.
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 4.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 9.4.2020
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
 *Summary of what was discussed during the meeting*
+Articles, added articles:
+a bit confusing...
+Could have used one, with maybe unique owner+date...
+
+
+URLs are hard-coded, could have used url_for...
+url_for("api.user", user="uo-user-1")
+That avoids circular imports
+
+Added article, should POST new be inside user instead of collection or...?
+Better way: use optional part of url?
+Use 2 different url, one with owner one, without, so you can post with user coded in the url as a parameter. 
+/api/{user}/added-articles/
+def post(self, owner=None)
+
+Building id to items is not necessary, because it's not a data that client can modify with PUT, but it then still has to send it back. Use self instead.
+
+Builder-schema: for date we could use:
+    "type":"string",
+    "format":"date"
+For url "format":"uri".
+Is python schema module updated for that, thats not sure...
+
+Installing package things (__init__.py, setup.py) should be implemented, so that 
+pip install -e should install it into library.
+Folders dont have __init__.py
+That could help imports in python.
+
+Comment "borrowed" lines in to the codes...
 
 ### Action points
 *List here the actions points discussed with assistants*
