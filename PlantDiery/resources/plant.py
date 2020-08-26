@@ -1,21 +1,23 @@
 from flask import Response, request, url_for
 from flask_restful import Resource
-from .. import db
-from ..utils import PlantBuilder, create_error_response
 from sqlalchemy.exc import IntegrityError
 from jsonschema import validate, ValidationError
-import json
-from ..models import Plant
+from .. import db
 from .. import api
+from ..utils import PlantBuilder, create_error_response
+from ..models import Plant
 from ..constants import *
+import json
+
 
 class PlantItem(Resource):
-    '''
-    GET single plant information
-    name used as identifier
-    /api/plants/<name>/
-    '''
+
     def get(self, name):
+        '''
+        GET single plant information
+        name used as identifier
+        /api/plants/<name>/
+        '''
         saved_plant = Plant.query.filter_by(name=name).first()
         if saved_plant is None:
             return create_error_response(
@@ -27,11 +29,10 @@ class PlantItem(Resource):
         body = PlantBuilder(
             uuid=saved_plant.uuid,
             name=saved_plant.name,
-            specie=saved_plant.specie,
-            #location=saved_plant.location,
-            #acquired=saved_plant.acquired
+            specie=saved_plant.specie
         )
-        body.add_control("self", url_for("api.plantitem", name=saved_plant.name))
+        body.add_control("self",
+            url_for("api.plantitem", name=saved_plant.name))
         body.add_control("profile", PLANT_ITEM_PROFILE)
         body.add_control_delete_plant(name=saved_plant.name)
         body.add_control_modify_plant(name=saved_plant.name)
@@ -117,7 +118,8 @@ class PlantCollection(Resource):
                 name=plant.name,
                 specie=plant.specie
             )
-            plantItem.add_control("self", url_for("api.plantitem", name=plant.name))
+            plantItem.add_control("self",
+                url_for("api.plantitem", name=plant.name))
             plantItem.add_control("profile", PLANT_ITEM_PROFILE)
             body["items"].append(plantItem)
         body.add_namespace("plandi", LINK_RELATIONS_URL)
@@ -138,7 +140,7 @@ class PlantCollection(Resource):
 
         plant = Plant(
             name = request.json["name"],
-            specie=request.json["specie"],
+            specie=request.json["specie"]
         )
         try:
             db.session.add(plant)

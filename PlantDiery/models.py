@@ -6,18 +6,17 @@ from . import db
 class Plant(db.Model):
     """
     Plant table
-    acquired: DateTime (optional)
+    name:     String(64) (unique) (identifier)
     specie:   String
+    acquired: DateTime (optional)
     location: String (optional)
-    name:     String(64) (unique)
     """
-
+    __tablename__ = "plant"
     uuid = db.Column(db.Integer, primary_key=True)
-    #acquired = db.Column(db.DateTime, nullable=True)
-    specie = db.Column(db.String(128), nullable=False)
-    #location = db.Column(db.String(128), nullable=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
-
+    specie = db.Column(db.String(128), nullable=False)
+    acquired = db.Column(db.DateTime, nullable=True)
+    location = db.Column(db.String(128), nullable=True)
 
     @staticmethod
     def get_schema():
@@ -35,6 +34,15 @@ class Plant(db.Model):
                 "description": "Name of the plant",
                 "type": "string"
                 }
+        props["acquired"] = {
+                "description": "Date of acquiral of the plant",
+                "type": "string",
+                "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
+        }
+        props["location"] = {
+                "description": "Placement of the plant",
+                "type": "string"
+        }
         return schema
 
 
@@ -42,21 +50,21 @@ class Plant(db.Model):
 class PlantGeneral(db.Model):
     """
     PlantGeneral table
-    water:       String (optional)
-    humidity:    String (optional)
-    temperature: String (optional)
-    soil:        String (optional)
-    instructions String
-    specie       String
+    instruction: String
+    specie:       String
+    water:        String (optional)
+    humidity:     String (optional)
+    temperature:  String (optional)
+    soil:         String (optional)
     """
+    #__tablename__ = "plantgeneral"
     uuid = db.Column(db.Integer, primary_key=True)
+    instruction = db.Column(db.String(512), nullable=False)
+    specie = db.Column(db.String(128), nullable=False)
     water = db.Column(db.String(64), nullable=True)
     humidity = db.Column(db.String(64), nullable=True)
     temperature = db.Column(db.String(64), nullable=True)
     soil = db.Column(db.String(64), nullable=True)
-    instruction = db.Column(db.String(512), nullable=False)
-    specie = db.Column(db.String(128), nullable=False)
-
 
     @staticmethod
     def get_schema():
@@ -74,6 +82,22 @@ class PlantGeneral(db.Model):
                 "description": "Specie of the plant",
                 "type": "string"
                 }
+        props["water"] = {
+                "description" :"Watering information",
+                "type": "string"
+        }
+        props["humidity"] = {
+                "description": "Description of the humidity in plant's location",
+                "type": "string"
+        }
+        props["temperature"] = {
+                "description": "Temperature in the plant's location",
+                "type": "string"
+        }
+        props["soil"] = {
+                "description": "Type of soil used",
+                "type": "string"
+        }
         return schema
 
 
@@ -81,15 +105,16 @@ class Diary(db.Model):
     """
     Diary database
     date:       DateTime
+    description String
     water_info; String (optional)
     wellbeing:  String (optional)
-    description String
     """
+    __tablename__ = "diary"
     uuid = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     water_info = db.Column(db.String, nullable=True)
     wellbeing = db.Column(db.String, nullable=True)
-    description = db.Column(db.String, nullable=False)
 
     @staticmethod
     def get_schema():
@@ -101,13 +126,23 @@ class Diary(db.Model):
         props = schema["properties"] = {}
         props["date"] = {
                 "description": "Date of the diary record",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
                 }
         props["description"] = {
                 "description": "The journal itself",
                 "type": "string"
                 }
+        props["water_info"] = {
+                "description": "Watering information",
+                "type": "string"
+                }
+        props["wellbeing"] = {
+                "description": "Overall description of the plant's wellbeing",
+                "type": "string"
+                }
 
+# Creates command "init-db" which can be used to create db
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
