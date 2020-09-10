@@ -130,13 +130,20 @@ class PlantCollection(Resource):
 
     def post(self):
         if not request.json:
-            return create_error_response(415, "Wrong content type",
-            "content type not json")
+            return create_error_response(
+                415,
+                "Wrong content type",
+                "content type not json"
+            )
 
         try:
             validate(request.json, Plant.get_schema())
         except ValidationError as e:
-            return create_error_response(400, "Invalid json document", std(e))
+            return create_error_response(
+                400,
+                "Invalid json document",
+                str(e)
+            )
 
         plant = Plant(
             name = request.json["name"],
@@ -147,11 +154,12 @@ class PlantCollection(Resource):
             db.session.commit()
         except IntegrityError:
             return create_error_response(
-            409,
-            "Already exists",
-            "Plant with name {} Already exists".format(request.json["name"])
+                409,
+                "Already exists",
+                "Plant with name {} already exists".format(request.json["name"])
             )
 
-        return Response(status=201, headers={"Location": url_for(
-            api.plantitem, name=request.json["name"]
-        )}, mimetype=MASON)
+        return Response(
+            status=201,
+            mimetype=MASON,
+            headers={"Location": url_for("api.plantitem", name=request.json["name"])})

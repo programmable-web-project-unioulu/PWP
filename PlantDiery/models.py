@@ -2,7 +2,6 @@ import click
 from flask.cli import with_appcontext
 from . import db
 
-
 class Plant(db.Model):
     """
     Plant table
@@ -11,7 +10,7 @@ class Plant(db.Model):
     acquired: DateTime (optional)
     location: String (optional)
     """
-    __tablename__ = "plant"
+
     uuid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
     specie = db.Column(db.String(128), nullable=False)
@@ -37,15 +36,13 @@ class Plant(db.Model):
         props["acquired"] = {
                 "description": "Date of acquiral of the plant",
                 "type": "string",
-                "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
+                #"pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
         }
         props["location"] = {
                 "description": "Placement of the plant",
                 "type": "string"
         }
         return schema
-
-
 
 class PlantGeneral(db.Model):
     """
@@ -57,7 +54,7 @@ class PlantGeneral(db.Model):
     temperature:  String (optional)
     soil:         String (optional)
     """
-    #__tablename__ = "plantgeneral"
+
     uuid = db.Column(db.Integer, primary_key=True)
     instruction = db.Column(db.String(512), nullable=False)
     specie = db.Column(db.String(128), nullable=False)
@@ -105,8 +102,9 @@ class Diary(db.Model):
     """
     Diary database
     date:       DateTime
-    description String
-    water_info; String (optional)
+    description:String
+    plant:      String
+    water_info: String (optional)
     wellbeing:  String (optional)
     """
     __tablename__ = "diary"
@@ -115,19 +113,21 @@ class Diary(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     water_info = db.Column(db.String, nullable=True)
     wellbeing = db.Column(db.String, nullable=True)
+    plant = db.Column(db.String, nullable=False)
 
     @staticmethod
     def get_schema():
         """ Returns the schema for Diary"""
         schema = {
                 "type": "object",
-                "required": ["date", "description"]
+                "required": ["date", "description", "plant"]
                 }
         props = schema["properties"] = {}
         props["date"] = {
                 "description": "Date of the diary record",
                 "type": "string",
-                "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
+                #"pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9]T[0-9]{2}:[0-5][0-9]:[0-5][0-9]Z$"
+                #"pattern": "/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/"
                 }
         props["description"] = {
                 "description": "The journal itself",
@@ -141,6 +141,11 @@ class Diary(db.Model):
                 "description": "Overall description of the plant's wellbeing",
                 "type": "string"
                 }
+        props["plant"] = {
+                "description": "Plant's name",
+                "type": "string"
+                }
+        return schema
 
 # Creates command "init-db" which can be used to create db
 @click.command("init-db")

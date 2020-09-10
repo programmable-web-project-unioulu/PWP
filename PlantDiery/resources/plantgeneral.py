@@ -8,6 +8,7 @@ from ..utils import PlantBuilder, create_error_response
 from ..models import PlantGeneral
 from ..constants import *
 import json
+from .. import models
 
 
 class PlantGeneral(Resource):
@@ -112,10 +113,9 @@ class PlantGeneralCollection(Resource):
     def post(self):
         if not request.json:
             return create_error_response(
-            415,
-            "Wrong content type",
-            "content type not json"
-        )
+                415,
+                "Wrong content type",
+                "content type not json")
 
         try:
             validate(request.json, PlantGeneral.get_schema())
@@ -138,10 +138,10 @@ class PlantGeneralCollection(Resource):
             return create_error_response(
                 409,
                 "Already exists",
-                "Plant with uuid {} already exists".format(
-                request.json["uuid"])
+                "Plant with uuid {} already exists".format(request.json["uuid"])
             )
 
-        return Response(status=201, headers={"Location": url_for(
-            api.plantgeneral, uuid=request.json["uuid"]
-        )}, mimetype=MASON)
+        return Response(
+            status=201,
+            mimetype=MASON,
+            headers={"Location": url_for("api.plantgeneral", uuid=request.json["uuid"])})
