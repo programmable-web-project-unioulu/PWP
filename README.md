@@ -8,10 +8,10 @@ __Remember to include all required documentation and HOWTOs, including how to cr
 -jeeejee
 
 
-# How-to
+# How-to when WIP
  
- cd <path>/PlantDiery
- export FLASK_ENV=development
- export FLASK_APP=PlantDiery
- flask init-db
+ cd <path>/PlantDiery\
+ export FLASK_ENV=development\
+ export FLASK_APP=PlantDiery\
+ flask init-db\
  flask run
