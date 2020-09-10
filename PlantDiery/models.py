@@ -110,7 +110,8 @@ class Diary(db.Model):
     __tablename__ = "diary"
     uuid = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    #date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.String, nullable=False)
     water_info = db.Column(db.String, nullable=True)
     wellbeing = db.Column(db.String, nullable=True)
     plant = db.Column(db.String, nullable=False)

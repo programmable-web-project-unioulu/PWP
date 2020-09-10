@@ -21,8 +21,8 @@ class PlantItem(Resource):
         saved_plant = Plant.query.filter_by(name=name).first()
         if saved_plant is None:
             return create_error_response(
-                title="Not found",
                 status_code=404,
+                title="Not found",
                 message="No plant named {}".format(name)
             )
 
@@ -103,6 +103,7 @@ class PlantCollection(Resource):
     def get(self):
         '''
         Get PlantCollection Resource
+        /api/plantsgeneral/
         '''
         plants = Plant.query.all()
         if plants is None:

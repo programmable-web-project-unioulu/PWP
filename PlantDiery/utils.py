@@ -126,7 +126,7 @@ class PlantBuilder(MasonBuilder):
     def add_control_delete_diary_entry(self, entry_id):
         self.add_control(
             "plandi:delete",
-            url_for("api.plantitem", entry_id=entry_id),
+            url_for("api.diaryentry", entry_id=entry_id),
             method="DELETE",
             title="Delete given diary entry"
         )
