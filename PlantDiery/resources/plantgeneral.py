@@ -11,7 +11,7 @@ import json
 from .. import models
 
 
-class PlantGeneral(Resource):
+class PlantGeneralItem(Resource):
 
     def get(self, plant_id):
         '''
@@ -19,12 +19,12 @@ class PlantGeneral(Resource):
         uuid used as identifier
         /api/plantsgeneral/<plant_id>/
         '''
-        saved_gen_plant = PlantGeneral.query.filter_by(plant_id=plant_id).first()
+        saved_gen_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
         if saved_gen_plant is None:
             return create_error_response(
                 title="Not found",
                 status_code=404,
-                message="No general plant with given id saved"
+                message="No general plant with id {} saved".format(plant_id)
             )
 
         body = PlantBuilder(
@@ -33,7 +33,7 @@ class PlantGeneral(Resource):
             specie=saved_gen_plant.specie
         )
         body.add_control("self",
-            url_for("api.plantsgeneral", plant_id=saved_gen_plant.uuid))
+            url_for("api.plantgeneralitem", plant_id=saved_gen_plant.uuid))
         body.add_control("profile", PLANT_GENERAL_PROFILE)
         body.add_control_delete_general_plant(plant_id=saved_gen_plant.uuid)
         body.add_control_modify_general_plant(plant_id=saved_gen_plant.uuid)
@@ -63,7 +63,7 @@ class PlantGeneral(Resource):
                 str(e)
             )
 
-        saved_gen_plant = PlantGeneral.query.filter_by(plant_id=plant_id).first()
+        saved_gen_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
 
         # Plant with given name does not exists in the database
         if saved_gen_plant is None:
@@ -73,7 +73,6 @@ class PlantGeneral(Resource):
                 "No plant with uuid {} found".format(plant_id)
             )
         # Previous checks OK, update plant item
-        saved_gen_plant.uuid=request.json["uuid"]
         saved_gen_plant.instruction=request.json["instruction"]
         saved_gen_plant.specie=request.json["specie"]
 
@@ -81,6 +80,25 @@ class PlantGeneral(Resource):
 
         return Response(status=204, mimetype=MASON)
 
+
+    def delete(self, plant_id):
+        '''
+        DELETE single general plant information
+        /api/plantsgeneral/<plant_id>/
+        '''
+
+        saved_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
+        if saved_plant is None:
+            return create_error_response(
+                404,
+                "Not found",
+                "No plant with id {} found".format(plant_id)
+            )
+
+        db.session.delete(saved_plant)
+        db.session.commit()
+
+        return Response(status=204, mimetype=MASON)
 
 class PlantGeneralCollection(Resource):
     def get(self):
@@ -98,12 +116,12 @@ class PlantGeneralCollection(Resource):
         body = PlantBuilder(items=[])
         for plant in gen_plants:
             plantItem = PlantBuilder(
-                name=plant.name,
+                uuid=plant.uuid,
                 instruction=plant.instruction,
                 specie=plant.specie
             )
             plantItem.add_control("self",
-                url_for("api.plantgeneral", uuid=plant.uuid))
+                url_for("api.plantgeneralitem", plant_id=plant.uuid))
             plantItem.add_control("profile", PLANT_GENERAL_PROFILE)
             body["items"].append(plantItem)
         body.add_namespace("plandi", LINK_RELATIONS_URL)
@@ -127,8 +145,8 @@ class PlantGeneralCollection(Resource):
             )
 
         gen_plant = PlantGeneral(
-            uuid = request.json["uuid"],
-            instruction = request.json["instruction"],
+            uuid=request.json["uuid"],
+            instruction=request.json["instruction"],
             specie=request.json["specie"]
         )
         try:
@@ -144,4 +162,4 @@ class PlantGeneralCollection(Resource):
         return Response(
             status=201,
             mimetype=MASON,
-            headers={"Location": url_for("api.plantgeneral", uuid=request.json["uuid"])})
+            headers={"Location": url_for("api.plantgeneralitem", plant_id=request.json["uuid"])})

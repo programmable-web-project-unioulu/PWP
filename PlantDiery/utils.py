@@ -110,7 +110,7 @@ class PlantBuilder(MasonBuilder):
     def add_control_delete_general_plant(self, plant_id):
         self.add_control(
             "plandi:delete",
-            url_for("api.generalplant", plant_id=plant_id),
+            url_for("api.plantgeneralitem", plant_id=plant_id),
             method="DELETE",
             title="Delete given general plant information"
         )
@@ -160,7 +160,7 @@ class PlantBuilder(MasonBuilder):
     def add_control_modify_general_plant(self, plant_id):
         self.add_control(
             "edit",
-            url_for("api.plantgeneral", plant_id=plant),
+            url_for("api.plantgeneralitem", plant_id=plant_id),
             method="PUT",
             encoding="json",
             title="Edit given general plant information",

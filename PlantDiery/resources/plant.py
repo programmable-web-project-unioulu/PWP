@@ -23,7 +23,7 @@ class PlantItem(Resource):
             return create_error_response(
                 title="Not found",
                 status_code=404,
-                message="No plant with given id saved"
+                message="No plant named {}".format(name)
             )
 
         body = PlantBuilder(
@@ -146,7 +146,7 @@ class PlantCollection(Resource):
             )
 
         plant = Plant(
-            name = request.json["name"],
+            name=request.json["name"],
             specie=request.json["specie"]
         )
         try:

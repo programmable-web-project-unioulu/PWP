@@ -68,10 +68,10 @@ class PlantGeneral(db.Model):
         """ Returns the schema for PlantGeneral"""
         schema = {
                 "type": "object",
-                "required": ["instructions", "specie"]
+                "required": ["instruction", "specie"]
                 }
         props = schema["properties"] = {}
-        props["instructions"] = {
+        props["instruction"] = {
                 "description": "Instructions how to take care of the plant",
                 "type": "string"
                 }
