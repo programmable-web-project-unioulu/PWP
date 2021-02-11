@@ -1,15 +1,29 @@
 # Meetings notes
 
 ## Meeting 1.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 2021-02-11
+* **ASSISTANTS:** Ivan
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Present: Ivan, Oana, Juha
+
+Group22
+
+We presented our content for the DL1. The idea was evaluated as clear and 'Good that it is designed as an API' was provided as a comment for the topic.
+
+On the Main Concepts, we discussed that we didn't include 'Person' on it as it has only one single attribute: personID. However, guidance was received to include the Person there as well. It would help in describing the idea to people not familiar with the idea beforehand.
+'Reports' were discussed as well, and it agreed to be acceptable to have them in the main concepts even though we didn't plan the content for them yet.    
+
+The team resource allocations were discussed and concern of allocation mismatch between the group members was raised. We responded by taking measures as not splitting the work in the way that we would be halted at any point if any of us is absent from contribution for a moment. We were encouraged to talk about this topic internally.
+
+Related work and other APIs were discussed and our analysis seemed to correct on the types. (*As no contradictory comments were made by the counselor)
+
+We also presented our current ER Diagram and received supportive feedback and estimation for a straightforward implementation with Flask and SQLAlchemy.
+
 
 ### Action points
-*List here the actions points discussed with assistants*
-
+ - Add Person to the Main Concepts
+ - Raise team internal discussion on team Allocations
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
