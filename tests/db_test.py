@@ -38,6 +38,34 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 # END of the Exercise example origin code
 
+# 'Retrieve an existing instance of the model (recommended trying with different filter options)
+# 'Update an existing model instance (if update operation is supported by this model)
+# 'Remove an existing model from the database
+def test_person_combo(dbh):
+    # create original person (id=677) and commit to db
+    pid = "677"
+    p_original = Person(id=pid)
+    dbh.session.add(p_original)
+    dbh.session.commit()
+    # fetch the original person from the DB as 'fetched'
+    fetched = Person.query.filter(Person.id == pid).first()
+    assert(fetched.id == pid)
+    # change the fetched ID and commit to the DB, primary key still unique
+    newid = "677-modified"
+    fetched.id = newid
+    dbh.session.add(fetched)
+    dbh.session.commit()
+    # delete the entity
+    dbh.session.delete(fetched)
+    dbh.session.commit()
+    deleted = Person.query.filter(Person.id == newid).first()
+    assert(deleted == None)
+
+
+# TODO: check this part
+# 'Test that onModify and onDelete work as expected
+
+
 
 def test_person_unique(dbh):
     same_id = "414"
@@ -51,12 +79,14 @@ def test_person_unique(dbh):
         db.session.rollback()
 
 
+# 'Create a new instance of the model
 def test_person_creation(dbh):
     person = Person()
     person.id = "123"
     dbh.session.add(person)
     dbh.session.commit()
 
+# 'Test possible errors conditions (e.g. foreign keys violation or other situation where Integrity error might be raised)
 # Suppress warnings: Person without ID throws IntegrityError,
 # but even caught triggers warning in pytest.
 @pytest.mark.filterwarnings("ignore")
