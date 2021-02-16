@@ -16,11 +16,21 @@ db = SQLAlchemy(app)
 # END of the content taken from the exercise example
 # now group's own content from here on.
 
+
 class Person(db.Model):
     """ Person- All columns required """
     id = db.Column(db.String(128), primary_key=True)
 
-# Simple sanity check (ipython)
+
+class Activity(db.Model):
+    """ Activity- id ann intensity required"""
+    id = db.Column(db.String(128), primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+    intensity = db.Column(db.Integer, nullable=False)
+    # Description max size 8K for simplicity reasons
+    description = db.Column(db.String(8*1024), nullable=True)
+
+# Simple sanity check for Person (ipython)
 # In [1]: from app import db
 # In [2]: db.create_all()
 # In [3]: from app import Person
@@ -30,4 +40,3 @@ class Person(db.Model):
 # In [10]: db.session.commit()
 # In [11]: print(person)
 # <Person 123>
-

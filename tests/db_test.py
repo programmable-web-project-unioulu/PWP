@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from tapi.app import app
 from tapi.app import db
-from tapi.app import Person
+from tapi.app import Person, Activity
 
 # BEGIN Original fixture setup taken from the Exercise example and then modified further
 
@@ -97,3 +97,21 @@ def test_person_id_required(dbh):
         dbh.session.commit()
     except IntegrityError:
         dbh.session.rollback()
+
+
+# 'Create a new instance of the model
+def test_acitivy_creation(dbh):
+    activity = Activity()
+    activity.id = "123"
+    activity.name = "Running"
+    activity.intensity = 600 # 600kcal per hour
+    dbh.session.add(activity)
+    dbh.session.commit()
+    # And with optional fields
+    a = Activity()
+    a.id = "127"
+    a.name = "Running-Hard"
+    a.intensity = 800  # 600kcal per hour
+    a.description = "A harder exercise containing a continuous high heart beat running training"
+    dbh.session.add(a)
+    dbh.session.commit()
