@@ -61,8 +61,8 @@ def create_app(test_config=None):
                 "plandi:plants-all": {
                     "href":"/api/plants/"
                 },
-                "plandi:generalplants-all": {
-                    "href":"/api/generalplants/"
+                "plandi:species-all": {
+                    "href":"/api/species/"
                 },
                 "plandi:plantdiary":{
                     "href":"/api/plantdiary"

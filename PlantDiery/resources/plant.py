@@ -103,7 +103,7 @@ class PlantCollection(Resource):
     def get(self):
         '''
         Get PlantCollection Resource
-        /api/plantsgeneral/
+        /api/species/
         '''
         plants = Plant.query.all()
         if plants is None:

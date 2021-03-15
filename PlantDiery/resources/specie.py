@@ -5,47 +5,47 @@ from jsonschema import validate, ValidationError
 from .. import db
 from .. import api
 from ..utils import PlantBuilder, create_error_response
-from ..models import PlantGeneral
+from ..models import Specie
 from ..constants import *
 import json
 from .. import models
 
 
-class PlantGeneralItem(Resource):
+class SpecieItem(Resource):
 
     def get(self, plant_id):
         '''
-        GET single general plant information
+        GET single specie information
         uuid used as identifier
-        /api/plantsgeneral/<plant_id>/
+        /api/species/<plant_id>/
         '''
-        saved_gen_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
-        if saved_gen_plant is None:
+        saved_specie = Specie.query.filter_by(uuid=plant_id).first()
+        if saved_specie is None:
             return create_error_response(
                 title="Not found",
                 status_code=404,
-                message="No general plant with id {} saved".format(plant_id)
+                message="No specie with id {} saved".format(plant_id)
             )
 
         body = PlantBuilder(
-            uuid=saved_gen_plant.uuid,
-            instruction=saved_gen_plant.instruction,
-            specie=saved_gen_plant.specie
+            uuid=saved_specie.uuid,
+            instruction=saved_specie.instruction,
+            specie=saved_specie.specie
         )
         body.add_control("self",
-            url_for("api.plantgeneralitem", plant_id=saved_gen_plant.uuid))
-        body.add_control("profile", PLANT_GENERAL_PROFILE)
-        body.add_control_delete_general_plant(plant_id=saved_gen_plant.uuid)
-        body.add_control_modify_general_plant(plant_id=saved_gen_plant.uuid)
+            url_for("api.specie", plant_id=saved_specie.uuid))
+        body.add_control("profile", SPECIE_PROFILE)
+        body.add_control_delete_specie(plant_id=saved_specie.uuid)
+        body.add_control_modify_specie(plant_id=saved_specie.uuid)
         body.add_namespace("plandi", LINK_RELATIONS_URL)
 
         return Response(response=json.dumps(body), status=200, mimetype=MASON)
 
     def put(self, plant_id):
         '''
-        PUT (UPDATE()) single general plant information
+        PUT (UPDATE()) single specie information
         uuid used as identifier
-        /api/generalplants/<plant_id>/
+        /api/species/<plant_id>/
         '''
 
         if not request.json:
@@ -55,7 +55,7 @@ class PlantGeneralItem(Resource):
                 "Content type must be json"
             )
         try:
-            validate(request.json, PlantGeneral.get_schema())
+            validate(request.json, Specie.get_schema())
         except ValidationError as e:
             return create_error_response(
                 400,
@@ -63,18 +63,18 @@ class PlantGeneralItem(Resource):
                 str(e)
             )
 
-        saved_gen_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
+        saved_specie = Specie.query.filter_by(uuid=plant_id).first()
 
         # Plant with given name does not exists in the database
-        if saved_gen_plant is None:
+        if saved_specie is None:
             return create_error_response(
                 404,
                 "Not found",
                 "No plant with uuid {} found".format(plant_id)
             )
         # Previous checks OK, update plant item
-        saved_gen_plant.instruction=request.json["instruction"]
-        saved_gen_plant.specie=request.json["specie"]
+        saved_specie.instruction=request.json["instruction"]
+        saved_specie.specie=request.json["specie"]
 
         db.session.commit()
 
@@ -83,11 +83,11 @@ class PlantGeneralItem(Resource):
 
     def delete(self, plant_id):
         '''
-        DELETE single general plant information
-        /api/plantsgeneral/<plant_id>/
+        DELETE single specie information
+        /api/species/<plant_id>/
         '''
 
-        saved_plant = PlantGeneral.query.filter_by(uuid=plant_id).first()
+        saved_plant = Specie.query.filter_by(uuid=plant_id).first()
         if saved_plant is None:
             return create_error_response(
                 404,
@@ -100,12 +100,12 @@ class PlantGeneralItem(Resource):
 
         return Response(status=204, mimetype=MASON)
 
-class PlantGeneralCollection(Resource):
+class SpecieCollection(Resource):
     def get(self):
         '''
-        Get General Plant Collection Resource
+        Get Specie Collection Resource
         '''
-        gen_plants = PlantGeneral.query.all()
+        gen_plants = Specie.query.all()
         if gen_plants is None:
             return create_error_response(
             404,
@@ -121,11 +121,11 @@ class PlantGeneralCollection(Resource):
                 specie=plant.specie
             )
             plantItem.add_control("self",
-                url_for("api.plantgeneralitem", plant_id=plant.uuid))
-            plantItem.add_control("profile", PLANT_GENERAL_PROFILE)
+                url_for("api.specie", plant_id=plant.uuid))
+            plantItem.add_control("profile", SPECIE_PROFILE)
             body["items"].append(plantItem)
         body.add_namespace("plandi", LINK_RELATIONS_URL)
-        body.add_control_add_general_plant()
+        body.add_control_add_specie()
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
@@ -136,7 +136,7 @@ class PlantGeneralCollection(Resource):
                 "content type not json")
 
         try:
-            validate(request.json, PlantGeneral.get_schema())
+            validate(request.json, Specie.get_schema())
         except ValidationError as e:
             return create_error_response(
                 400,
@@ -144,7 +144,7 @@ class PlantGeneralCollection(Resource):
                 str(e)
             )
 
-        gen_plant = PlantGeneral(
+        gen_plant = Specie(
             uuid=request.json["uuid"],
             instruction=request.json["instruction"],
             specie=request.json["specie"]
@@ -162,4 +162,4 @@ class PlantGeneralCollection(Resource):
         return Response(
             status=201,
             mimetype=MASON,
-            headers={"Location": url_for("api.plantgeneralitem", plant_id=request.json["uuid"])})
+            headers={"Location": url_for("api.specie", plant_id=request.json["uuid"])})

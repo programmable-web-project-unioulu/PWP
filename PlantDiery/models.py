@@ -44,9 +44,9 @@ class Plant(db.Model):
         }
         return schema
 
-class PlantGeneral(db.Model):
+class Specie(db.Model):
     """
-    PlantGeneral table
+    Specie table
     instruction: String
     specie:       String
     water:        String (optional)
@@ -65,7 +65,7 @@ class PlantGeneral(db.Model):
 
     @staticmethod
     def get_schema():
-        """ Returns the schema for PlantGeneral"""
+        """ Returns the schema for Specie"""
         schema = {
                 "type": "object",
                 "required": ["instruction", "specie"]

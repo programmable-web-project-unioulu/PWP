@@ -74,15 +74,15 @@ class MasonBuilder(dict):
 class PlantBuilder(MasonBuilder):
 
 # POST
-    # GENERAL PLANT
-    def add_control_add_general_plant(self):
+    # SPECIE
+    def add_control_add_specie(self):
         self.add_control(
-            "plandi:add-generalplant",
-            url_for("api.plantgeneralcollection"),
+            "plandi:add-specie",
+            url_for("api.speciecollection"),
             method="POST",
             encoding="json",
-            title="Add new general plant information",
-            schema=PlantGeneral.get_schema()
+            title="Add new specie information",
+            schema=Specie.get_schema()
         )
     ## PLANT
     def add_control_add_plant(self):
@@ -106,13 +106,13 @@ class PlantBuilder(MasonBuilder):
         )
 
 ## DELETE
-    # GENERAL PLANT
-    def add_control_delete_general_plant(self, plant_id):
+    # SPECIE
+    def add_control_delete_specie(self, plant_id):
         self.add_control(
             "plandi:delete",
-            url_for("api.plantgeneralitem", plant_id=plant_id),
+            url_for("api.specie", plant_id=plant_id),
             method="DELETE",
-            title="Delete given general plant information"
+            title="Delete given specie information"
         )
     # PLANT
     def add_control_delete_plant(self, name):
@@ -131,11 +131,11 @@ class PlantBuilder(MasonBuilder):
             title="Delete given diary entry"
         )
 ## GET
-    # GENERAL PLANT
-    def add_control_all_general_plants(self):
+    # SPECIE
+    def add_control_all_species(self):
         self.add_control(
-            "plandi:plantsgeneral-all",
-            url_for("api.plantgeneralcollection"),
+            "plandi:species-all",
+            url_for("api.speciecollection"),
             method="GET",
             encoding="json"
         )
@@ -156,15 +156,15 @@ class PlantBuilder(MasonBuilder):
             encoding="json"
         )
 # PUT
-    # GENERAL PLANT
-    def add_control_modify_general_plant(self, plant_id):
+    # SPECIE
+    def add_control_modify_specie(self, plant_id):
         self.add_control(
             "edit",
-            url_for("api.plantgeneralitem", plant_id=plant_id),
+            url_for("api.specie", plant_id=plant_id),
             method="PUT",
             encoding="json",
-            title="Edit given general plant information",
-            schema=PlantGeneral.get_schema()
+            title="Edit given specie information",
+            schema=Specie.get_schema()
         )
     # PLANT
     def add_control_modify_plant(self, name):
@@ -174,5 +174,5 @@ class PlantBuilder(MasonBuilder):
             method="PUT",
             encoding="json",
             title="Edit given plant information",
-            schema=PlantGeneral.get_schema()
+            schema=Specie.get_schema()
         )
