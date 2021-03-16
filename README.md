@@ -9,9 +9,34 @@ __Remember to include all required documentation and HOWTOs, including how to cr
 
 
 # How-to when WIP
+
+Works with python3.7. 
+Python3.9 does not work.
  
- cd <path>/PlantDiery\
- export FLASK_ENV=development\
- export FLASK_APP=PlantDiery\
- flask init-db\
- flask run
+## Virtualenv
+
+```
+pip3 install virtualenv
+```
+
+
+```
+virtualenv venv
+```
+
+
+```
+source venv/bin/activate
+
+```
+
+```
+pip3 install -r requirements.txt
+```
+
+```
+export FLASK_ENV=development
+export FLASK_APP=PlantDiery
+flask init-db
+flask run
+```

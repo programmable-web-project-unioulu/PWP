@@ -1,11 +1,7 @@
 import os
-
 import json
-
 from flask import Flask, Response
-
 from flask_sqlalchemy import SQLAlchemy
-
 from .constants import *
 
 
