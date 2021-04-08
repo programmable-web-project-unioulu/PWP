@@ -37,7 +37,7 @@ class Material_Volume(db.Document): #class for volume. Size_c is not necessarily
         if self.size_c:
             return {"id": str(self.id), "size a": self.size_a, "size b": self.size_b, "size c": self.size_c, "bonding length": self.bonding_length, "dimension type": self.dimension_type, "material": self.material.to_json()}
         else:
-            return {"id": str(self.id), "size a": self.size_a, "size b": self.size_b, "material": self.material.to_json() }
+            return {"id": str(self.id), "size a": self.size_a, "size b": self.size_b, "bonding length": self.bonding_length, "dimension type": self.dimension_type, "material": self.material.to_json() }
 
 class Material_Fermi(db.Document):  #class for Fermi energy
     id = db.ObjectIdField(db_field = '_id')
@@ -51,7 +51,6 @@ class Material_Fermi(db.Document):  #class for Fermi energy
 @app.route('/')
 def home():
     return "Hello World!"
-
 
 class MaterialCollection(Resource):
 
@@ -73,8 +72,8 @@ class MaterialCollection(Resource):
         try:
             if Material.objects(structure_name = record['name']).first() is None:
                 material = Material(structure_name = record['name'])
-                material.save()
-                loc = api.url_for(MaterialEntry, structure_name=material.structure_name)
+                save = material.save()
+                loc = api.url_for(MaterialEntry, handle=save.structure_name)
                 return Response(status=201, headers={"Location": loc})
             abort(409)
         except ValidationError:
@@ -99,28 +98,23 @@ class MaterialEntry(Resource):
         except KeyError:
             return {'error': 'wrong format'}, 400
         
-        material = Material.objects(structure_name=record['handle']).first()
+        material = Material.objects(structure_name=handle).first()
         if not material:
             return {'error': 'data not found'}, 403
         else:
-            material.structure_name = record['handle']
-            material.save()
+            Material.objects(structure_name=handle).update(set__structure_name=record['handle'])
+
             return Response(status=204)
         
 
 
     def delete(self, handle):
-        try:
-            record = json.loads(request.data)
-        except KeyError:
-            return {'error': 'wrong format'}, 400
-        
-        material = Material.objects(structure_name=record['handle']).first()
+        material = Material.objects(structure_name=handle).first()
         if not material:
-            return {'error': 'data not found'}, 403
-        else:            
-            material.delete()
-            return Response(status=201)
+            return {'error': 'deletable entry not found'}, 403
+        else:
+            Material.objects(id=material.id).delete()
+            return Response(status=200)
 
 class MaterialVolumeCollection(Resource):
     def get(self):
@@ -159,14 +153,14 @@ class MaterialVolumeCollection(Resource):
                         material = material.id
                     )
             material_volume.save()
-            loc = api.url_for(MaterialVolumeEntry, id=material_volume.id)
-            return Response(status=201, headers={"Location": loc})
+            loc = api.url_for(MaterialVolumeEntry, id=material_volume.pk)
+            return Response(status=201,headers={"Location": loc})#, headers={"Location": loc}
         except ValidationError:
             return {'error': 'wrong attribute type'}, 400
 
 class MaterialVolumeEntry(Resource):
 
-    def get(self, handle):
+    def get(self, id):
         try:
             record = json.loads(request.data)
         except KeyError:
@@ -177,43 +171,36 @@ class MaterialVolumeEntry(Resource):
         else:
             return material_volume, 200
 
-    def put(self, handle):
+    def put(self, id):
         try:
             record = json.loads(request.data)
-            material_volume = Material_Volume.objects(id=record['id']).first()
+            material_volume = Material_Volume.objects(pk=id).first()
+            material = Material.objects(structure_name=record['material']).first()
         except KeyError:
 
             return {'error': 'wrong format'}, 400 
-        try:
-            if 'size c' in record:
-                material_volume.size_a = record['size a']
-                material_volume.size_b = record['size b']
-                material_volume.size_c = record['size c']
-                material_volume.dimension_type = record['dimension type']
-                material_volume.bonding_length = record['bonding length']
-            else:
-                material_volume.size_a = record['size a']
-                material_volume.size_b = record['size b']
-                material_volume.size_c = record['size c']
-                material_volume.dimension_type = record['dimension type']
-                material_volume.bonding_length = record['bonding length']
-            material_volume.save()
-            return Response(status=204)
-        except ValidationError:
-            return {'error': 'wrong attribute type'}, 400
+        #try:
+        if 'size c' in record:
+            Material_Volume.objects(pk=id).update(set__size_a=record['size a'],set__size_b=record['size b'],
+            set__size_c=record['size c'],set__dimension_type=record['dimension type'],set__bonding_length=record['bonding length'],
+            set__material=material)
+        else:
+            Material_Volume.objects(pk=id).update(set__size_a=record['size a'],set__size_b=record['size b'],set__dimension_type=record['dimension type'],set__bonding_length=record['bonding length'],
+            set__material=material)
+        material_volume.save()
+        return Response(status=204)
+        #except ValidationError:
+         #   return {'error': 'wrong attribute type'}, 400
 
     
-    def delete(self, handle):
-        try:
-            record = json.loads(request.data)
-        except KeyError:
-            return {'error': 'wrong format'}, 400
+    def delete(self, id):
 
-        material_volume = Material_Volume.objects(id=record['id']).first()
+        material_volume = Material_Volume.objects(pk=id).first()
+        print("yes")
         if not material_volume:
             return {'error': 'data not found'}, 403
         else:            
-            material_volume.delete()
+            Material.objects(pk=str(material_volume.id)).delete()
             return Response(status=201)
 
 class MaterialFermiCollection(Resource):
@@ -238,7 +225,7 @@ class MaterialFermiCollection(Resource):
             if material is not None and volume is not None:
                 material_fermi = Material_Fermi(fermi = record['fermi'], material = material.id, volume = volume.id)
                 material_fermi.save()
-                loc = api.url_for(MaterialFermiEntry, id=material_fermi.id)
+                loc = api.url_for(MaterialFermiEntry, id=material_fermi.to_json()['id'])
                 return Response(status=201, headers={"Location": loc})
             return {'error': 'duplicate value'}, 409
         except ValidationError:
@@ -246,7 +233,7 @@ class MaterialFermiCollection(Resource):
 
 class MaterialFermiEntry(Resource):
 
-    def get(self, handle):
+    def get(self, id):
         try:
             record = json.loads(request.data)
         except KeyError:
@@ -271,17 +258,12 @@ class MaterialFermiEntry(Resource):
         except ValidationError:
             return {'error': 'wrong attribute type'}, 400       
     
-    def delete(self, handle):
-        try:
-            record = json.loads(request.data)
-        except KeyError:
-            return {'error': 'wrong format'}, 400
-
-        material_fermi = Material_Fermi.objects(id=record['id']).first()
+    def delete(self, id):
+        material_fermi = Material_Fermi.objects(id=id).first()
         if not material_fermi:
             return {'error': 'data not found'}, 403
-        else:            
-            material_fermi.delete()
+        else:
+            Material.objects(id=material_fermi.id).delete()
             return Response(status=201)
 
 # Collections
@@ -290,8 +272,8 @@ api.add_resource(MaterialVolumeCollection, "/api/material_volume/")
 api.add_resource(MaterialFermiCollection, "/api/material_fermi/")
 # Entries
 api.add_resource(MaterialEntry, "/api/material/<handle>/")
-api.add_resource(MaterialVolumeEntry, "/api/material_volume/<handle>/")
-api.add_resource(MaterialFermiEntry, "/api/material_fermi/<handle>/")
+api.add_resource(MaterialVolumeEntry, "/api/material_volume/<id>/")
+api.add_resource(MaterialFermiEntry, "/api/material_fermi/<id>/")
 
 
 if __name__ == '__main__':
