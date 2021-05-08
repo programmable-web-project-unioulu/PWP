@@ -1,7 +1,7 @@
 import sys
 from plants_cli import Plant
 from diary_cli import Diary
-from gen_plants_cli import GeneralPlant
+from specie_plants_cli import Specie
 
 def main():
     '''Main menu'''
@@ -18,7 +18,7 @@ def main():
             sys.exit(0)
         else:
             print("Invalid option: {}".format(giv_input))
-    
+
 def plants_menu():
     ''' Controls plants related actions'''
     plant = Plant()
@@ -34,7 +34,7 @@ def plants_menu():
             plant.get_single_plant()
         elif giv_input == "4":
             plant.modify_plant()
-        elif giv_input == "5": 
+        elif giv_input == "5":
             plant.delete_plant()
         elif giv_input == "6":
             break
@@ -43,7 +43,7 @@ def plants_menu():
 
 def plantsgen_menu():
     ''' Controls general plants related actions'''
-    genPlant = GeneralPlant()
+    genPlant = Specie()
     while True:
         print_general_plants_menu()
         giv_input = input("Choice: ")
@@ -56,7 +56,7 @@ def plantsgen_menu():
             genPlant.get_single_general_plant()
         elif giv_input == "4":
             genPlant.modify_general_plant()
-        elif giv_input == "5": 
+        elif giv_input == "5":
             genPlant.delete_general_plant()
         elif giv_input == "6":
             break
@@ -107,7 +107,7 @@ def print_diary_menu():
     print("1. Add diary entry")
     print("2. Show diary")
     print("4. Delete existing diary entry")
-    print("5. Go back to main menu\n")		
+    print("5. Go back to main menu\n")
 
 if __name__ == "__main__":
     main()

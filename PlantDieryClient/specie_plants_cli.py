@@ -9,7 +9,7 @@ API_URL = "http://127.0.0.1:5000/api"
 class GeneralPlant():
 	def add_general_plant(self):
 		print(YELLOW_LINE)
-		print(colored("  Add new general plant", 'yellow'))
+		print(colored("  Add new specie", 'yellow'))
 		print(YELLOW_LINE)
 		plant_data = {}
 		# Todo: Add checks
@@ -20,7 +20,7 @@ class GeneralPlant():
 
 		inp = input("Give care instructions: ")
 		if not inp:
-			return print(colored("\nInstruction cannot be null, try again\n", 'red'))	
+			return print(colored("\nInstruction cannot be null, try again\n", 'red'))
 		plant_data["instruction"] = inp
 
 		inp = input("Give watering instuctions (optional): ")
@@ -29,23 +29,23 @@ class GeneralPlant():
 		inp = input("Give suitable soil (optional): ")
 		plant_data["soil"] = inp
 
-		r = requests.post(API_URL + "/plantsgeneral/", data=json.dumps(plant_data),
+		r = requests.post(API_URL + "/species/", data=json.dumps(plant_data),
 			headers={"Content-type": "application/json"})
 
 		if r.status_code != 201:
 			print("\nstatus : " + str(r.status_code))
 			print(colored("Something went wrong, try again \n", 'red'))
 		else:
-			print(colored("\n!!New general plant added!!\n", 'green'))
-		return 
+			print(colored("\n!!New specie added!!\n", 'green'))
+		return
 
 	def modify_general_plant(self):
 		print(YELLOW_LINE)
-		print("  Modify saved general plant")
-		print(YELLOW_LINE)   
+		print("  Modify saved specie")
+		print(YELLOW_LINE)
 		plant_data = {}
 
-		gpid = input("Give if of general plant to be modified: ")
+		gpid = input("Give if of specie to be modified: ")
 		if not gpid:
 			return print("id can't be null\n")
 		plant_data["id"] = gpid
@@ -66,7 +66,7 @@ class GeneralPlant():
 		soil = input("Give new soil: ")
 		plant_data["soil"] = soil
 
-		r = requests.put(API_URL + "/plantsgeneral/{}/".format(id), data=json.dumps(plant_data),
+		r = requests.put(API_URL + "/species/{}/".format(id), data=json.dumps(plant_data),
 			headers={"Content-type": "application/json"})
 		if r.status_code != 204:
 			print("\nstatus : " + str(r.status_code))
@@ -78,53 +78,53 @@ class GeneralPlant():
 
 	def delete_general_plant(self):
 		print(YELLOW_LINE)
-		print("  Delete saved generalplant")
+		print("  Delete saved specie")
 		print(YELLOW_LINE)
-		plantid = input("Give id of the general plant to be deleted: ")
+		plantid = input("Give id of the specie to be deleted: ")
 		if not plantid:
 			return print(colored("Id can't be null", 'red'))
-		r = requests.delete(API_URL + "/plantsgeneral/{}/".format(plantid))
+		r = requests.delete(API_URL + "/species/{}/".format(plantid))
 		if r.status_code != 204:
 			print("Status : " + str(r.status_code))
 			print(colored("Something went wrong, try again\n", 'red'))
 			return
 		print(colored("\n!!Plant {} delete success!!\n", 'green'))
-			
+
 
 	def get_all_general_plants(self):
 		print(YELLOW_LINE)
-		print("  All saved general plants")
+		print("  All saved species")
 		print(YELLOW_LINE)
-		resp = requests.get(API_URL + "/plantsgeneral/")
+		resp = requests.get(API_URL + "/species/")
 		try:
 			body = resp.json()
 		except ValueError:
-			return print(colored("\nNO GENERAL PLANTS SAVED\n", 'red'))
+			return print(colored("\nNO SPECIES SAVED\n", 'red'))
 		for item in body["items"]:
 			print(GREEN_LINE)
 			print("Id: " + str(item["id"]))
 			print("Specie : " + str(item["specie"]))
 			print(GREEN_LINE + "\n")
-		return 
-		
+		return
+
 	def get_single_general_plant(self):
 		print(YELLOW_LINE)
-		print("  General plant's information")
+		print("  specie's information")
 		print(YELLOW_LINE)
-		giv_input = input("Give general plant's id: ")
+		giv_input = input("Give specie's id: ")
 		print(GREEN_LINE)
 
 		if not giv_input:
 			return print(colored("\nId can't be null\n", 'red'))
 		print("\n")
 		try:
-			resp = requests.get(API_URL + "/plantsgeneral/{}/".format(giv_input))
+			resp = requests.get(API_URL + "/species/{}/".format(giv_input))
 			body = resp.json()
 			print(GREEN_LINE)
 			print("Specie : " + body["specie"])
 		except (ValueError, KeyError):
 			print("No plant with id {} saved".format(giv_input))
-		
+
 		print(GREEN_LINE)
 		print("Instructions: " + str(body["instruction"]))
 		print("Watering: " + str(body["water"]))
