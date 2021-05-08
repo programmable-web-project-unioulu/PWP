@@ -10,18 +10,18 @@ __Remember to include all required documentation and HOWTOs, including how to cr
 
 # How-to when WIP
 
-Works with python3.7. 
+Works with python3.7.
 Python3.9 does not work.
- 
+
 ## Virtualenv
 
 ```
-pip3 install virtualenv
+python3 -m pip install virtualenv
 ```
 
 
 ```
-virtualenv venv
+python3 -m virtualenv venv
 ```
 
 
@@ -31,12 +31,12 @@ source venv/bin/activate
 ```
 
 ```
-pip3 install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ```
 export FLASK_ENV=development
 export FLASK_APP=PlantDiery
-flask init-db
-flask run
+python3 -m flask init-db
+python3 -m flask run
 ```

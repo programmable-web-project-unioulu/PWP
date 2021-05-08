@@ -6,7 +6,7 @@ YELLOW_LINE = colored("-----------------------------", 'yellow')
 
 API_URL = "http://127.0.0.1:5000/api"
 
-class GeneralPlant():
+class Specie():
 	def add_general_plant(self):
 		print(YELLOW_LINE)
 		print(colored("  Add new specie", 'yellow'))
