@@ -1,14 +1,17 @@
 # Meetings notes
 
 ## Meeting 1.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 2.2.2022
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Wording of the "logging in" should be changed, as the API is not something user can log into, but rather should state that user should be authenticated to use the API. For example with usage of an API key, this should be moved to the API uses section. <br>
+Suggestion algorithm based on the users preferences of the ingredients used previously. Could be a implemented as periodic crawler.
+<br>
+Could better describe the recommendation service of the related work section.
 
 ### Action points
-*List here the actions points discussed with assistants*
+Improve the deficiencies mentioned in the meeting, as listed above.
 
 
 ### Comments from staff
