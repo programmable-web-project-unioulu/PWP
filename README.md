@@ -1,6 +1,5 @@
 # PWP SPRING 2022
-# PROJECT NAME
-Movie Review
+# Movie Review
 # Group information
 * Samuel Knaus (samuel.knaus@student.oulu.fi)
 * Marius Diamant (marius.diamant@etudiant.univ-rennes1.fr)
