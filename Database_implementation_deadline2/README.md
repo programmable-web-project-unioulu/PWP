@@ -1,4 +1,4 @@
-The external dependencies are listed in thr requirements.txt file.
+The external dependencies are listed in the requirements.txt file.
 They can be installed to a python virtual environment with command: <br>
 ```
 pip install -r requirements.txt
