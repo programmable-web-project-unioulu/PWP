@@ -19,4 +19,4 @@ Populated database can be viewed from the terminal print when sending a GET requ
 <b> 127.0.0.1:5000/api/populate </b> <br>
 This prints the content of the database to check that the population was succesful.
 
-
+Location of the database is /database/cookbook.db
