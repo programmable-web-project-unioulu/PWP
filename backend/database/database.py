@@ -18,6 +18,11 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 	cursor.close()
 
 
+class UserType(enum.Enum):
+	admin = "Admin"
+	basicUser = "Basic User"
+
+
 class Movie(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
@@ -34,7 +39,7 @@ class Category(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
 
-	movie = db.relationship("Movie", back_populates="category")
+	movies = db.relationship("Movie", back_populates="category")
 
 
 class Review(db.Model):
@@ -47,11 +52,6 @@ class Review(db.Model):
 
 	movie = db.relationship("Movie")
 	user = db.relationship("User")
-
-
-class UserType(enum.Enum):
-	admin = "Admin"
-	basicUser = "Basic User"
 
 
 class User(db.Model):
