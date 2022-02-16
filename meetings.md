@@ -25,7 +25,7 @@ Improve the deficiencies mentioned in the meeting, as listed above.
 *Summary of what was discussed during the meeting*
 
 ### Action points
-*List here the actions points discussed with assistants*
+ On delete configuration between relations.
 
 
 ### Comments from staff
