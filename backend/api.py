@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from jsonschema import validate, ValidationError, draft7_format_checker
+from werkzeug.exceptions import NotFound
+from werkzeug.routing import BaseConverter
+
 
 from helper.serializer import Serializer
 
@@ -24,9 +27,11 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 	cursor.close()
 
 
+# DATABASE MODEL
 class UserType(enum.Enum):
 	admin = "Admin"
 	basicUser = "Basic User"
+
 
 class Movie(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -42,6 +47,7 @@ class Movie(db.Model, Serializer):
 	def serialize(self):
 		return [self.id, self.title, self.director, self.length, self.release_date, self.category]
 
+
 class Category(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
@@ -50,6 +56,7 @@ class Category(db.Model, Serializer):
 
 	def serialize(self):
 		return [self.id, self.title]
+
 
 class Review(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -65,6 +72,7 @@ class Review(db.Model, Serializer):
 	def serialize(self):
 		return [self.id, self.rating, self.comment, self.date, self.author_id, self.movie_id]
 
+
 class User(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	username = db.Column(db.String, nullable=False, unique=True)
@@ -76,6 +84,51 @@ class User(db.Model, Serializer):
 
 	def serialize(self):
 		return [self.id, self.username, self.email_address, self.password, self.role]
+
+
+# CONVERTERS
+class CategoryConverter(BaseConverter):
+	def to_python(self, category_id):
+		db_category = Category.query.filter_by(id=category_id).first()
+		if db_category is None:
+			raise NotFound
+		return db_category
+
+	def to_url(self, db_category):
+		return db_category.id
+
+
+class MovieConverter(BaseConverter):
+	def to_python(self, movie_id):
+		db_movie = Category.query.filter_by(id=movie_id).first()
+		if db_movie is None:
+			raise NotFound
+		return db_movie
+
+	def to_url(self, db_movie):
+		return db_movie.id
+
+
+class ReviewConverter(BaseConverter):
+	def to_python(self, review_id):
+		db_review = Category.query.filter_by(id=review_id).first()
+		if db_review is None:
+			raise NotFound
+		return db_review
+
+	def to_url(self, db_review):
+		return db_review.id
+
+
+class UserConverter(BaseConverter):
+	def to_python(self, user_id):
+		db_user = Category.query.filter_by(id=user_id).first()
+		if db_user is None:
+			raise NotFound
+		return db_user
+
+	def to_url(self, db_user):
+		return db_user.id
 
 
 # CATEGORY LOGIC
@@ -102,7 +155,9 @@ class CategoryCollection(Resource):
 
 		return 201
 
+
 api.add_resource(CategoryCollection, "/api/categories/")
+
 
 class CategoryItem(Resource):
 	def get(self, category):
@@ -113,6 +168,8 @@ class CategoryItem(Resource):
 
 	def delete(self, category):
 		abc = 'd'
+
+
 api.add_resource(CategoryItem, "/api/categories/<category_id>/")
 
 
