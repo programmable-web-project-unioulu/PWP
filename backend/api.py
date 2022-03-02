@@ -1,9 +1,12 @@
 import enum
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
+from jsonschema import validate, ValidationError, draft7_format_checker
+
+from helper.serializer import serialize, serialize_list
 
 # Establish a database connection and initialize API + DB object
 app = Flask(__name__)
@@ -56,7 +59,7 @@ class Review(db.Model):
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	username = db.Column(db.String, nullable=False, unique=True)
-	emailAddress = db.Column(db.String, nullable=False, unique=True)
+	email_address = db.Column(db.String, nullable=False, unique=True)
 	password = db.Column(db.String, nullable=False)
 	role = db.Column(db.Enum(UserType), nullable=False)
 
@@ -66,10 +69,27 @@ class User(db.Model):
 # CATEGORY LOGIC
 class CategoryCollection(Resource):
 	def get(self):
-		abc = 'd'
+		categories = Category.query.all()
+		categories = Category.serialize_list(categories)
+		return categories, 200
 
 	def post(self, category):
-		abc = 'd'
+		if not request.json:
+			return "Unsupported media type", 415
+
+		try:
+			validate(request.json, CategoryCollection.json_schema(), format_checker=draft7_format_checker)
+		except ValidationError as e:
+			return str(e), 400
+
+		category = CategoryCollection()
+		category.deserialize(request.json)
+
+		db.session.add(category)
+		db.session.commit()
+
+		return 201
+
 api.add_resource(CategoryCollection, "/api/categories/")
 
 class CategoryItem(Resource):
