@@ -7,6 +7,8 @@ info:
 paths:
   /users/:
     get:
+      tags:
+      - "user"
       description: Get the list of manage users
       responses:
         '200':
@@ -14,15 +16,19 @@ paths:
           content:
             application/json:
               example:
-              - username: test-user-1
+              - user_id: 12054
+                username: test-user-1
                 email_address: test-user-1@oulu.fi
                 password: 1e234d
                 role: BasicUser
-              - username: test-user-2
+              - user_id: 12055
+                username: test-user-2
                 email_address: test-user-2@oulu.fi
                 password: 544f8
                 role: Admin
     post:
+      tags:
+      - "user"
       description: Create a new user
       responses:
         '201':
@@ -33,7 +39,7 @@ paths:
               schema:
                 type: string
         '400':
-          description: username, email_address, password must be string and role must be BasicUser or Admin
+          description: user_id must be integer, username, email_address, password must be string and role must be BasicUser or Admin
         '409':
           description: User already exists
         '415':
@@ -45,15 +51,18 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
             example:
+              user_id: 6546
               username: new-test-user-1
               email_address: new-test-user-1@oulu.fi
               password: e19h63
               role: BasicUser
 
-  /users/{username}/:
+  /users/{user_id}/:
     parameters:
-    - $ref: '#/components/parameters/username'
+    - $ref: '#/components/parameters/user_id'
     get:
+      tags:
+      - "user"
       description: Get details of one user
       responses:
         '200':
@@ -64,6 +73,7 @@ paths:
                 user-example:
                   description: A user that has been created
                   value:
+                    user_id: 12054
                     username: test-user-1
                     email_address: test-user-1@oulu.fi
                     password: 1e234d
@@ -72,7 +82,9 @@ paths:
         '404':
           description: The user was not found
     put:
-      description: Update a user by username
+      tags:
+      - "user"
+      description: Update a user by user_id
       responses:
         '204':
           description: The user has been deleted
@@ -80,32 +92,40 @@ paths:
           description: The user was not found
 
     delete:
-      description: Delete a user by username
+      tags:
+      - "user"
+      description: Delete a user by user_id
       responses:
         '204':
           description: The user has been deleted
         '404':
           description: The user was not found
-  /users/{username}/reviews/:
+  /users/{user_id}/reviews/:
     parameters:
-    - $ref: '#/components/parameters/username'
+    - $ref: '#/components/parameters/user_id'
     get:
-      description: Get the list of a user's reviews by username
+      tags:
+      - "review"
+      description: Get the list of a user's reviews by user_id
       responses:
         '200':
           description: List of reviews
           content:
             application/json:
               example:
-              - rating: 3
+              - review_id: 6981
+                rating: 3
                 comment: The movie is ok
                 date: 20210322
-              - rating: 5
+              - review_id: 6982
+                rating: 5
                 comment: The movie is great
                 date: 20210323
 
   /movies/:
     get:
+      tags:
+      - "movie"
       description: Get the list of manage movies
       responses:
         '200':
@@ -113,13 +133,17 @@ paths:
           content:
             application/json:
               example:
-              - title: test-movie-1
+              - movie_id: 94238
+                title: test-movie-1
                 length: 172
-              - title: test-movie-2
+              - movie_id: 94239
+                title: test-movie-2
                 director: Nolan
                 length: 168
                 release_date: 20180627
     post:
+      tags:
+      - "movie"
       description: Create a new movie
       responses:
         '201':
@@ -144,11 +168,13 @@ paths:
             example:
               title: new-test-user-1
               director: villeneuve
-  /movies/{title}/:
+  /movies/{movie_id}/:
     parameters:
-    - $ref: '#/components/parameters/movie_title'
+    - $ref: '#/components/parameters/movie_id'
     get:
-      description: Get details of one movie
+      tags:
+      - "movie"
+      description: Get details of one movie by movie_id
       responses:
         '200':
           description: Data of single movie
@@ -158,13 +184,16 @@ paths:
                 movie-example:
                   description: A movie that has been created
                   value:
+                    movie_id: 94238
                     title: test-movie-1
                     length: 172
 
         '404':
           description: The movie was not found
     put:
-      description: Update a movie by title
+      tags:
+      - "movie"
+      description: Update a movie by movie_id
       responses:
         '204':
           description: The movie has been deleted
@@ -172,35 +201,43 @@ paths:
           description: The movie was not found
 
     delete:
-      description: Delete a movie by title
+      tags:
+      - "movie"
+      description: Delete a movie by movie_id
       responses:
         '204':
           description: The movie has been deleted
         '404':
           description: The movie was not found
-  /movies/{title}/reviews/:
+  /movies/{movie_id}/reviews/:
     parameters:
-    - $ref: '#/components/parameters/movie_title'
+    - $ref: '#/components/parameters/movie_id'
     get:
-      description: Get the list of a movie's reviews by movie title
+      tags:
+      - "review"
+      description: Get the list of a movie's reviews by movie_id
       responses:
         '200':
-          description: List of reviews
+          description: List of reviews by movie_id
           content:
             application/json:
               example:
-              - rating: 3
+              - review_id: 5687
+                rating: 3
                 comment: The movie is ok
                 date: 20210322
-              - rating: 5
+              - review_id: 5688
+                rating: 5
                 comment: The movie is great
                 date: 20210323
-  /movies/{title}/reviews/{comment}:
+  /movies/{movie_id}/reviews/{review_id}:
     parameters:
-    - $ref: '#/components/parameters/movie_title'
-    - $ref: '#/components/parameters/review_comment'
+    - $ref: '#/components/parameters/movie_id'
+    - $ref: '#/components/parameters/review_id'
     get:
-      description: Get details of one review
+      tags:
+      - "review"
+      description: Get details of one review by movie_id and review_id
       responses:
         '200':
           description: Data of single review
@@ -210,6 +247,7 @@ paths:
                 user-example:
                   description: A review that has been created
                   value:
+                    review_id: 5687
                     rating: 3
                     comment: The movie is ok
                     date: 20210322
@@ -217,7 +255,9 @@ paths:
         '404':
           description: The review was not found
     put:
-      description: Update a review by comment
+      tags:
+      - "review"
+      description: Update a review by review_id
       responses:
         '204':
           description: The review has been deleted
@@ -225,7 +265,9 @@ paths:
           description: The review was not found
 
     delete:
-      description: Delete a review by comment
+      tags:
+      - "review"
+      description: Delete a review by review_id
       responses:
         '204':
           description: The review has been deleted
@@ -234,6 +276,8 @@ paths:
 
   /categories/:
     get:
+      tags:
+      - "category"
       description: Get the list of manage categories
       responses:
         '200':
@@ -241,9 +285,13 @@ paths:
           content:
             application/json:
               example:
-              - title: test-category-1
-              - title: test-category-2
+              - category_id: 87675
+                title: test-category-1
+              - category_id: 87676
+                title: test-category-2
     post:
+      tags:
+      - "category"
       description: Create a new category
       responses:
         '201':
@@ -254,7 +302,7 @@ paths:
               schema:
                 type: string
         '400':
-          description: title must be string
+          description: category_id must be integer and title must be string
         '409':
           description: Category already exists
         '415':
@@ -266,12 +314,15 @@ paths:
             schema:
               $ref: '#/components/schemas/Category'
             example:
+              category_id: 27521
               title: new-test-category-1
-  /categories/{title}/:
+  /categories/{category_id}/:
     parameters:
-    - $ref: '#/components/parameters/category_title'
+    - $ref: '#/components/parameters/category_id'
     get:
-      description: Get details of one category
+      tags:
+      - "category"
+      description: Get details of one category by category_id
       responses:
         '200':
           description: Data of single category
@@ -281,12 +332,15 @@ paths:
                 category-example:
                   description: A category that has been created
                   value:
+                    category_id: 87675
                     title: test-category-1
 
         '404':
           description: The category was not found
     put:
-      description: Update a category by title
+      tags:
+      - "category"
+      description: Update a category by category_id
       responses:
         '204':
           description: The category has been deleted
@@ -294,7 +348,9 @@ paths:
           description: The category was not found
 
     delete:
-      description: Delete a category by title
+      tags:
+      - "category"
+      description: Delete a category by category_id
       responses:
         '204':
           description: The category has been deleted
@@ -309,6 +365,9 @@ components:
     User:
       type: object
       properties:
+        user_id:
+          description: User's unique id
+          type: integer
         username:
           description: User's unique username
           type: string
@@ -322,6 +381,7 @@ components:
           description: User's role
           enum: ["BasicUser", "Admin"]
       required:
+      - user_id
       - username
       - email_address
       - password
@@ -330,25 +390,31 @@ components:
     Review:
       type: object
       properties:
+        review_id:
+          description: User's unique id
+          type: integer
         rating:
           description: Review's rating (between 1 and 5)
           type: number
         comment:
-          description: Review's unique comment
+          description: Review's comment
           type: string
         date:
           description: Review's date as YYYYMMDD format
           type: number
       required:
+      - review_id
       - rating
-      - comment
       - date
 
     Movie:
       type: object
       properties:
+        movie_id:
+          description: User's unique id
+          type: integer
         title:
-          description: Movie's unique title
+          description: Movie's title
           type: string
         director:
           description: Movie's director
@@ -359,44 +425,49 @@ components:
         release_date:
           description: Movie's release date as YYYYMMDD format
           type: number
-
       required:
+      - movie_id
       - title
+
     Category:
       type: object
       properties:
+        category_id:
+          description: User's unique id
+          type: integer
         title:
           description: Category's title
           type: string
       required:
+      - category_id
       - title
 
   parameters:
-    username:
-      description: Selected user's unique username
+    user_id:
+      description: Selected user's unique id
       in: path
-      name: username
+      name: user_id
       required: true
       schema:
         type: string
-    movie_title:
-      description: Selected movie's unique title
+    movie_id:
+      description: Selected movie's unique id
       in: path
-      name: title
+      name: movie_id
       required: true
       schema:
         type: string
-    review_comment:
-      description: Selected review's unique comment
+    review_id:
+      description: Selected review's unique id
       in: path
-      name: comment
+      name: review_id
       required: true
       schema:
         type: string
-    category_title:
-      description: Selected category's unique title
+    category_id:
+      description: Selected category's unique id
       in: path
-      name: title
+      name: category_id
       required: true
       schema:
         type: string
