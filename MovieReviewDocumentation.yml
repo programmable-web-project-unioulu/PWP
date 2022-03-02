@@ -63,7 +63,7 @@ paths:
     get:
       tags:
       - "user"
-      description: Get details of one user
+      description: Get details of one user by user_id
       responses:
         '200':
           description: Data of single user
@@ -135,11 +135,11 @@ paths:
               example:
               - movie_id: 94238
                 title: test-movie-1
-                length: 172
+                length: 10447
               - movie_id: 94239
                 title: test-movie-2
                 director: Nolan
-                length: 168
+                length: 10532
                 release_date: 20180627
     post:
       tags:
@@ -154,7 +154,7 @@ paths:
               schema:
                 type: string
         '400':
-          description: title, director must be string, length must be a number and releas_date must be a number with YYYYMMDD format
+          description: title, director must be string, movie_id and length must be integer and releas_date must be integer with YYYYMMDD format
         '409':
           description: Movie already exists
         '415':
@@ -166,7 +166,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Movie'
             example:
-              title: new-test-user-1
+              title: new-test-movie-1
               director: villeneuve
   /movies/{movie_id}/:
     parameters:
@@ -186,7 +186,7 @@ paths:
                   value:
                     movie_id: 94238
                     title: test-movie-1
-                    length: 172
+                    length: 10447
 
         '404':
           description: The movie was not found
@@ -357,9 +357,6 @@ paths:
         '404':
           description: The category was not found
 
-
-
-
 components:
   schemas:
     User:
@@ -395,13 +392,13 @@ components:
           type: integer
         rating:
           description: Review's rating (between 1 and 5)
-          type: number
+          type: integer
         comment:
           description: Review's comment
           type: string
         date:
           description: Review's date as YYYYMMDD format
-          type: number
+          type: integer
       required:
       - review_id
       - rating
@@ -421,10 +418,10 @@ components:
           type: string
         length:
           description: Movie's length
-          type: number
+          type: integer
         release_date:
           description: Movie's release date as YYYYMMDD format
-          type: number
+          type: integer
       required:
       - movie_id
       - title
@@ -449,25 +446,25 @@ components:
       name: user_id
       required: true
       schema:
-        type: string
+        type: integer
     movie_id:
       description: Selected movie's unique id
       in: path
       name: movie_id
       required: true
       schema:
-        type: string
+        type: integer
     review_id:
       description: Selected review's unique id
       in: path
       name: review_id
       required: true
       schema:
-        type: string
+        type: integer
     category_id:
       description: Selected category's unique id
       in: path
       name: category_id
       required: true
       schema:
-        type: string
+        type: integer
