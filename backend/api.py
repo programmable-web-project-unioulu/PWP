@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
-# Establish a database connection and initialize API object
+# Establish a database connection and initialize API + DB object
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///movie-review.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -25,7 +25,6 @@ class UserType(enum.Enum):
 	admin = "Admin"
 	basicUser = "Basic User"
 
-
 class Movie(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
@@ -37,13 +36,11 @@ class Movie(db.Model):
 	category = db.relationship("Category")
 	reviews = db.relationship("Review", back_populates="movie")
 
-
 class Category(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
 
 	movies = db.relationship("Movie", back_populates="category")
-
 
 class Review(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -55,7 +52,6 @@ class Review(db.Model):
 
 	movie = db.relationship("Movie")
 	user = db.relationship("User")
-
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -70,210 +66,87 @@ class User(db.Model):
 # CATEGORY LOGIC
 class CategoryCollection(Resource):
 	def get(self):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def post(self, category):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
+api.add_resource(CategoryCollection, "/api/categories/")
 
 class CategoryItem(Resource):
 	def get(self, category):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def put(self, category):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def delete(self, category):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
-
-api.add_resource(CategoryCollection, "/api/categories/")
 api.add_resource(CategoryItem, "/api/categories/<category_id>/")
 
 
 # MOVIE LOGIC
 class MovieCollection(Resource):
 	def get(self):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def post(self):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
+api.add_resource(MovieCollection, "/api/movies/")
 
 class MovieItem(Resource):
 	def get(self, movie):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def put(self, movie):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def delete(self, movie):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
-
-api.add_resource(MovieCollection, "/api/movies/")
 api.add_resource(MovieItem, "/api/movies/<movie_id>/")
 
 
 # REVIEW LOGIC
 class MovieReviewCollection(Resource):
 	def get(self, movie):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def post(self, movie):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
+api.add_resource(MovieReviewCollection, "/api/movies/<movie_id>/reviews/")
 
 class MovieReviewItem(Resource):
 	def get(self, movie, review):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def put(self, movie, review):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def delete(self, movie, review):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
-
-api.add_resource(MovieReviewCollection, "/api/movies/<movie_id>/reviews/")
 api.add_resource(MovieReviewItem, "/api/movies/<movie_id>/reviews/<review_id>")
+
 
 # USERS LOGIC
 class UserCollection(Resource):
 	def get(self):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def post(self):
 		abc = 'd'
+api.add_resource(UserCollection, "/api/users/")
 
 class UserItem(Resource):
 	def get(self, user):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def put(self, user):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
 
 	def delete(self, user):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
+api.add_resource(UserItem, "/api/users/<user_id>/")
 
 class UserReviewCollection(Resource):
 	def get(self, user):
-		"""
-		---
-		description:
-		responses:
-			'200':
-		"""
 		abc = 'd'
-
-api.add_resource(UserCollection, "/api/users/")
-api.add_resource(UserItem, "/api/users/<user_id>/")
 api.add_resource(UserReviewCollection, "/api/users/<user_id>/reviews/")
