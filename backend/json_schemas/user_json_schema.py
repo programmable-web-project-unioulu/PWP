@@ -2,14 +2,10 @@
 def get_user_json_schema():
         schema = {
             "type": "object",
-            "required": ["id", "username", "email_address", "password", "role"]
+            "required": ["username", "email_address", "password", "role"]
         }
 
         props = schema["properties"] = {}
-        props["id"] = {
-            "description": "User's id",
-            "type": "integer"
-        }
         props["username"] = {
             "description": "The username of the user",
             "type": "string"

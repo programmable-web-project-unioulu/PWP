@@ -2,14 +2,10 @@
 def get_review_json_schema():
         schema = {
             "type": "object",
-            "required": ["id", "rating", "comment", "date", "author_id", "movie_id"]
+            "required": ["rating", "comment", "date", "author_id", "movie_id"]
         }
 
         props = schema["properties"] = {}
-        props["id"] = {
-            "description": "Review's id",
-            "type": "integer"
-        }
         props["rating"] = {
             "description": "The rating of the movie (from 1 to 5)",
             "type": "integer",

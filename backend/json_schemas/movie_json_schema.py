@@ -2,14 +2,10 @@
 def get_movie_json_schema():
     schema = {
         "type": "object",
-        "required": ["id", "title", "director", "length", "release_date", "category_id"]
+        "required": ["title", "director", "length", "release_date", "category_id"]
     }
 
     props = schema["properties"] = {}
-    props["id"] = {
-        "description": "Movie's id",
-        "type": "integer"
-    }
     props["title"] = {
         "description": "Movie's title",
         "type": "string"
