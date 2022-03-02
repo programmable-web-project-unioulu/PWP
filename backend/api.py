@@ -6,7 +6,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from helper.serializer import serialize, serialize_list
+from helper.serializer import Serializer
 
 # Establish a database connection and initialize API + DB object
 app = Flask(__name__)
@@ -28,7 +28,7 @@ class UserType(enum.Enum):
 	admin = "Admin"
 	basicUser = "Basic User"
 
-class Movie(db.Model):
+class Movie(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
 	director = db.Column(db.String, nullable=False)
@@ -39,13 +39,19 @@ class Movie(db.Model):
 	category = db.relationship("Category")
 	reviews = db.relationship("Review", back_populates="movie")
 
-class Category(db.Model):
+	def serialize(self):
+		return [self.id, self.title, self.director, self.length, self.release_date, self.category]
+
+class Category(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	title = db.Column(db.String, nullable=False)
 
 	movies = db.relationship("Movie", back_populates="category")
 
-class Review(db.Model):
+	def serialize(self):
+		return [self.id, self.title]
+
+class Review(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	rating = db.Column(db.Integer, nullable=False)
 	comment = db.Column(db.Text, nullable=False)
@@ -56,7 +62,10 @@ class Review(db.Model):
 	movie = db.relationship("Movie")
 	user = db.relationship("User")
 
-class User(db.Model):
+	def serialize(self):
+		return [self.id, self.rating, self.comment, self.date, self.author_id, self.movie_id]
+
+class User(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	username = db.Column(db.String, nullable=False, unique=True)
 	email_address = db.Column(db.String, nullable=False, unique=True)
@@ -64,6 +73,9 @@ class User(db.Model):
 	role = db.Column(db.Enum(UserType), nullable=False)
 
 	review = db.relationship("Review", back_populates="user")
+
+	def serialize(self):
+		return [self.id, self.username, self.email_address, self.password, self.role]
 
 
 # CATEGORY LOGIC
