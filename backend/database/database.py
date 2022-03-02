@@ -1,13 +1,11 @@
 import enum
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///movie-review.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+from MovieReview.backend.api.api import app
+
 db = SQLAlchemy(app)
 
 
