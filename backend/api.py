@@ -5,14 +5,12 @@ from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
-from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
 
 from helper.request_blueprints import post_blueprint, put_blueprint, delete_blueprint
 from helper.serializer import Serializer
-# Establish a database connection and initialize API + DB object
 from json_schemas.category_json_schema import get_category_json_schema
 from json_schemas.movie_json_schema import get_movie_json_schema
 from json_schemas.review_json_schema import get_review_json_schema
@@ -25,6 +23,7 @@ app.url_map.strict_slashes = False
 
 api = Api(app)
 db = SQLAlchemy(app)
+
 
 # Enable foreign key constraints for SQLite
 @event.listens_for(Engine, "connect")
@@ -39,6 +38,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 class UserType(str, enum.Enum):
 	admin = "Admin"
 	basicUser = "Basic User"
+
 
 class Movie(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -198,6 +198,7 @@ class CategoryCollection(Resource):
 		category = Category()
 		return post_blueprint(request, get_category_json_schema, db, lambda: self.create_category_object(category))
 
+
 api.add_resource(CategoryCollection, "/api/categories/")
 
 
@@ -240,6 +241,7 @@ class MovieCollection(Resource):
 
 api.add_resource(MovieCollection, "/api/movies/")
 
+
 class MovieItem(Resource):
 	def get(self, movie):
 		return movie.serialize()
@@ -259,6 +261,7 @@ class MovieItem(Resource):
 
 	def delete(self, movie):
 		db.session.delete(movie)
+
 
 app.url_map.converters["movie"] = MovieConverter
 api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
@@ -284,6 +287,7 @@ class MovieReviewCollection(Resource):
 
 
 api.add_resource(MovieReviewCollection, "/api/movies/<movie:movie>/reviews/")
+
 
 class MovieReviewItem(Resource):
 	def get(self, movie, review):
@@ -325,7 +329,9 @@ class UserCollection(Resource):
 		user = User()
 		return post_blueprint(request, get_user_json_schema, db, lambda: self.create_user_object(user))
 
+
 api.add_resource(UserCollection, "/api/users/")
+
 
 class UserItem(Resource):
 	def get(self, user):
@@ -349,6 +355,7 @@ class UserItem(Resource):
 
 app.url_map.converters["user"] = UserConverter
 api.add_resource(UserItem, "/api/users/<user:user>/")
+
 
 class UserReviewCollection(Resource):
 	def get(self, user):
