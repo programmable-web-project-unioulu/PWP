@@ -1,23 +1,20 @@
 import enum
+from datetime import date
 
 from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
-from sqlalchemy.engine import Engine
-from jsonschema import validate, ValidationError, draft7_format_checker
-from werkzeug.exceptions import NotFound
 from sqlalchemy import exc
+from sqlalchemy.engine import Engine
+from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
-from datetime import date
 
 from helper.request_blueprints import post_blueprint, put_blueprint
 from helper.serializer import Serializer
-
 # Establish a database connection and initialize API + DB object
 from json_schemas.category_json_schema import get_category_json_schema
 from json_schemas.movie_json_schema import get_movie_json_schema
-from json_schemas.user_json_schema import get_user_json_schema
 from json_schemas.review_json_schema import get_review_json_schema
 
 app = Flask(__name__)
@@ -194,23 +191,13 @@ class CategoryCollection(Resource):
 		categories = Category.serialize_list(categories)
 		return categories, 200
 
+	def create_category_object(self, created_category):
+		created_category.deserialize(request.json),
+		return created_category
+
 	def post(self):
-		if not request.json:
-			return "Unsupported media type", 415
-
-		try:
-			validate(request.json, get_category_json_schema(), format_checker=draft7_format_checker)
-		except ValidationError as e:
-			return e.message, 400
-
 		category = Category()
-		category.deserialize(request.json)
-
-		db.session.add(category)
-		db.session.commit()
-
-		return 201
-
+		return post_blueprint(request, get_category_json_schema, db, lambda: self.create_category_object(category))
 
 api.add_resource(CategoryCollection, "/api/categories/")
 
@@ -219,23 +206,14 @@ class CategoryItem(Resource):
 	def get(self, category):
 		return category.serialize()
 
-	def put(self, category):
-		if not request.json:
-			return "Unsupported media type", 415
-
-		try:
-			validate(request.json, get_category_json_schema(), format_checker=draft7_format_checker)
-		except ValidationError as e:
-			return e.message, 400
-
-		update_category = Category()
+	def update_category_object(self, category, update_category):
 		update_category.deserialize(request.json)
 
 		category.title = update_category.title
 
-		db.session.commit()
-
-		return 204
+	def put(self, category):
+		update_category = Category()
+		return put_blueprint(request, get_category_json_schema, db, lambda: self.update_category_object(category, update_category))
 
 	def delete(self, category):
 		try:
@@ -257,24 +235,13 @@ class MovieCollection(Resource):
 		movies = Category.serialize_list(movies)
 		return movies, 200
 
+	def create_movie_object(self, created_movie):
+		created_movie.deserialize(request.json),
+		return created_movie
+
 	def post(self):
-		if not request.json:
-			return "Unsupported media type", 415
-
-		try:
-			validate(request.json, get_movie_json_schema(), format_checker=draft7_format_checker)
-		except ValidationError as e:
-			return e.message, 400
-
 		movie = Movie()
-		movie.deserialize(request.json)
-
-		try:
-			db.session.add(movie)
-			db.session.commit()
-			return 201
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
+		return post_blueprint(request, get_movie_json_schema, db, lambda: self.create_movie_object(movie))
 
 
 api.add_resource(MovieCollection, "/api/movies/")
@@ -283,16 +250,7 @@ class MovieItem(Resource):
 	def get(self, movie):
 		return movie.serialize()
 
-	def put(self, movie):
-		if not request.json:
-			return "Unsupported media type", 415
-
-		try:
-			validate(request.json, get_movie_json_schema(), format_checker=draft7_format_checker)
-		except ValidationError as e:
-			return e.message, 400
-
-		update_movie = Movie()
+	def update_movie_object(self, movie, update_movie):
 		update_movie.deserialize(request.json)
 
 		movie.title = update_movie.title
@@ -301,12 +259,9 @@ class MovieItem(Resource):
 		movie.release_date = update_movie.release_date
 		movie.category_id = update_movie.category_id
 
-		try:
-			db.session.commit()
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
-
-		return 204
+	def put(self, movie):
+		update_movie = Movie()
+		return put_blueprint(request, get_movie_json_schema, db, lambda: self.update_movie_object(movie, update_movie))
 
 	def delete(self, movie):
 		try:
