@@ -155,7 +155,7 @@ class CategoryConverter(BaseConverter):
 
 class MovieConverter(BaseConverter):
 	def to_python(self, movie_id):
-		db_movie = Category.query.filter_by(id=movie_id).first()
+		db_movie = Movie.query.filter_by(id=movie_id).first()
 		if db_movie is None:
 			raise NotFound
 		return db_movie
@@ -166,7 +166,7 @@ class MovieConverter(BaseConverter):
 
 class ReviewConverter(BaseConverter):
 	def to_python(self, review_id):
-		db_review = Category.query.filter_by(id=review_id).first()
+		db_review = Review.query.filter_by(id=review_id).first()
 		if db_review is None:
 			raise NotFound
 		return db_review
@@ -177,7 +177,7 @@ class ReviewConverter(BaseConverter):
 
 class UserConverter(BaseConverter):
 	def to_python(self, user_id):
-		db_user = Category.query.filter_by(id=user_id).first()
+		db_user = User.query.filter_by(id=user_id).first()
 		if db_user is None:
 			raise NotFound
 		return db_user
@@ -278,14 +278,44 @@ api.add_resource(MovieCollection, "/api/movies/")
 
 class MovieItem(Resource):
 	def get(self, movie):
-		abc = 'd'
+		return movie.serialize()
 
 	def put(self, movie):
-		abc = 'd'
+		if not request.json:
+			return "Unsupported media type", 415
+
+		try:
+			validate(request.json, get_movie_json_schema(), format_checker=draft7_format_checker)
+		except ValidationError as e:
+			return e.message, 400
+
+		update_movie = Movie()
+		update_movie.deserialize(request.json)
+
+		movie.title = update_movie.title
+		movie.director = update_movie.director
+		movie.length = update_movie.length
+		movie.release_date = update_movie.release_date
+		movie.category_id = update_movie.category_id
+
+		try:
+			db.session.commit()
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
+
+		return 204
 
 	def delete(self, movie):
-		abc = 'd'
-api.add_resource(MovieItem, "/api/movies/<movie_id>/")
+		try:
+			db.session.delete(movie)
+			db.session.commit()
+			return 204
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
+
+
+app.url_map.converters["movie"] = MovieConverter
+api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
 
 
 # REVIEW LOGIC

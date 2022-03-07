@@ -16,7 +16,8 @@ def get_movie_json_schema():
     }
     props["length"] = {
         "description": "The length of the movie in seconds",
-        "type": "integer"
+        "type": "integer",
+        "minimum": 1,
     }
     props["release_date"] = {
         "description": "The release date of the movie",
