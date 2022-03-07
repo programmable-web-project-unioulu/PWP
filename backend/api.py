@@ -367,10 +367,15 @@ class UserItem(Resource):
 		except exc.IntegrityError as e:
 			return str(e.orig), 409
 
+
 app.url_map.converters["user"] = UserConverter
 api.add_resource(UserItem, "/api/users/<user:user>/")
 
 class UserReviewCollection(Resource):
 	def get(self, user):
-		abc = 'd'
-api.add_resource(UserReviewCollection, "/api/users/<user_id>/reviews/")
+		reviews = Review.query.filter_by(author_id=user.id).all()
+		reviews = Review.serialize_list(reviews)
+		return reviews, 200
+
+
+api.add_resource(UserReviewCollection, "/api/users/<user:user>/reviews/")
