@@ -49,7 +49,7 @@ class Movie(db.Model, Serializer):
 	category_id = db.Column(db.Integer, db.ForeignKey("category.id", ondelete="RESTRICT"), nullable=False)
 
 	category = db.relationship("Category")
-	reviews = db.relationship("Review", back_populates="movie")
+	reviews = db.relationship("Review", cascade="delete", back_populates="movie")
 
 	def serialize(self):
 		return {
