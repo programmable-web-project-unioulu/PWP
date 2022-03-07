@@ -16,6 +16,7 @@ from helper.serializer import Serializer
 from json_schemas.category_json_schema import get_category_json_schema
 from json_schemas.movie_json_schema import get_movie_json_schema
 from json_schemas.review_json_schema import get_review_json_schema
+from json_schemas.user_json_schema import get_user_json_schema
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///movie-review.db"
@@ -35,10 +36,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 
 # DATABASE MODEL
-class UserType(enum.Enum):
+class UserType(str, enum.Enum):
 	admin = "Admin"
 	basicUser = "Basic User"
-
 
 class Movie(db.Model, Serializer):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -128,7 +128,6 @@ class User(db.Model, Serializer):
 			"id": self.id,
 			"username": self.username,
 			"email_address": self.email_address,
-			"password": self.password,
 			"role": self.role
 		}
 
@@ -330,22 +329,46 @@ api.add_resource(MovieReviewItem, "/api/movies/<movie:movie>/reviews/<review:rev
 # USERS LOGIC
 class UserCollection(Resource):
 	def get(self):
-		abc = 'd'
+		users = User.query.all()
+		users = User.serialize_list(users)
+		return users, 200
+
+	def create_user_object(self, created_user):
+		created_user.deserialize(request.json),
+		return created_user
 
 	def post(self):
-		abc = 'd'
+		user = User()
+		return post_blueprint(request, get_user_json_schema, db, lambda: self.create_user_object(user))
+
 api.add_resource(UserCollection, "/api/users/")
 
 class UserItem(Resource):
 	def get(self, user):
-		abc = 'd'
+		return user.serialize()
+
+	def update_review_object(self, user, update_user):
+		update_user.deserialize(request.json)
+
+		user.username = update_user.username
+		user.email_address = update_user.email_address
+		user.password = update_user.password
+		user.role = update_user.role
 
 	def put(self, user):
-		abc = 'd'
+		update_user = User()
+		return put_blueprint(request, get_user_json_schema, db, lambda: self.update_review_object(user, update_user))
 
 	def delete(self, user):
-		abc = 'd'
-api.add_resource(UserItem, "/api/users/<user_id>/")
+		try:
+			db.session.delete(user)
+			db.session.commit()
+			return 204
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
+
+app.url_map.converters["user"] = UserConverter
+api.add_resource(UserItem, "/api/users/<user:user>/")
 
 class UserReviewCollection(Resource):
 	def get(self, user):
