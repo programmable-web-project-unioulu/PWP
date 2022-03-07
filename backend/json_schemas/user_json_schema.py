@@ -17,7 +17,8 @@ def get_user_json_schema():
         }
         props["password"] = {
             "description": "The password of the user",
-            "type": "string"
+            "type": "string",
+            "minLength": 6
         }
         props["role"] = {
             "description": "The role of the user which can either be 'basic user' or admin",
