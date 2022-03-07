@@ -1,8 +1,8 @@
-import database
-from database import Category, Movie, Review, User, UserType
+import api
+from api import Category, Movie, Review, User, UserType
 import datetime
 
-db = database.db
+db = api.db
 
 # set up the environment
 db.create_all()
@@ -11,35 +11,35 @@ db.session.rollback()
 # create the dummy user
 user_1 = User(
     username="dummyGuy",
-    emailAddress="red.unicorn@gmail.com",
+    email_address="red.unicorn@gmail.com",
     password="thisisnotapassword",
     role=UserType.basicUser
 )
 
 user_2 = User(
     username="dummyAdmin",
-    emailAddress="omnipotent.pencil@yahoo.com",
+    email_address="omnipotent.pencil@yahoo.com",
     password="1234",
     role=UserType.admin
 )
 
 user_3 = User(
     username="grantorinohurricane",
-    emailAddress="grantorinohurricane@gmail.com",
+    email_address="grantorinohurricane@gmail.com",
     password="Grantorino1234",
     role=UserType.basicUser
 )
 
 user_4 = User(
     username="lightningbasketball",
-    emailAddress="lightningbasketbal@gmail.com",
+    email_address="lightningbasketbal@gmail.com",
     password="Basketball1234",
     role=UserType.basicUser
 )
 
 user_5 = User(
     username="johnkennedy",
-    emailAddress="kennedyj@moviereview.com",
+    email_address="kennedyj@moviereview.com",
     password="$KenJon9908",
     role=UserType.admin
 )
