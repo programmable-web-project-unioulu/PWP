@@ -21,7 +21,7 @@ def get_movie_json_schema():
     props["release_date"] = {
         "description": "The release date of the movie",
         "type": "string",
-        "format": "date-time"
+        "format": "date"
     }
     props["category_id"] = {
         "description": "The id of the movie's category which acts as foreign key",

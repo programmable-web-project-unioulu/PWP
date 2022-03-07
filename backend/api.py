@@ -1,4 +1,5 @@
 import enum
+
 from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
@@ -6,8 +7,9 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from jsonschema import validate, ValidationError, draft7_format_checker
 from werkzeug.exceptions import NotFound
+from sqlalchemy import exc
 from werkzeug.routing import BaseConverter
-import datetime
+from datetime import date
 
 from helper.serializer import Serializer
 
@@ -52,13 +54,20 @@ class Movie(db.Model, Serializer):
 	reviews = db.relationship("Review", back_populates="movie")
 
 	def serialize(self):
-		return [self.id, self.title, self.director, self.length, self.release_date, self.category]
+		return {
+			"id": self.id,
+			"title": self.title,
+			"director": self.director,
+			"length": self.length,
+			"release_date": self.release_date.isoformat(),
+			"category_id": self.category_id
+		}
 
 	def deserialize(self, doc):
 		self.title = doc["title"]
 		self.director = doc.get("director")
 		self.length = doc.get("length")
-		self.release_date = datetime.fromisoformat(doc["release_date"])
+		self.release_date = date.fromisoformat(doc["release_date"])
 		self.category_id = doc.get("category_id")
 
 
@@ -69,7 +78,10 @@ class Category(db.Model, Serializer):
 	movies = db.relationship("Movie", back_populates="category")
 
 	def serialize(self):
-		return [self.id, self.title]
+		return {
+			"id": self.id,
+			"title": self.title
+		}
 
 	def deserialize(self, doc):
 		self.title = doc["title"]
@@ -89,12 +101,19 @@ class Review(db.Model, Serializer):
 	def deserialize(self, doc):
 		self.rating = doc["rating"]
 		self.comment = doc.get("comment")
-		self.date = datetime.fromisoformat(doc["date"])
+		self.date = date.fromisoformat(doc["date"])
 		self.author_id = doc.get("author_id")
 		self.movie_id = doc.get("movie_id")
 
 	def serialize(self):
-		return [self.id, self.rating, self.comment, self.date, self.author_id, self.movie_id]
+		return {
+			"id": self.id,
+			"rating": self.rating,
+			"comment": self.comment,
+			"date": self.date.isoformat(),
+			"author_id": self.author_id,
+			"movie_id": self.movie_id
+		}
 
 
 class User(db.Model, Serializer):
@@ -107,7 +126,13 @@ class User(db.Model, Serializer):
 	review = db.relationship("Review", back_populates="user")
 
 	def serialize(self):
-		return [self.id, self.username, self.email_address, self.password, self.role]
+		return {
+			"id": self.id,
+			"username": self.username,
+			"email_address": self.email_address,
+			"password": self.password,
+			"role": self.role
+		}
 
 	def deserialize(self, doc):
 		self.username = doc["username"]
@@ -125,7 +150,7 @@ class CategoryConverter(BaseConverter):
 		return db_category
 
 	def to_url(self, db_category):
-		return db_category.id
+		return str(db_category.id)
 
 
 class MovieConverter(BaseConverter):
@@ -136,7 +161,7 @@ class MovieConverter(BaseConverter):
 		return db_movie
 
 	def to_url(self, db_movie):
-		return db_movie.id
+		return str(db_movie.id)
 
 
 class ReviewConverter(BaseConverter):
@@ -147,7 +172,7 @@ class ReviewConverter(BaseConverter):
 		return db_review
 
 	def to_url(self, db_review):
-		return db_review.id
+		return str(db_review.id)
 
 
 class UserConverter(BaseConverter):
@@ -158,7 +183,7 @@ class UserConverter(BaseConverter):
 		return db_user
 
 	def to_url(self, db_user):
-		return db_user.id
+		return str(db_user.id)
 
 
 # CATEGORY LOGIC
@@ -175,7 +200,7 @@ class CategoryCollection(Resource):
 		try:
 			validate(request.json, get_category_json_schema(), format_checker=draft7_format_checker)
 		except ValidationError as e:
-			return str(e), 400
+			return e.message, 400
 
 		category = Category()
 		category.deserialize(request.json)
@@ -191,25 +216,64 @@ api.add_resource(CategoryCollection, "/api/categories/")
 
 class CategoryItem(Resource):
 	def get(self, category):
-		abc = 'd'
+		return category.serialize()
 
 	def put(self, category):
-		abc = 'd'
+		if not request.json:
+			return "Unsupported media type", 415
+
+		try:
+			validate(request.json, get_category_json_schema(), format_checker=draft7_format_checker)
+		except ValidationError as e:
+			return e.message, 400
+
+		update_category = Category()
+		update_category.deserialize(request.json)
+
+		category.title = update_category.title
+
+		db.session.commit()
+
+		return 204
 
 	def delete(self, category):
-		abc = 'd'
+		try:
+			db.session.delete(category)
+			db.session.commit()
+			return 204
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
 
 
-api.add_resource(CategoryItem, "/api/categories/<category_id>/")
+app.url_map.converters["category"] = CategoryConverter
+api.add_resource(CategoryItem, "/api/categories/<category:category>/")
 
 
 # MOVIE LOGIC
 class MovieCollection(Resource):
 	def get(self):
-		abc = 'd'
+		movies = Movie.query.all()
+		movies = Category.serialize_list(movies)
+		return movies, 200
 
 	def post(self):
-		abc = 'd'
+		if not request.json:
+			return "Unsupported media type", 415
+
+		try:
+			validate(request.json, get_movie_json_schema(), format_checker=draft7_format_checker)
+		except ValidationError as e:
+			return e.message, 400
+
+		movie = Movie()
+		movie.deserialize(request.json)
+
+		db.session.add(movie)
+		db.session.commit()
+
+		return 201
+
+
 api.add_resource(MovieCollection, "/api/movies/")
 
 class MovieItem(Resource):

@@ -19,7 +19,7 @@ def get_review_json_schema():
         props["date"] = {
             "description": "The date on which the comment was written",
             "type": "string",
-            "format": "date-time"
+            "format": "date"
         }
         props["author_id"] = {
             "description": "The id of the user which created the review which acts as foreign key",
