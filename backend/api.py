@@ -216,7 +216,7 @@ class CategoryItem(Resource):
 		return put_blueprint(request, get_category_json_schema, db, lambda: self.update_category_object(category, update_category))
 
 	def delete(self, category):
-		return delete_blueprint(category)
+		return delete_blueprint(db, category)
 
 
 app.url_map.converters["category"] = CategoryConverter
@@ -260,7 +260,7 @@ class MovieItem(Resource):
 		return put_blueprint(request, get_movie_json_schema, db, lambda: self.update_movie_object(movie, update_movie))
 
 	def delete(self, movie):
-		db.session.delete(movie)
+		return delete_blueprint(db, movie)
 
 
 app.url_map.converters["movie"] = MovieConverter
@@ -307,7 +307,7 @@ class MovieReviewItem(Resource):
 		return put_blueprint(request, get_review_json_schema, db, lambda: self.update_review_object(review, update_review))
 
 	def delete(self, movie, review):
-		db.session.delete(review)
+		return delete_blueprint(db, review)
 
 
 app.url_map.converters["review"] = ReviewConverter
@@ -350,7 +350,7 @@ class UserItem(Resource):
 		return put_blueprint(request, get_user_json_schema, db, lambda: self.update_review_object(user, update_user))
 
 	def delete(self, user):
-		db.session.delete(user)
+		return delete_blueprint(db, user)
 
 
 app.url_map.converters["user"] = UserConverter
