@@ -11,6 +11,7 @@ from sqlalchemy import exc
 from werkzeug.routing import BaseConverter
 from datetime import date
 
+from helper.request_blueprints import post_blueprint, put_blueprint
 from helper.serializer import Serializer
 
 # Establish a database connection and initialize API + DB object
@@ -268,10 +269,12 @@ class MovieCollection(Resource):
 		movie = Movie()
 		movie.deserialize(request.json)
 
-		db.session.add(movie)
-		db.session.commit()
-
-		return 201
+		try:
+			db.session.add(movie)
+			db.session.commit()
+			return 201
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
 
 
 api.add_resource(MovieCollection, "/api/movies/")
@@ -320,23 +323,53 @@ api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
 
 # REVIEW LOGIC
 class MovieReviewCollection(Resource):
-	def get(self):
-		abc = 'd'
+	def get(self, movie):
+		movies = Review.query.filter_by(movie_id=movie.id).all()
+		movies = Category.serialize_list(movies)
+		return movies, 200
 
-	def post(self):
-		abc = 'd'
-api.add_resource(MovieReviewCollection, "/api/movies/<movie_id>/reviews/")
+
+	def create_review_object(self, movie, created_review):
+		created_review.deserialize(request.json),
+		# ignore the foreign key and set it to the parameter given in the url
+		created_review.movie_id = movie.id
+		return created_review
+
+	def post(self, movie):
+		review = Review()
+		return post_blueprint(request, get_review_json_schema, db, lambda: self.create_review_object(movie, review))
+
+
+api.add_resource(MovieReviewCollection, "/api/movies/<movie:movie>/reviews/")
 
 class MovieReviewItem(Resource):
 	def get(self, movie, review):
-		abc = 'd'
+		return review.serialize()
+
+	def update_review_object(self, review, update_review):
+		update_review.deserialize(request.json)
+
+		review.rating = update_review.rating
+		review.comment = update_review.comment
+		review.date = update_review.date
+		review.author_id = update_review.author_id
+		review.movie_id = update_review.movie_id
 
 	def put(self, movie, review):
-		abc = 'd'
+		update_review = Review()
+		return put_blueprint(request, get_review_json_schema, db, lambda: self.update_review_object(review, update_review))
 
 	def delete(self, movie, review):
-		abc = 'd'
-api.add_resource(MovieReviewItem, "/api/movies/<movie_id>/reviews/<review_id>")
+		try:
+			db.session.delete(review)
+			db.session.commit()
+			return 204
+		except exc.IntegrityError as e:
+			return str(e.orig), 409
+
+
+app.url_map.converters["review"] = ReviewConverter
+api.add_resource(MovieReviewItem, "/api/movies/<movie:movie>/reviews/<review:review>")
 
 
 # USERS LOGIC
