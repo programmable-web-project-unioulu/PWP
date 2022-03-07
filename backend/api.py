@@ -10,7 +10,7 @@ from sqlalchemy.engine import Engine
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
 
-from helper.request_blueprints import post_blueprint, put_blueprint
+from helper.request_blueprints import post_blueprint, put_blueprint, delete_blueprint
 from helper.serializer import Serializer
 # Establish a database connection and initialize API + DB object
 from json_schemas.category_json_schema import get_category_json_schema
@@ -215,12 +215,7 @@ class CategoryItem(Resource):
 		return put_blueprint(request, get_category_json_schema, db, lambda: self.update_category_object(category, update_category))
 
 	def delete(self, category):
-		try:
-			db.session.delete(category)
-			db.session.commit()
-			return 204
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
+		return delete_blueprint(category)
 
 
 app.url_map.converters["category"] = CategoryConverter
@@ -263,13 +258,7 @@ class MovieItem(Resource):
 		return put_blueprint(request, get_movie_json_schema, db, lambda: self.update_movie_object(movie, update_movie))
 
 	def delete(self, movie):
-		try:
-			db.session.delete(movie)
-			db.session.commit()
-			return 204
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
-
+		db.session.delete(movie)
 
 app.url_map.converters["movie"] = MovieConverter
 api.add_resource(MovieItem, "/api/movies/<movie:movie>/")
@@ -314,12 +303,7 @@ class MovieReviewItem(Resource):
 		return put_blueprint(request, get_review_json_schema, db, lambda: self.update_review_object(review, update_review))
 
 	def delete(self, movie, review):
-		try:
-			db.session.delete(review)
-			db.session.commit()
-			return 204
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
+		db.session.delete(review)
 
 
 app.url_map.converters["review"] = ReviewConverter
@@ -360,12 +344,7 @@ class UserItem(Resource):
 		return put_blueprint(request, get_user_json_schema, db, lambda: self.update_review_object(user, update_user))
 
 	def delete(self, user):
-		try:
-			db.session.delete(user)
-			db.session.commit()
-			return 204
-		except exc.IntegrityError as e:
-			return str(e.orig), 409
+		db.session.delete(user)
 
 
 app.url_map.converters["user"] = UserConverter
