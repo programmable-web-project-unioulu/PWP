@@ -39,6 +39,7 @@ def put_blueprint(request, json_schema, db, update_object):
 
     return 204
 
+
 def delete_blueprint(db, object):
     try:
         db.session.delete(object)
