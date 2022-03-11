@@ -19,12 +19,10 @@ paths:
               - user_id: 12054
                 username: test-user-1
                 email_address: test-user-1@oulu.fi
-                password: 1e234d
                 role: BasicUser
               - user_id: 12055
                 username: test-user-2
                 email_address: test-user-2@oulu.fi
-                password: 544f8
                 role: Admin
     post:
       tags:
@@ -76,7 +74,6 @@ paths:
                     user_id: 12054
                     username: test-user-1
                     email_address: test-user-1@oulu.fi
-                    password: 1e234d
                     role: BasicUser
 
         '404':
@@ -88,7 +85,7 @@ paths:
       responses:
         '204':
           description: The user has been deleted
-        '404':
+        '409':
           description: The user was not found
 
     delete:
@@ -98,7 +95,7 @@ paths:
       responses:
         '204':
           description: The user has been deleted
-        '404':
+        '409':
           description: The user was not found
   /users/{user_id}/reviews/:
     parameters:
@@ -197,7 +194,7 @@ paths:
       responses:
         '204':
           description: The movie has been deleted
-        '404':
+        '409':
           description: The movie was not found
 
     delete:
@@ -207,7 +204,7 @@ paths:
       responses:
         '204':
           description: The movie has been deleted
-        '404':
+        '409':
           description: The movie was not found
   /movies/{movie_id}/reviews/:
     parameters:
@@ -261,7 +258,7 @@ paths:
       responses:
         '204':
           description: The review has been deleted
-        '404':
+        '409':
           description: The review was not found
 
     delete:
@@ -271,7 +268,7 @@ paths:
       responses:
         '204':
           description: The review has been deleted
-        '404':
+        '409':
           description: The review was not found
 
   /categories/:
@@ -344,7 +341,7 @@ paths:
       responses:
         '204':
           description: The category has been deleted
-        '404':
+        '409':
           description: The category was not found
 
     delete:
@@ -354,7 +351,7 @@ paths:
       responses:
         '204':
           description: The category has been deleted
-        '404':
+        '409':
           description: The category was not found
 
 components:
