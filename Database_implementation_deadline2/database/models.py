@@ -23,6 +23,23 @@ class Recipe(db.Model):
 
     user = relationship("User", backref=backref("user" ))
 
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["name", "description"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "huutis",
+            "type": "string"
+        }
+        props["description"] = {
+            "description": "nauris",
+            "type": "string"
+        }
+        return schema
+
 class User(db.Model):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)

@@ -33,12 +33,12 @@ def populate_db():
     db.session.commit()
 
     recipe1 = models.Recipe(
-                name = "Cake Recipe",
+                name = "Cake-Recipe",
                 description = "Lisaa vahan jauhoja eheheh",
                 user_id=new_user.id)
 
     recipe2 = models.Recipe(
-                name = "Water Recipe",
+                name = "Water-Recipe",
                 description = "Avaa hana ja laita lasi alle",
                 user_id=new_user.id)
 

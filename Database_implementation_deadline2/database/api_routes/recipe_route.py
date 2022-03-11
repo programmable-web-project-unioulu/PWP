@@ -16,7 +16,7 @@ class Recipes(Resource):
         {
             "name": item.name,
             "description": item.description,
-            "difficulty": item.diffculty,
+            "difficulty": item.difficulty,
             "id" : item.id
         } for item in inventory]
         if emt == []:
