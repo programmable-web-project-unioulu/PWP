@@ -13,25 +13,29 @@ from jsonschema import validate, ValidationError, draft7_format_checker
 
 class RecipeCollection(Resource):
 
-    def get(self):
+    def get(self, user):
         build = RecipeBuilder(items=[])
         inventory = db.session.query(Recipe).all()
         for item in inventory:
             data = RecipeBuilder(
                 name=item.name,
                 description=item.description,
+                difficulty=item.difficulty,
+                owner=user.name,
+                user_id=item.user_id,
+
             )
-            data.add_control("self", url_for("recipeitem", name=item.name))
+            data.add_control("self", url_for("api.recipeitem", user=user.name, recipe=item.name))
             build["items"].append(data)
-        build.add_control("self", href=url_for("recipecollection"))
-        build.add_control_add_recipe()
+        build.add_control("self", href=url_for("api.recipecollection", user=user.name))
+        build.add_control_add_recipe(user.name)
 
         return Response(
             status=200,
             response=json.dumps(build, indent=4, separators=(',', ': '), sort_keys=True),
             mimetype=MASON)
 
-    def post(self):
+    def post(self, user):
         if request.json == None:
             return create_error_response(415, "BAD CONTENT", "MUST BE JSON")
         try:
@@ -50,15 +54,15 @@ class RecipeCollection(Resource):
             recipe_name = Recipe.query.filter_by(name=p_name).first()
             if recipe_name:
                 return create_error_response(409, "ON JO", "Duplicate 🥝")
-            p_weight = request.json["description"]
-            if not isinstance(p_weight, str):
+            p_desc = request.json["description"]
+            if not isinstance(p_desc, str):
                 return create_error_response(400, "Invalid values")
         except KeyError:
             return create_error_response(400, "KeyError")
         try:
             new_recipe = Recipe(
             name=p_name,
-            description=p_weight,
+            description=p_desc,
             )
             db.session.add(new_recipe)
             db.session.commit()
@@ -68,12 +72,12 @@ class RecipeCollection(Resource):
         return Response(
             status=201,
             mimetype=MASON,
-            headers={"Location": Api.url_for(RecipeItem, recipe=p_name)}
+            headers={"Location": url_for("api.recipeitem", user=user.name, recipe=p_name)}
         )
 
 class RecipeItem(Resource):
     
-    def get(self, recipe):
+    def get(self, recipe, user):
         recipe_item = db.session.query(Recipe).filter_by(name=recipe.name).first()
         if recipe_item == None:
             return create_error_response(404, "Ei oo", "No recipe_item")
@@ -81,10 +85,10 @@ class RecipeItem(Resource):
             name=recipe_item.name,
             description=recipe_item.description
         )
-        data.add_control("self", url_for("recipeitem", recipe=recipe.name))
-        data.add_control("collection", url_for("recipecollection"))
-        data.add_control_edit_recipe(recipe)
-        data.add_control_delete_recipe(recipe)
+        data.add_control("self", url_for("api.recipeitem", user=user.name, recipe=recipe.name))
+        data.add_control("collection", url_for("api.recipecollection", user=user.name))
+        data.add_control_edit_recipe(recipe, user)
+        data.add_control_delete_recipe(recipe, user)
 
         return Response(json.dumps(data), status=200, mimetype=JSON)
     
