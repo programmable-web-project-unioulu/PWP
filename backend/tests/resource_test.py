@@ -256,7 +256,6 @@ class TestUserCollection(object):
             assert "id" in item
             assert "username" in item
             assert "email_address" in item
-            assert "password" in item   # assertion error REMOVED IF  adding "password": self.password - on line 131 in api.py
             assert "role" in item
     
     def test_post(self, client):
@@ -308,7 +307,6 @@ class TestUserItem(object):
         assert body["id"] == 1
         assert body["username"] == "dummyGuy1"
         assert body["email_address"] == "dummyGuy1@gmail.com"
-        assert body["password"] == "dummyGuy12341"
         assert body["role"] == "Basic User"
         resp = client.get(self.INVALID_URL)
         assert resp.status_code == 404
