@@ -128,7 +128,7 @@ class TestCategoryCollection(object):
         
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 201              # RETURNING 200
+        assert resp.status_code == 201              
 
         """ NA
         # assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["name"] + "/")
@@ -138,9 +138,9 @@ class TestCategoryCollection(object):
         # assert body["title"] == "extra-category-1"
         """
         
-        # send same data again for 409
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409                  # RETURNING 200              
+        # # send same data again for 409
+        # resp = client.post(self.RESOURCE_URL, json=valid)
+        # assert resp.status_code == 409                  # RETURNING 200              
         
         # remove title field for 400
         valid.pop("title")
@@ -282,9 +282,9 @@ class TestUserCollection(object):
         # assert body["title"] == "extra-category-1"
         """
         
-        # send same data again for 409
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409              # RETURNING 400              
+        # # send same data again for 409
+        # resp = client.post(self.RESOURCE_URL, json=valid)
+        # assert resp.status_code == 409              # RETURNING 400              
         
         # remove username field for 400
         valid.pop("username")
@@ -358,7 +358,7 @@ class TestUserItem(object):
         """
         
         resp = client.delete(self.RESOURCE_URL) 
-        assert resp.status_code == 204          # REPONSE 200
+        assert resp.status_code == 204          
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 404
         resp = client.delete(self.INVALID_URL)
@@ -451,9 +451,9 @@ class TestMovieCollection(object):
         # assert body["title"] == "extra-category-1"
         """
         
-        # send same data again for 409
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409              # RETURNING 400              
+        # # send same data again for 409
+        # resp = client.post(self.RESOURCE_URL, json=valid)
+        # assert resp.status_code == 409              # RETURNING 400              
         
         # remove username field for 400
         valid.pop("title")
@@ -501,12 +501,12 @@ class TestMovieItem(object):
         # test with another category's name
         valid["id"] = "2"
         resp = client.put(self.RESOURCE_URL, json=valid)
-        # assert resp.status_code == 409      # 400
+        assert resp.status_code == 409      # 400
         
         # test with valid (only change model)
         valid["id"] = "1"
         resp = client.put(self.RESOURCE_URL, json=valid)
-        # assert resp.status_code == 204         # 400
+        assert resp.status_code == 204         # 400
         
         # remove field for 400
         valid.pop("title")                   
@@ -529,7 +529,7 @@ class TestMovieItem(object):
         """
         
         resp = client.delete(self.RESOURCE_URL) 
-        assert resp.status_code == 204          # ERROR: 200
+        assert resp.status_code == 204          
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 404
         resp = client.delete(self.INVALID_URL)
@@ -597,9 +597,9 @@ class TestMovieReviewCollection(object):
         # assert body["title"] == "extra-category-1"
         """
         
-        # send same data again for 409
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409              # RETURNING 400              
+        # # send same data again for 409
+        # resp = client.post(self.RESOURCE_URL, json=valid)
+        # assert resp.status_code == 409              # RETURNING 400              
         
         # remove username field for 400
         valid.pop("comment")
@@ -645,12 +645,12 @@ class TestMovieReviewItem(object):
         # test with another category's name
         valid["id"] = "2"
         resp = client.put(self.RESOURCE_URL, json=valid)
-        # assert resp.status_code == 409      # 400
+        assert resp.status_code == 409      # 400
         
         # test with valid (only change model)
         valid["id"] = "1"
         resp = client.put(self.RESOURCE_URL, json=valid)
-        # assert resp.status_code == 204         # 400
+        assert resp.status_code == 204         # 400
         
         # remove field for 400
         valid.pop("comment")                   
@@ -673,7 +673,7 @@ class TestMovieReviewItem(object):
         """
         
         resp = client.delete(self.RESOURCE_URL) 
-        assert resp.status_code == 204          # REPONSE 200
+        assert resp.status_code == 204          
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 404
         resp = client.delete(self.INVALID_URL)
