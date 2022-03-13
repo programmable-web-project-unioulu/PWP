@@ -37,13 +37,13 @@ def put_blueprint(request, json_schema, db, update_object):
     except exc.IntegrityError as e:
         return str(e.orig), 409
 
-    return 204
+    return "", 204
 
 
 def delete_blueprint(db, object):
     try:
         db.session.delete(object)
         db.session.commit()
-        return 204
+        return "", 204
     except exc.IntegrityError as e:
         return str(e.orig), 409
