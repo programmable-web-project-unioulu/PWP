@@ -127,6 +127,7 @@ class User(db.Model, Serializer):
 		return {
 			"id": self.id,
 			"username": self.username,
+			"password": self.password,
 			"email_address": self.email_address,
 			"role": self.role
 		}
