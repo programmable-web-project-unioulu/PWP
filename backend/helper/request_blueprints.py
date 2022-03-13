@@ -16,7 +16,7 @@ def post_blueprint(request, json_schema, db, create_object):
     try:
         db.session.add(created_object)
         db.session.commit()
-        return 201
+        return "", 201
     except exc.IntegrityError as e:
         return str(e.orig), 409
 
