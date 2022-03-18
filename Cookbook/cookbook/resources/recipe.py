@@ -103,6 +103,7 @@ class RecipeItem(Resource):
             name=recipe_item.name,
             description=recipe_item.description,
             difficulty=recipe_item.difficulty,
+            ingredients=ingredients
         )
         data.add_control(
             "self", url_for("api.recipeitem", user=user.name, recipe=recipe.name)
