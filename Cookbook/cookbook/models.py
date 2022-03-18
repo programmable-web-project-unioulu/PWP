@@ -50,6 +50,27 @@ class Recipeingredient(db.Model):
     ingredient = relationship("Ingredient", backref=backref("recipeingredients", cascade="all, delete-orphan"  ))
     unit = relationship("Unit", backref=backref("recipeingredients", cascade="all, delete-orphan"  ))
 
+    @staticmethod
+    def json_schema():
+        schema = {
+            "type": "object",
+            "required": ["name", "amount", "unit"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Ingredients ID",
+            "type": "string"
+        }
+        props["amount"] = {
+            "description": "Amount of ingredient",
+            "type": "number"
+        }
+        props["unit"] = {
+            "description": "Ingredients unit",
+            "type": "string"
+        }
+        return schema
+
 class Recipe(db.Model):
     __tablename__ = 'recipe'
     id = Column(Integer, primary_key=True)
@@ -68,11 +89,11 @@ class Recipe(db.Model):
         }
         props = schema["properties"] = {}
         props["name"] = {
-            "description": "huutis",
+            "description": "Name of the recipe",
             "type": "string"
         }
         props["description"] = {
-            "description": "nauris",
+            "description": "Description of the recipe",
             "type": "string"
         }
         return schema
@@ -92,7 +113,7 @@ class Ingredient(db.Model):
         }
         props = schema["properties"] = {}
         props["name"] = {
-            "description": "name of ingredient",
+            "description": "Name of ingredient",
             "type": "string"
         }
         return schema
@@ -101,17 +122,17 @@ class Ingredient(db.Model):
 class Unit(db.Model):
     __tablename__ = "unit"
     id = Column(Integer, primary_key=True)
-    unit = Column(String(30), nullable=False)
+    name = Column(String(30), nullable=False)
 
     @staticmethod
     def json_schema():
         """Returns the schema for Unit"""
         schema = {
             "type": "object",
-            "required": ["unit"]
+            "required": ["name"]
         }
         props = schema["properties"] = {}
-        props["unit"] = {
+        props["name"] = {
             "description": "unit of measurement",
             "type": "string"
         }
