@@ -7,13 +7,13 @@ from jsonschema import validate, ValidationError
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
 
-from cookbook.utils import create_error_response, RecipeBuilder
+from ..utils import create_error_response, RecipeBuilder
 from .. import db
 from ..models import User, Recipe
 from ..constants import *
 
-class UserCollection(Resource):
 
+class UserCollection(Resource):
     def __init__(self) -> None:
         super().__init__()
 
@@ -22,10 +22,7 @@ class UserCollection(Resource):
         users = db.session.query(User).all()
         for u in users:
             data = RecipeBuilder(
-                name=u.name,
-                address=u.address,
-                email=u.email,
-                password=u.password
+                name=u.name, address=u.address, email=u.email, password=u.password
             )
             data.add_control("self", url_for("api.useritem", user=u.name))
             data.add_control("profile", USER_PROFILE)
@@ -36,23 +33,19 @@ class UserCollection(Resource):
 
         return Response(
             status=200,
-            response=json.dumps(body, indent=4, separators=(',', ': ')),
-            mimetype=MASON)
-
+            response=json.dumps(body, indent=4, separators=(",", ": ")),
+            mimetype=MASON,
+        )
 
     def post(self):
-        if  not request.json:
-            return create_error_response(415, "Not JSON", "Request content type must be JSON")
-        try:
-            validate(
-                request.json,
-                User.json_schema()
-            )
-        except ValidationError as e:
+        if not request.json:
             return create_error_response(
-                400,
-                "Invalid JSON",
-                str(e))
+                415, "Not JSON", "Request content type must be JSON"
+            )
+        try:
+            validate(request.json, User.json_schema())
+        except ValidationError as e:
+            return create_error_response(400, "Invalid JSON", str(e))
         try:
             u_name = request.json["name"]
             user_i = User.query.filter_by(name=u_name).first()
@@ -61,16 +54,17 @@ class UserCollection(Resource):
             u_address = request.json["address"]
             u_email = request.json["email"]
             u_password = request.json["password"]
-            if not isinstance(u_address, str) or not isinstance(u_email, str) or not isinstance(u_password, str):
+            if (
+                not isinstance(u_address, str)
+                or not isinstance(u_email, str)
+                or not isinstance(u_password, str)
+            ):
                 return create_error_response(400, "Invalid values")
         except KeyError:
             return create_error_response(400, "KeyError")
         try:
             new_user = User(
-            name=u_name,
-            address=u_address,
-            email=u_email,
-            password=u_password
+                name=u_name, address=u_address, email=u_email, password=u_password
             )
             db.session.add(new_user)
             db.session.commit()
@@ -80,21 +74,21 @@ class UserCollection(Resource):
         return Response(
             status=201,
             mimetype=MASON,
-            headers={"Location": url_for("api.useritem", user=new_user.name)}
+            headers={"Location": url_for("api.useritem", user=new_user.name)},
         )
 
-class UserItem(Resource):
 
+class UserItem(Resource):
     def get(self, user):
         user_i = db.session.query(User).filter_by(name=user.name).first()
         if not user_i:
             return create_error_response(404, "User not found")
-        
+
         data = RecipeBuilder(
             name=user_i.name,
             address=user_i.address,
             email=user_i.email,
-            password=user_i.password
+            password=user_i.password,
         )
         data.add_namespace("storage", LINK_RELATIONS_URL)
         data.add_control("self", url_for("api.useritem", user=user_i.name))
@@ -103,7 +97,11 @@ class UserItem(Resource):
         data.add_control_edit_user(user.name)
         data.add_control_delete_user(user.name)
 
-        return Response(json.dumps(data, indent=4, separators=(',', ': ')), status=200, mimetype=JSON)
+        return Response(
+            json.dumps(data, indent=4, separators=(",", ": ")),
+            status=200,
+            mimetype=JSON,
+        )
 
     def put(self, user):
         user_i = db.session.query(User).filter_by(name=user.name).first()
@@ -130,7 +128,7 @@ class UserItem(Resource):
         user_i = db.session.query(User).filter_by(name=user.name).first()
         if not user_i:
             return create_error_response(404, "Not Found", "User not found")
-        
+
         db.session.delete(user_i)
         db.session.commit()
         return Response(status=204, mimetype=MASON)
@@ -142,6 +140,6 @@ class UserConverter(BaseConverter):
         if db_user is None:
             raise NotFound
         return db_user
-    
+
     def to_url(self, db_user):
         return str(db_user)

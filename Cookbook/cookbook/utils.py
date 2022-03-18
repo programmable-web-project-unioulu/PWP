@@ -65,33 +65,33 @@ class MasonBuilder(dict):
 
 class RecipeBuilder(MasonBuilder):
     
-    def add_control_recipes_all(self):
+    def add_control_recipes_all(self, user):
         self.add_control(
             ctrl_name="cookbook:recipes-all",
-            href=url_for("recipecollection"),
+            href=url_for("api.recipecollection", user=user),
             title="All recipes",
             method="GET",
             encoding="JSON"
         )
 
-    def add_control_add_recipe(self):
+    def add_control_add_recipe(self, user):
         self.add_control_post(
             ctrl_name="cookbook:add-recipe",
             title="Add a new prod",
-            href=url_for("recipecollection"),
+            href=url_for("api.recipecollection", user=user),
             schema=Recipe.json_schema()
         )
 
-    def add_control_delete_recipe(self, recipe_name):
+    def add_control_delete_recipe(self, recipe_name, user):
         self.add_control_delete(
             "cookbook:delete",
-            url_for("recipeitem", recipe=recipe_name.name)
+            url_for("api.recipeitem", user=user.name, recipe=recipe_name.name)
         )
 
-    def add_control_edit_recipe(self, recipe_name):
+    def add_control_edit_recipe(self, recipe_name, user):
         self.add_control_put(
             "Edit this recipe",
-            url_for("recipeitem", recipe=recipe_name.name),
+            url_for("api.recipeitem", user=user.name, recipe=recipe_name.name),
             Recipe.json_schema()
         )
     
