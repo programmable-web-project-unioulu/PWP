@@ -46,9 +46,9 @@ class Recipeingredient(db.Model):
     amount = Column(Integer)
     unit_id = Column(Integer, ForeignKey('unit.id'), primary_key=True)
 
-    recipe_rel = relationship("Recipe", backref=backref("recipeingredients" ))
-    ingredient = relationship("Ingredient", backref=backref("recipeingredients" ))
-    unit = relationship("Unit", backref=backref("recipeingredients" ))
+    recipe_rel = relationship("Recipe", backref=backref("recipeingredients", cascade="all, delete-orphan" ))
+    ingredient = relationship("Ingredient", backref=backref("recipeingredients", cascade="all, delete-orphan"  ))
+    unit = relationship("Unit", backref=backref("recipeingredients", cascade="all, delete-orphan"  ))
 
 class Recipe(db.Model):
     __tablename__ = 'recipe'
@@ -58,7 +58,7 @@ class Recipe(db.Model):
     difficulty = Column(String(20), nullable=True)
     description = Column(String(2000), nullable=False)
 
-    user = relationship("User", backref=backref("user" ))
+    user = relationship("User", backref=backref("user", cascade="all, delete-orphan"  ))
 
     @staticmethod
     def json_schema():
