@@ -1,7 +1,9 @@
 import json
+from sqlite3 import IntegrityError
 from flask import Response, request, url_for
 from .constants import *
 from .models import *
+from . import db
 
 
 class MasonBuilder(dict):
@@ -133,3 +135,19 @@ def create_error_response(status_code, title, message=None):
     data.add_error(title, message)
     data.add_control("profile", href=ERROR_PROFILE)
     return Response(json.dumps(data), status_code, mimetype=MASON)
+
+def searchModels(param, dbmodel):
+    result =db.session.query(dbmodel
+    ).filter_by(name=param
+    ).first()
+    if not result:
+        try:
+            ing_bob = dbmodel(name=param)
+            db.session.add(ing_bob)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+    result =db.session.query(dbmodel
+    ).filter_by(name=param
+    ).first()
+    return result.id
