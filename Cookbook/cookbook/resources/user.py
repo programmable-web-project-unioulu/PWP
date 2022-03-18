@@ -1,5 +1,4 @@
 import json
-import string
 from flask import request, Response, url_for
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -9,14 +8,11 @@ from werkzeug.routing import BaseConverter
 
 from ..utils import create_error_response, RecipeBuilder
 from .. import db
-from ..models import User, Recipe
+from ..models import User
 from ..constants import *
 
 
 class UserCollection(Resource):
-    def __init__(self) -> None:
-        super().__init__()
-
     def get(self):
         body = RecipeBuilder(items=[])
         users = db.session.query(User).all()

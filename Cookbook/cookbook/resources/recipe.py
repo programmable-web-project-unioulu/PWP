@@ -14,7 +14,7 @@ from jsonschema import validate, ValidationError, draft7_format_checker
 class RecipeCollection(Resource):
     def get(self, user):
         build = RecipeBuilder(items=[])
-        inventory = db.session.query(Recipe).all()
+        inventory = db.session.query(Recipe).filter_by(user_id=user.id).all()
         for item in inventory:
             data = RecipeBuilder(
                 name=item.name,
@@ -55,12 +55,17 @@ class RecipeCollection(Resource):
             p_desc = request.json["description"]
             if not isinstance(p_desc, str):
                 return create_error_response(400, "Invalid values")
+            p_diff = request.json.get("difficulty", "undefined")
+            if p_diff not in ["easy", "medium", "hard"]:
+                p_diff = "undefined"
         except KeyError:
             return create_error_response(400, "KeyError")
         try:
             new_recipe = Recipe(
                 name=p_name,
                 description=p_desc,
+                difficulty=p_diff,
+                user_id = user.id
             )
             db.session.add(new_recipe)
             db.session.commit()
