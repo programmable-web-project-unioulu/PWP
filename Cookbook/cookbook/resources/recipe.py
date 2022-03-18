@@ -2,7 +2,7 @@ import json
 from sqlite3 import IntegrityError
 from flask import url_for, Response, request
 from flask_restful import Api, Resource
-from ..models import Recipe
+from ..models import Recipe, Ingredient, Recipeingredient, Unit
 from .. import db
 from ..utils import RecipeBuilder, create_error_response
 from ..constants import *
@@ -79,8 +79,21 @@ class RecipeCollection(Resource):
 class RecipeItem(Resource):
     def get(self, recipe, user):
         recipe_item = db.session.query(Recipe).filter_by(name=recipe.name).first()
+        recipe_ingredient = db.session.query(Ingredient.name,
+                                        Recipeingredient.amount,
+                                        Unit.unit
+        ).filter(
+            Recipeingredient.ingredient_id == Ingredient.id
+        ).filter(
+            Recipeingredient.id == recipe.id
+        ).filter(
+            Unit.id == Recipeingredient.unit_id
+        ).all()
         if recipe_item == None:
             return create_error_response(404, "Ei oo", "No recipe_item")
+        ingredients = []
+        for row in recipe_ingredient:
+            ingredients.append(list(row))
         data = RecipeBuilder(
             name=recipe_item.name,
             description=recipe_item.description,
