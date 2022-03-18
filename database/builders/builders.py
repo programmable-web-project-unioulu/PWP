@@ -3,6 +3,7 @@ from sqlite3 import IntegrityError
 from flask import url_for, Response, request
 from flask_restful import Api, Resource
 from database.models import Recipe
+from models import Ingredient, Recipeingredient, Unit
 from .. import db
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
@@ -184,7 +185,23 @@ class RecipeCollection(Resource):
 class RecipeItem(Resource):
     
     def get(self, recipe):
-        recipe_item = db.session.query(Recipe).filter_by(name=recipe.name).first()
+        recipe_name = db.session.query(Recipe).filter_by(name=recipe.name).first()
+        recipe_item = db.session.query(Ingredient.name,
+                                        Recipeingredient.amount,
+                                        Unit.unit
+        ).filter(
+            Recipeingredient.ingredient_id == Ingredient.id
+        ).filter(
+            Recipeingredient.id == recipe.id
+        ).filter(
+            Unit.id == Recipeingredient.unit_id
+        ).all()
+        if recipe_item == None:
+            return create_error_response(404, "Ei oo", "No recipe_item")
+        ingredients = []
+        ings_all = []
+        for row in recipe_item:
+            ingredients.append(list(row))
         if recipe_item == None:
             return create_error_response(404, "Ei oo", "No recipe_item")
         data = RecipeBuilder(
