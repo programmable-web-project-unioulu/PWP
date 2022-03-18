@@ -205,7 +205,7 @@ class RecipeItem(Resource):
         if recipe_item == None:
             return create_error_response(404, "Ei oo", "No recipe_item")
         data = RecipeBuilder(
-            name=recipe_item.name,
+            name=recipe_name,
             description=recipe_item.description
         )
         data.add_control("self", url_for("recipeitem", recipe=recipe.name))
