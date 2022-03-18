@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from cookbook.resources.user import UserCollection, UserItem, UserConverter
-from cookbook.resources.recipe import RecipeCollection, RecipeItem, RecipeConverter
+from .resources.user import UserCollection, UserItem, UserConverter
+from .resources.recipe import RecipeCollection, RecipeItem, RecipeConverter
 
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
