@@ -1,3 +1,6 @@
+"""This file imports the API configuration
+    for routing"""
+
 from flask import Blueprint
 from flask_restful import Api
 
