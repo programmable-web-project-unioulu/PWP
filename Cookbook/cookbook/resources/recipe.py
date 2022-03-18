@@ -4,7 +4,7 @@ from flask import url_for, Response, request
 from flask_restful import Api, Resource
 from ..models import Recipe, Ingredient, Recipeingredient, Unit
 from .. import db
-from ..utils import RecipeBuilder, create_error_response
+from ..utils import RecipeBuilder, create_error_response, searchModels
 from ..constants import *
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
@@ -39,27 +39,33 @@ class RecipeCollection(Resource):
         )
 
     def post(self, user):
+
         if request.json == None:
             return create_error_response(415, "BAD CONTENT", "MUST BE JSON")
         try:
             validate(
-                request.json, Recipe.json_schema(), format_checker=draft7_format_checker
+                request.json["recipe"], Recipe.json_schema(), format_checker=draft7_format_checker
             )
+            for ingredient in request.json["ingredients"]:
+                validate(
+                    ingredient, Recipeingredient.json_schema(), format_checker=draft7_format_checker
+                )
         except ValidationError as e:
             return create_error_response(400, "Invalid JSON", str(e))
         try:
-            p_name = request.json["name"]
+            p_name = request.json["recipe"]["name"]
             recipe_name = Recipe.query.filter_by(name=p_name).first()
             if recipe_name:
                 return create_error_response(409, "ON JO", "Duplicate 🥝")
-            p_desc = request.json["description"]
+            p_desc = request.json["recipe"]["description"]
             if not isinstance(p_desc, str):
                 return create_error_response(400, "Invalid values")
-            p_diff = request.json.get("difficulty", "undefined")
-            if p_diff not in ["easy", "medium", "hard"]:
+            p_diff = request.json["recipe"].get("difficulty", "undefined")
+            if p_diff not in DIFFICULTIES:
                 p_diff = "undefined"
         except KeyError:
-            return create_error_response(400, "KeyError")
+            return create_error_response(400, "KeyError", "SOS")
+        
         try:
             new_recipe = Recipe(
                 name=p_name,
@@ -71,6 +77,26 @@ class RecipeCollection(Resource):
             db.session.commit()
         except IntegrityError:
             return create_error_response(409, "Duplicate", "Database error")
+
+        recipe = db.session.query(Recipe).filter_by(name=p_name).first()
+
+        for ingredient in request.json["ingredients"]:
+            recipe_id = recipe.id
+            ing_id = searchModels(ingredient["name"], Ingredient)
+            ing_unit = searchModels(ingredient["unit"], Unit)
+            ing_amount = ingredient["amount"]
+            try:
+                new_ingredient = Recipeingredient(
+                id=recipe_id,
+                ingredient_id=ing_id,
+                amount=ing_amount,
+                unit_id=ing_unit
+            )
+                db.session.add(new_ingredient)
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                return create_error_response(409, "Duplicate", "Database error")
 
         return Response(
             status=201,
@@ -86,7 +112,7 @@ class RecipeItem(Resource):
         recipe_item = db.session.query(Recipe).filter_by(name=recipe.name).first()
         recipe_ingredient = db.session.query(Ingredient.name,
                                         Recipeingredient.amount,
-                                        Unit.unit
+                                        Unit.name
         ).filter(
             Recipeingredient.ingredient_id == Ingredient.id
         ).filter(
