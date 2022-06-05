@@ -1,7 +1,7 @@
 # PWP SPRING 2021
 # PROJECT NAME
 # Group information
-* Student 1. Name and email
+* Student 1. Arto Kinos akinos@student.oulu.fi
 * Student 2. Name and email
 * Student 3. Name and email
 
