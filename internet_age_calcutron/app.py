@@ -25,4 +25,8 @@ def mult(number_1, number_2):
 
 @app.route("/div/<float:number_1>/<float:number_2>/")
 def div(number_1, number_2):
-    return "{}".format(number_1 / number_2)
+    if number_2 == 0.0:
+        result = "NaN"
+    else:
+        result = number_1 / number_2
+    return "{}".format(result)

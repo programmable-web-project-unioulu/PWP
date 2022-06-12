@@ -10,7 +10,7 @@ db = SQLAlchemy(app)
 
 class StorageItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    handle = db.Column(db.String(64), nullable=False)
+    handle = db.Column(db.String(64), nullable=False, unique=True)
     qty = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
 
