@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from django.db import IntegrityError
+from sqlalchemy.ext.declarative import DeclarativeMeta
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
@@ -47,7 +48,24 @@ class Sensor(db.Model):
 
     measurements = db.relationship("Measurement", cascade="all, delete-orphan", back_populates="sensor")
 
-data = {"handle":"Handleri", "weight": 33.3, "price":3.33}
+class AlchemyEncoder(json.JSONEncoder):
+    """ this class and function copied from https://stackoverflow.com/questions/5022066/how-to-serialize-sqlalchemy-result-to-json"""
+
+    def default(self, obj):
+        if isinstance(obj.__class__, DeclarativeMeta):
+            # an SQLAlchemy class
+            fields = {}
+            for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
+                data = obj.__getattribute__(field)
+                try:
+                    json.dumps(data) # this will fail on non-encodable values, like other classes
+                    fields[field] = data
+                except TypeError:
+                    fields[field] = None
+            # a json-encodable dict
+            return fields
+
+        return json.JSONEncoder.default(self, obj)
 
 @app.route("/product/add/", methods=['POST'])
 def add_product():
@@ -74,19 +92,19 @@ def add_product():
 @app.route("/storage/<product>/add/", methods=['POST'])
 def add_to_storage(product):
     try:
-        prod_handle = str(product)
-        print(prod_handle)
-        product = Product.query.filter_by(handle=prod_handle).first()
-        print(product)
+        product = Product.query.filter_by(handle=product).first()
         if product:
             location = str(request.json["location"])
             qty = int(request.json["qty"])
-            product.append() #TODO inventory
-            Inventory = Product(
+            inventory = StorageItem(
                 location=location,
-                qty=qty
+                qty=qty,
+                product_id=product.id
             )
-            db.session.add(prod)
+            #product = db.relationship("Product",backref=) #TODO
+            product.in_storage.append(inventory)
+            db.session.add(product)
+            db.session.add(inventory)
             db.session.commit()
             return "PASS",201
         else:
@@ -98,12 +116,19 @@ def add_to_storage(product):
 def get_inventory():
     try:
         storage = Product.query.all()
-        print(storage)
         for product in storage:
-            print(product.handle)
-            print(product.weight)
-            print(product.price)
-            print("")
+            product_as_json = json.dumps(product,cls=AlchemyEncoder)
+            #print(product_as_json)
+            #print(product.handle)
+            #print(product.weight)
+            #print(product.price)
+            product_id = product.id
+            inventory = StorageItem.query.all()
+            for item in inventory:
+                #print(item.product_id)
+                if item.product_id == product_id:
+                    #print(f"location:{item.location}")
+                    #print(f"qty: {item.qty}")
         return "PASS",201
     except (KeyError,ValueError, IntegrityError):
         return "Qty must be and integer", 400
