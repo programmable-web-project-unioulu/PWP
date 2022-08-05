@@ -92,18 +92,18 @@ def get_inventory():
                 if storage[item_count].product_id == product_id:
                     inventory_item = [
                         storage[item_count].location,
-                       storage[item_count].qty
+                    storage[item_count].qty
                     ]
                     array_of_items_per_product.append(inventory_item)
                 
             storage_dict = {
-                'handle': all_products[product].handle,
-                'weight': all_products[product].weight,
-                'price': all_products[product].price,
+                'handle': all_products[product_count].handle,
+                'weight': all_products[product_count].weight,
+                'price': all_products[product_count].price,
                 'inventory': array_of_items_per_product
             }
             array_of_products.append(storage_dict)
-
+    
         return json.dumps(array_of_products), 200
     except:
         return "GET method required", 405 
