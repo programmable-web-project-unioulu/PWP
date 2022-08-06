@@ -44,7 +44,7 @@ def add_product():
         )
         db.session.add(product)
         db.session.commit()
-        
+
         return "{}", 201
     except (KeyError, ValueError):
         return "Weight and price must be numbers", 400
@@ -53,9 +53,9 @@ def add_product():
     except (TypeError, OverflowError):
         return "Request content type must be JSON", 415
 
+
 @app.route("/storage/<product>/add/", methods=["POST"])
 def add_to_storage(product):
-
     product = Product.query.filter_by(handle=product).first()
     try:
         location_value = request.json["location"]
@@ -68,15 +68,15 @@ def add_to_storage(product):
         )
         db.session.add(storage_item)
         db.session.commit()
-        
+
         return "{}", 201
     except (KeyError, ValueError):
         return "Qty must be an integer", 400
     except (TypeError, OverflowError):
         return "Request content type must be JSON", 415
-    except:
+    except AttributeError:
         return "Product not found", 404
-    
+
 
 @app.route("/storage/", methods=["GET"])
 def get_inventory():
@@ -84,29 +84,26 @@ def get_inventory():
     all_products = Product().query.all()
 
     array_of_products = []
-    try:
-        for product_count, product in enumerate(all_products):
-            product_id = all_products[product_count].id
-            array_of_items_per_product = []
-            for item_count, item in enumerate(storage):
-                if storage[item_count].product_id == product_id:
-                    inventory_item = [
-                        storage[item_count].location,
+    for [product_count, _] in enumerate(all_products):
+        product_id = all_products[product_count].id
+        array_of_items_per_product = []
+        for [item_count, _] in enumerate(storage):
+            if storage[item_count].product_id == product_id:
+                inventory_item = [
+                    storage[item_count].location,
                     storage[item_count].qty
-                    ]
-                    array_of_items_per_product.append(inventory_item)
-                
-            storage_dict = {
-                'handle': all_products[product_count].handle,
-                'weight': all_products[product_count].weight,
-                'price': all_products[product_count].price,
-                'inventory': array_of_items_per_product
-            }
-            array_of_products.append(storage_dict)
-    
-        return json.dumps(array_of_products), 200
-    except:
-        return "GET method required", 405 
+                ]
+                array_of_items_per_product.append(inventory_item)
+
+        storage_dict = {
+            'handle': all_products[product_count].handle,
+            'weight': all_products[product_count].weight,
+            'price': all_products[product_count].price,
+            'inventory': array_of_items_per_product
+        }
+        array_of_products.append(storage_dict)
+
+    return json.dumps(array_of_products), 200
 
 
 @app.errorhandler(HTTPException)
