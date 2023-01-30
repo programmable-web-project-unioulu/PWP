@@ -60,7 +60,7 @@ A really short version of an overview for the RESTful Web API could be:
 
 ---
 
-:pencil2: *Write your description here*
+:pencil2: This application provides API endpoints that allow users to monitor and analyze log files for anomalies or signs of malicious attacks. It uses advanced natural language processing techniques to identify patterns in log data and flag potential security threats. The API can be easily integrated into existing systems, making it an efficient and convenient solution for organizations to secure their log data. The application is user-friendly, scalable and provides real-time insights, making it a comprehensive tool for enhancing log security. The LogBot web API offers functionalities that aim to provide a more effective tool for security developers and analysts working on web applications. The primary motivation of the API is to allow developers to get data that matters to them immediately and without the need to perform complex analytics and coding. The API abstracts away the complex logic related to machine learning algorithms and provides an easy to use chat-bot that answers queries related to the log-files.The API endpoints created provide the following functionality:Upload log filesThis endpoint allows the developer to upload their files to the backend server for analysis via ML algorithms. The api returns a summary of the log files uploaded and contains relevant information regarding the required statistics (security, visits, etc) Query log filesThis endpoint allows the developer to query specific segments from the log data file itself. The API endpoint returns the relevant segments from the file to the user. The queries can be used to perform analysis on specific segments of the log file if needed Query Feedback SummaryThis endpoint works to further expand upon the feedback provided by our API on uploaded log files. The user can query, extract and manipulate the feedback returned by the other API via this API endpointThis API could exist as a tool in use by security analyst groups, to aid them in finding vulnerabilities, malicious actions/actors, log trails of malicious behavior, usage patterns, possible logical flaws and a host of other potential vulnerabilities that as of yet remain hidden. This application can potentially be used to pre-emptively stop malicious actions before they happen as well as providing additional support in creating a more secure and protected system.
 
 ---
 
@@ -89,7 +89,11 @@ This section is important because it outlines the concepts that you will later i
 
 ---
 
-:pencil2: *Write your text here and draw the diagram*
+:pencil2: The API's allows the user to upload data and ask interactive questions to the chatbot based on the user's uploaded file. The user can upload multiple files to the platform/Chatbot, and they should be with distinct names. All uploaded files are saved as historical data by indexing it to a database at the backend. The user can ask questions about the previously uploaded files specifying the file name. The user's previous conversation is saved and can be referred back. The user is allowed to make a "small talk" with chatbot API and share relevant insights.The API would use the log file data as input and provide a response based on the group's queries. 
+
+Below diagram explains the overall flow:
+![image](https://user-images.githubusercontent.com/34895097/215592972-d46d1a64-b780-4371-bcf0-abcc55d6e868.png)
+
 
 ---
 
@@ -107,7 +111,7 @@ Describe at least one client and one service that could use your Web API. You mu
 
 ---
 
-:pencil2: *Write your text here*
+:pencil2: A security analyst group working for a financial organization could use the Web API to analyze log files from their network security devices, such as firewalls, intrusion detection systems, and routers. The group could upload log files to the API and use its natural language processing capabilities to ask questions about the log data. For example, the group could ask questions like "What are the most frequent attack types in the log file?", "What is the distribution of log events by severity?", or "What is the origin of the most severe attacks?". The API's ability to process and analyze large amounts of log data in real-time would allow the group to quickly and efficiently identify anomalies and potential security threats. As mentioned before, the group could upload multiple log files to the API, each with a distinct name, and refer to the previously uploaded files in their queries. The API would save all uploaded files as historical data in a database, allowing the group to refer back to previous conversations and easily compare the results from different log files. In this use case, the Web API serves as a log analysis tool for the security analyst group, allowing them to quickly and easily analyze log data from their network security devices and make data-driven decisions to improve the security of their network.
 
 
 
@@ -129,7 +133,7 @@ The purpose of this task is to get more familiar with what an API is. This will 
 
 
 
-:pencil2: *Write your text here*
+:pencil2: We would be using CRUD RESTFul API's for this framework. CRUD REST API (Create, Read, Update, Delete Representational State Transfer Application Programming Interface) is a commonly used design pattern for implementing web services. A CRUD REST API provides a way to create, read, update and delete log data entries in a log summarization project through the use of HTTP methods (POST, GET, PUT and DELETE).  The API allows for efficient storage, retrieval, updating, and deletion of summarized log data for analysis. A CRUD REST API is a valuable tool in log summarization projects. This type of API provides a standardized interface for accessing log data, making it easier to integrate with other systems and tools. This standardization helps to streamline data management, making it more efficient to retrieve the data needed for analysis. The security of log data is also improved with a CRUD REST API. Only authorized users are granted access to the data, which reduces the risk of data breaches and unauthorized access. In terms of ease of integration, the CRUD REST API is widely adopted and has strong support in many programming languages. This makes it easy to integrate with other systems and tools, ensuring a seamless process for log data analysis. The standardization and ease of integration of a CRUD REST API help to make log data analysis a more streamlined process.
 
 ---
 
@@ -137,8 +141,8 @@ The purpose of this task is to get more familiar with what an API is. This will 
 ## Resources allocation
 |**Task** | **Student**|**Estimated time**|
 |:------: |:----------:|:----------------:|
-|||| 
-|||| 
-|||| 
-|||| 
+|API provided to upload log files + Python-flask framework| Talha_Zeeshan| Basic - 6/3/2023, final - 27/3/2023| 
+|API provided to access/download summary + Database|Kazi_Haque| Basic - 13/2/2023, Final - 27/3/2023| 
+|API provided to query summary + UI |justin_seby| Basic - 6/3/2023, final - 1/5/2023| 
+|API provided to query uploaded file or small talk + Analysis and generation algorithm| Prasasthy_Balasubramanian|Basic - 6/3/2023, final - 1/5/2023| 
 |||| 
