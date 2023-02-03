@@ -26,20 +26,6 @@ class Group(db.Model):
     breed = db.relationship("Breed", back_populates="in_group")
 
 
-class Breed(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True, nullable=False)
-    char_id = db.Column(db.Integer, db.ForeignKey("char.id"))
-    facts_id = db.Column(db.integer, db.ForeignKey("facts.id"))
-
-    # creates a connection from Breed -> Group
-    in_group = db.relationship("Group", back_populates="breed")
-    # creates a connection from Characteristics -> Breed
-    char = db.relationship("Characteristics", back_populates="in_breed")
-    # creates a connection from FunnyFacts -> Breed
-    facts = db.relationship("FunnyFacts", back_populates="breed_fact")
-
-
 class Characteristics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     life_span = db.Column(db.String(64), nullable=False)
@@ -50,9 +36,26 @@ class Characteristics(db.Model):
     in_breed = db.relationship("Breed", back_populates="char")
 
 
-class FunnyFacts(db.Model):
+class Facts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    funny_fact = db.Column(db.String(128), nullable=False)
+    fact = db.Column(db.String(128), nullable=False)
 
     # creates a connection from FunnyFacts -> Breed
-    breed_fact = db.relationship("Breed", back_populates="facts")
+    breed_fact = db.relationship("Breed", back_populates="fact")
+
+
+class Breed(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True, nullable=False)
+    char_id = db.Column(db.Integer, db.ForeignKey("characteristics.id"))
+    facts_id = db.Column(db.Integer, db.ForeignKey("facts.id"))
+
+    # creates a connection from Breed -> Group
+    in_group = db.relationship("Group", back_populates="breed")
+    # creates a connection from Characteristics -> Breed
+    char = db.relationship("Characteristics", back_populates="in_breed")
+    # creates a connection from FunnyFacts -> Breed
+    fact = db.relationship("Facts", back_populates="breed_fact")
+
+
+db.create_all()
