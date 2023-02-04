@@ -20,11 +20,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
-    breed_id = db.Column(db.Integer, db.ForeignKey("breed.id"))
-
-    # creates a connection from Breed -> Group
-    breed = db.relationship("Breed", back_populates="in_group")
-
+    
+    # creates a connection from Group -> Breed
+    breeds = db.relationship("Breed", back_populates="group")
 
 class Characteristics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,30 +30,31 @@ class Characteristics(db.Model):
     coat_length = db.Column(db.String(64), nullable=True)
     exercise = db.Column(db.String(64), nullable=True)
 
-    # creates a connection from Characteristics -> Breed
-    in_breed = db.relationship("Breed", back_populates="char")
-
+    in_breed = db.relationship("Breed", back_populates="characteristics")
 
 class Facts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fact = db.Column(db.String(128), nullable=False)
-
-    # creates a connection from FunnyFacts -> Breed
-    breed_fact = db.relationship("Breed", back_populates="fact")
-
+    
+    # creates a connection from Facts -> Breed
+    breed_id = db.Column(db.Integer, db.ForeignKey("breed.id"))
+    breed = db.relationship("Breed", back_populates="facts")
 
 class Breed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     char_id = db.Column(db.Integer, db.ForeignKey("characteristics.id"))
-    facts_id = db.Column(db.Integer, db.ForeignKey("facts.id"))
-
+    
     # creates a connection from Breed -> Group
-    in_group = db.relationship("Group", back_populates="breed")
-    # creates a connection from Characteristics -> Breed
-    char = db.relationship("Characteristics", back_populates="in_breed")
-    # creates a connection from FunnyFacts -> Breed
-    fact = db.relationship("Facts", back_populates="breed_fact")
+    group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+    group = db.relationship("Group", back_populates="breeds")
+    
+    # creates a connection from Breed -> Characteristics
+    characteristics = db.relationship("Characteristics", back_populates="in_breed", uselist=False)
+    
+    # creates a connection from Breed -> Facts
+    facts = db.relationship("Facts", back_populates="breed")
+
 
 
 db.create_all()
