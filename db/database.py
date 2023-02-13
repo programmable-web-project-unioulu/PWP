@@ -29,12 +29,12 @@ class Characteristics(db.Model):
     life_span = db.Column(db.String(64), nullable=False)
     coat_length = db.Column(db.String(64), nullable=True)
     exercise = db.Column(db.String(64), nullable=True)
-
+    
     in_breed = db.relationship("Breed", back_populates="characteristics")
 
 class Facts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    fact = db.Column(db.String(128), nullable=False)
+    fact = db.Column(db.String(128), nullable=True)
     
     # creates a connection from Facts -> Breed
     breed_id = db.Column(db.Integer, db.ForeignKey("breed.id"))
