@@ -20,6 +20,14 @@ Install pymongo using pip install
 `pip install pymongo`
 
 ## Create & Load Database
+Install and start a Mongodb instance in your virtual machine
+'sudo apt get update'
+'sudo apt install mongodb'
+'sudo systemctl start mongodb'
+
+To check the status and stop Mongodb instance
+'sudo systemctl status mongodb'
+'sudo systemctl stop mongodb'
 
 Run DataHandle.py in the db directory to create the collections in mongoDB
 
