@@ -29,7 +29,7 @@ class Characteristics(db.Model):
     life_span = db.Column(db.String(64), nullable=False)
     coat_length = db.Column(db.String(64), nullable=True)
     exercise = db.Column(db.String(64), nullable=True)
-
+    
     in_breed = db.relationship("Breed", back_populates="characteristics")
 
 class Facts(db.Model):
