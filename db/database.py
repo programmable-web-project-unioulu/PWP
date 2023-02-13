@@ -34,7 +34,7 @@ class Characteristics(db.Model):
 
 class Facts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    fact = db.Column(db.String(128), nullable=True)
+    fact = db.Column(db.String(128), nullable=False)
     
     # creates a connection from Facts -> Breed
     breed_id = db.Column(db.Integer, db.ForeignKey("breed.id"))
