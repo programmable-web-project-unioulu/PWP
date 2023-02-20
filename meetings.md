@@ -12,6 +12,7 @@
 - The team discussed the duration required for each section of the project and allocated tasks to each member during the meeting. 
 - Mr. Ivan expressed his concern about the challenges associated with the NLP aspect of the project and recommended that the team focus more on the API side.
 - The team discussed the need to ensure that the REST API is being used appropriately.
+- During the discussion, Mr. Ivan mentioned that the points allocated for the first deliverable are not finalized and subject to revision based on the review process. He suggested that the team may be able to obtain additional points through the review and revision process."
 ### Action points
 *List here the actions points discussed with assistants*
 During the meeting, several action points were discussed, including:
