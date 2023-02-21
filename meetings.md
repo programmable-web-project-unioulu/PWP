@@ -38,14 +38,20 @@ First return meeting with Ivan. Conversation about the initial idea of API and d
 
 
 ## Meeting 3.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: 21.2.2023**
+* **ASSISTANTS: Ivan**
+* **Participants: Martti, Juho, Kalle, Lauri
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Discussion about the database model that we have provided thus far. Lightly evaluating the current model. It was found that some other datatypes could be chosen for some columns (excercise time from varchar -> datetime OR float). Some work was found to be done for the database model to achieve higher grade.
 
 ### Action points
-*List here the actions points discussed with assistants*
+- Provide more information in README.md from the database architechture (technologies used etc...)
+- Mention which software is used in wiki information (to show tables) to help assistants
+- Provide all information available, e.g. database limitations, hyperlinks in README.md
+- Add more restrictions to data, include to see easily in wiki
+- Better README for database, include own README in database folder. Take some hint from CONTRIBUTING.md folder
+- Add ondelete behavior
 
 
 
