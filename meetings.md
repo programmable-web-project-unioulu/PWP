@@ -2,7 +2,7 @@
 
 ## Meeting 1.
 * **DATE: 22.1.2023**
-* **ASSISTANTS: Martti, Juho, Kalle, Lauri**
+* **Participants: Martti, Juho, Kalle, Lauri**
 
 ### Minutes
 Initial meeting, conversation about which type of API should be create.
@@ -20,14 +20,19 @@ Initial actions to take in the first weeks of development.
 
 
 ## Meeting 2.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE: 3.2.2023**
+* **ASSISTANTS: Ivan**
+* **Participants: Martti, Juho, Kalle, Lauri **
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+First return meeting with Ivan. Conversation about the initial idea of API and database model. The API meets the requirements for this course, however some additional functionality to achieve even greater score. Overview was good, API uses was found good and related work was good, but needed some tuning. 
+
 
 ### Action points
-*List here the actions points discussed with assistants*
+- Fix the wiki by given feedback, one more API usage
+- Continue with current database model
+- Initialize the db with minimal two entries
+- Create contributing guidelines to repo
 
 
 
