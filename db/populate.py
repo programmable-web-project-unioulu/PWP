@@ -1,3 +1,4 @@
+
 from database import db, Group, Breed, Characteristics, Facts
 import os
 
@@ -16,10 +17,10 @@ def init_db():
     
 
     # Create a new characteristics
-    characteristics_at = Characteristics(life_span="10 years", coat_length="long", exercise="daily")
-    characteristics_asd = Characteristics(life_span="over 10 years", coat_length="short", exercise="more than two hours a day")
-    characteristics_am = Characteristics(life_span="over 10 years", coat_length="medium", exercise="more than two hours a day")
-    characteristics_as = Characteristics(life_span="over 10 years", coat_length="medium", exercise="more than two hours a day")
+    characteristics_at = Characteristics(life_span=6, coat_length=0.2, exercise=1.2)
+    characteristics_asd = Characteristics(life_span=7, coat_length=0.3, exercise=3.3)
+    characteristics_am = Characteristics(life_span=8, coat_length=0.4, exercise=3.5)
+    characteristics_as = Characteristics(life_span=9, coat_length=0.99, exercise=4.75)
 
     # Create a new breed and associate it with the group and characteristics
     breed_at = Breed(name="Australian Terrier", group=terriergroup, characteristics=characteristics_at)

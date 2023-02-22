@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
+from django.db.models import Q
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
@@ -26,9 +27,11 @@ class Group(db.Model):
 
 class Characteristics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    life_span = db.Column(db.String(64), nullable=False)
-    coat_length = db.Column(db.String(64), nullable=True)
-    exercise = db.Column(db.String(64), nullable=True)
+    coat_length = db.Column(db.Float, db.CheckConstraint('coat_length<1'), nullable=True)
+    life_span = db.Column(db.Integer, db.CheckConstraint('life_span>5'),
+                    db.CheckConstraint('life_span<25'), nullable=False)
+    exercise = db.Column(db.Float, db.CheckConstraint('exercise>0'),
+                    db.CheckConstraint('exercise<5'), nullable=True)
     
     in_breed = db.relationship("Breed", back_populates="characteristics")
 
