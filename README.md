@@ -9,9 +9,28 @@
 __Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
 
 ### Database instructions
-All dependencies are listed in the requirements.txt -file. Database is created with Flask (version 2.2.2) and sqlalchemy (version 2.0.0). 
+All dependencies are listed in [requirements.txt](https://github.com/mmouru/pwp-RESTful-api/blob/master/requirements.txt). Database is created with [Flask](https://pypi.org/project/Flask/2.1.3/) (version 2.1.3) and [Flask-SQLAlchemy](https://pypi.org/project/Flask-SQLAlchemy/2.5.1/) (version 2.5.1). 
 
-To install required external libraries and dependencies, run requirements.txt by: 
+To install required external libraries and dependencies, use the following command:
+
+```
+cd pwp-RESTful-api
 pip install -r requirements.txt
+```
 
-If you already have test.db -file in the working folder, please remove it. To create and populate the database, run populate.py -file. 
+The repository contains an example on how to create and populate the database defined in [database.py](https://github.com/mmouru/pwp-RESTful-api/blob/master/db/database.py).
+
+NOTE: Please make sure you do not already have an existing [test.db](https://github.com/mmouru/pwp-RESTful-api/blob/master/db/instance/test.db) file. It needs to be removed before creating a new one.
+
+To create and populate the database, use the following command:
+```
+cd db
+python populate.py
+```
+
+After creating the database it can be found at location:
+```
+cd instance
+```
+
+To view the contents of the database, a VSCode extension such as [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer) can be used.
