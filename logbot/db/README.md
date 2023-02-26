@@ -22,7 +22,7 @@ Install pymongo using pip install
 ## Create & Load Database
 Install and start a Mongodb instance in your virtual machine
 
-`sudo apt get update`
+`sudo apt-get update`
 
 `sudo apt install mongodb`
 
