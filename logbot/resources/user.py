@@ -1,53 +1,85 @@
-from flask import Response, request, abort, jsonify
+from flask import Response, request, jsonify, abort
 from flask_restful import Resource
-import json
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+# project resources
 from models.users import Users
-from flask_jwt_extended import create_access_token, create_refresh_token
-from errors import unauthorized, invalid_route
-import datetime
+from resources.errors import user_not_found, resource_already_exists
 
+class UserApi(Resource):
+    """
+    Flask-resftul resource for returning db.loginprofile collection.
+    """
+    @jwt_required()
+    def get(self, user_id: str) -> Response:
+        """
+        GET response method for acquiring single user data.
+        JSON Web Token is required.
+        :return: JSON object
+        """
+        authorized = Users.objects.get(id=get_jwt_identity())
 
-class SignUp(Resource):
-    @staticmethod
-    def post() -> Response:
+        if authorized is None:
+            return user_not_found()
+        else:
+            output = Users.objects.get(id=user_id)
+            return jsonify({'result': output})
+
+    @jwt_required()
+    def put(self, user_id: str) -> Response:
+        """
+        PUT response method for updating a user.
+        JSON Web Token is required.
+        Authorization is required: UserId = get_jwt_identity()
+        :return: JSON object
+        """
+        authorized = Users.objects.get(id=get_jwt_identity())
+
+        if authorized is not None:
+            data = request.get_json()
+            put_user = Users.objects(id=user_id).update(**data)
+            output = {'id': str(put_user.id)}
+            return jsonify({'result': output})
+        else:
+            return user_not_found()
+
+    @jwt_required()
+    def post(self) -> Response:
         """
         POST response method for creating user.
+        JSON Web Token is required.
         :return: JSON object
-        
         """
+        # authorized = Users.objects.get(id=get_jwt_identity())
         if not request.json:
             abort(415)
         try:
             data = request.get_json()
-            new_user = Users(**data)
-            new_user.save()
-            user_id = {'id': str(new_user.id)}
+            print(data)
+            post_user = Users(**data).save()
+            output = {'id': str(post_user.id)}
         except KeyError:
             abort(400)
-        
-        return Response(json.dumps(user_id), 200)
-            
-class Login(Resource):
-    """
-    Flask-resftul resource for retrieving user web token.
-    """
-    @staticmethod
-    def post() -> Response:
+        return jsonify({'result': output})            
+
+    @jwt_required()
+    def delete(self, user_id: str) -> Response:
         """
-        POST response method for retrieving user web token.
+        DELETE response method for deleting user.
+        JSON Web Token is required.
+        Authorization is required: Access(admin=true)
         :return: JSON object
         """
-        if not request.json:
-            abort(415)
-        data = request.get_json()
-        user = Users.objects.get(email=data.get('email'))
-        auth_success = user.check_pw_hash(data.get('password'))
-        if not auth_success:
-            return unauthorized()
+        # try:
+        #     output = Users.objects(id=user_id).delete()
+        #     return jsonify({'result': output})
+        # except Exception as e:
+        #     print(e)
+        #     return jsonify({"error": str(e)})
+        authorized = Users.objects.get(id=get_jwt_identity())
+
+        if authorized is not None:
+            output = Users.objects(id=get_jwt_identity()).delete()
+            return jsonify({'result': output})
         else:
-            expiry = datetime.timedelta(days=5)
-            access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
-            refresh_token = create_refresh_token(identity=str(user.id))
-            return jsonify({'result': {'access_token': access_token,
-                                       'refresh_token': refresh_token,
-                                       'logged_in_as': f"{user.email}"}})
+            return user_not_found()

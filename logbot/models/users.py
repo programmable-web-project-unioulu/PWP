@@ -9,7 +9,6 @@ class Users(Document):
     :param password: required string value, longer than 6 characters
     :param name: option unique string username
     """
-
     email = EmailField(required=True, unique=True)
     password = StringField(required=True, min_length=6, regex=None)
     name = StringField(unique=False)
