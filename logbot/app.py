@@ -9,7 +9,7 @@ from routes import create_routes
 
 default_config = { 'MONGODB_SETTINGS': {
     'db': 'logbotdatabase',
-    'host': 'mongodb://128.214.254.176',
+    'host': 'mongodb://128.214.254.176/logbotdatabase',
     'port': 9005   
 }, 'JWT_SECRET_KEY': 'changeThisKeyFirst'}
 
@@ -23,16 +23,16 @@ def get_flask_app(config: dict = None) -> app.Flask:
     flask_app = Flask(__name__)
 
     # configure app
-    # config = default_config if config is None else config
-    # flask_app.config.update(default_config)
-    flask_app.config['MONGODB_SETTINGS'] = [
-            {
-            'db': 'logbotdatabase',
-            'host': 'mongodb://128.214.254.176/logbotdatabase',
-            'port': 9005
-            } 
-        ]
-    flask_app.config['JWT_SECRET_KEY'] = 'changeThisKeyFirst'
+    config = default_config if config is None else config
+    flask_app.config.update(default_config)
+    # flask_app.config['MONGODB_SETTINGS'] = [
+    #         {
+    #         'db': 'logbotdatabase',
+    #         'host': 'mongodb://128.214.254.176/logbotdatabase',
+    #         'port': 9005
+    #         } 
+    #     ]
+    # flask_app.config['JWT_SECRET_KEY'] = 'changeThisKeyFirst'
    
     if 'JWT_SECRET_KEY' in os.environ:
         flask_app.config['JWT_SECRET_KEY'] = os.environ['JWT_SECRET_KEY']
