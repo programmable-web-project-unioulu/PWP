@@ -233,6 +233,7 @@ class BreedItem(Resource):
         pass
 
     def put(self, group, breed):
+        # to be implemented
         if not request.json:
             raise UnsupportedMediaType
 
@@ -246,10 +247,8 @@ class BreedItem(Resource):
             db.session.add(breed)
             db.session.commit()
         except IntegrityError as exc:
-            raise Conflict(
-                409,
-                f"Breed with name '{request.json} already exists."
-            )
+            group = Breed.query.filter_by(name=breed.name).first()
+
 
 
 class GroupConverter(BaseConverter):
@@ -265,8 +264,21 @@ class GroupConverter(BaseConverter):
         return str(value)
 
 
+class BreedConverter(BaseConverter):
+
+    def to_python(self, value):
+        db_breed = Breed.query.filter_by(name=value).first()
+        if db_breed is None:
+            raise NotFound
+        return db_breed
+
+    def to_url(self, value):
+        print("BREED:", value)
+        return str(value)
+
+
 app.url_map.converters["group"] = GroupConverter
-app.url_map.converters["breed"] = GroupConverter
+app.url_map.converters["breed"] = BreedConverter
 
 api.add_resource(GroupCollection, "/api/groups/")
 api.add_resource(BreedCollection, "/api/breeds/")
