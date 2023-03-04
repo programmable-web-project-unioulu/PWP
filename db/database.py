@@ -27,8 +27,11 @@ class Group(db.Model):
         return {
             "name": self.name,
             "id": self.id
-            }
+        }
     
+    def deserialize(self, doc):
+        self.name = doc["name"]
+
     @staticmethod
     def json_schema():
         schema = {
@@ -89,7 +92,8 @@ class Facts(db.Model):
     def serialize(self):
         return {
             "fact": self.fact,
-            "breed": self.breed.serialize()
+            "breed": self.breed.serialize(),
+            "id": self.id
         }
     
     @staticmethod
@@ -127,6 +131,7 @@ class Breed(db.Model):
     def serialize(self, short_form=False):
         doc = {
             "name": self.name,
+            "id": self.id
         }
         if not short_form:
             doc["group"] = self.group.serialize()
