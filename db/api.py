@@ -1,5 +1,6 @@
 from flask import Flask, Response, request
 import json
+import os
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError, OperationalError
@@ -335,5 +336,10 @@ api.add_resource(GroupItem, "/api/groups/<group:group>/")
 api.add_resource(BreedItem, "/api/breeds/<breed:breed>/")
 api.add_resource(FactItem, "/api/facts/<fact:fact>/")
 
+debug = True
+
+if os.environ['DOCKER'] == True:
+    debug = False
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=debug, host="0.0.0.0")

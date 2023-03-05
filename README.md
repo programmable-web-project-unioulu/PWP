@@ -53,3 +53,12 @@ python -m pytest --cov=api -v
 python -m pytest --cov=database -v
 
 ```
+
+## Running with docker
+You can build and run the app using docker for easier integration.
+Build in root directory where Dockerfile is present
+When running you can specify networking inside container so that the app is available in your machine, here port 3000.
+```
+docker build . --tag dogdict-app
+docker run -p 3000:5000 dogdict-app
+```
