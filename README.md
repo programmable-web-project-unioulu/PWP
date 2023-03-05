@@ -34,3 +34,22 @@ cd instance
 ```
 
 To view the contents of the database, a VSCode extension such as [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer) can be used.
+
+## Testing
+
+Models are tested using pytest with coverage reports. Currently could only get coverage report to work for
+singular files, e.g. for database.py only.
+
+*TODO*
+- Better folder structure
+- Find good parameters to call pytest to get full coverage report
+- Get 100% test coverage
+
+How to get coverage % for separate files:
+-v flag is for verbose
+add -vv for more information in testing if needed
+```
+python -m pytest --cov=api -v
+python -m pytest --cov=database -v
+
+```

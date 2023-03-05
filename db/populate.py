@@ -32,6 +32,7 @@ def init_db():
     # Create two facts and associate them with the breed
     fact1 = Facts(fact="Välillä kuin (australian) terrieri...", breed=breed_at)
     fact2 = Facts(fact="They are small dogs", breed=breed_at)
+    
 
     fact_asd = Facts(fact="They have history as livestock guardians and they bark alot", breed=breed_asd)
     fact_am = Facts(fact="An immensely strong, heavy-duty worker of spitz type, the Alaskan Malamute is an affectionate, loyal, and playful dog", breed=breed_am)

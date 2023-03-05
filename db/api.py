@@ -1,5 +1,4 @@
 from flask import Flask, Response, request
-from flask_sqlalchemy import SQLAlchemy
 import json
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
@@ -63,7 +62,6 @@ class GroupCollection(Resource):
 
 
 class BreedCollection(Resource):
-    print("got here!")
 
     def get(self):
         body = {"items": []}
@@ -124,8 +122,6 @@ class FactCollection(Resource):
 
         breed = Breed.query.filter_by(name=request.json["breed"]).first()
 
-        print(breed)
-
         if not breed:
             # return ValueError("Breed '{breed}' does not exist".format(**request.json))
             return "Breed does not exist", 404
@@ -138,6 +134,7 @@ class FactCollection(Resource):
         return Response(
             status=201, headers={"Item": api.url_for(FactCollection, fact=fact)}
         )
+
 
 
 class CharacteristicsCollection(Resource):
@@ -225,6 +222,25 @@ class GroupItem(Resource):
                      )
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
+    
+    def put(self, group):
+        print(group)
+        if not request.json:
+            return "", 415
+        try:
+            validate(request.json, Group.json_schema())
+        
+        except ValidationError as exc:
+            raise BadRequest(description=str(exc)) from exc
+        
+        group = Group.query.filter_by(name=group.name).first()
+        group.deserialize(request.json)
+
+        try:
+            db.session.add(group)
+            db.session.commit()
+        except IntegrityError as exc:
+            group = Breed.query.filter_by(name=group.name).first()
 
 
 class BreedItem(Resource):
@@ -249,11 +265,29 @@ class BreedItem(Resource):
         except IntegrityError as exc:
             group = Breed.query.filter_by(name=breed.name).first()
 
+    def delete(self, breed):
+        try:
+            db.session.delete(breed)
+            db.session.commit()
+            return Response(status=204)
+        except:
+            return "moro", 404
+        
+class FactItem(Resource):
 
+    def delete(self, fact):
+        try:
+            db.session.delete(fact)
+            db.session.commit()
+            return Response(status=204)
+        except:
+            return "moro", 404
 
 class GroupConverter(BaseConverter):
 
     def to_python(self, value):
+        print(value)
+        value = value.capitalize() # add capitalization so URI does not need to be uppercase
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:
             raise NotFound
@@ -266,8 +300,8 @@ class GroupConverter(BaseConverter):
 
 class BreedConverter(BaseConverter):
 
-    def to_python(self, value):
-        db_breed = Breed.query.filter_by(name=value).first()
+    def to_python(self, value): # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
+        db_breed = Breed.query.filter_by(id=value).first()
         if db_breed is None:
             raise NotFound
         return db_breed
@@ -276,17 +310,30 @@ class BreedConverter(BaseConverter):
         print("BREED:", value)
         return str(value)
 
+class FactConverter(BaseConverter):
+    def to_python(self, value):
+        db_fact = Facts.query.filter_by(id=value).first()
+        if db_fact is None:
+            raise NotFound
+        return db_fact
+
+    def to_url(self, value):
+        print("fact:", value)
+        return str(value)
+
 
 app.url_map.converters["group"] = GroupConverter
 app.url_map.converters["breed"] = BreedConverter
+app.url_map.converters["fact"] = FactConverter
 
 api.add_resource(GroupCollection, "/api/groups/")
 api.add_resource(BreedCollection, "/api/breeds/")
 api.add_resource(FactCollection, "/api/facts/")
 api.add_resource(CharacteristicsCollection, "/api/characteristics/")
 
-api.add_resource(GroupItem, "/api/<group:group>/")
-api.add_resource(BreedItem, "/api/<group:group>/<breed:breed>/")
+api.add_resource(GroupItem, "/api/groups/<group:group>/")
+api.add_resource(BreedItem, "/api/breeds/<breed:breed>/")
+api.add_resource(FactItem, "/api/facts/<fact:fact>/")
 
 if __name__ == '__main__':
     app.run(debug=True)
