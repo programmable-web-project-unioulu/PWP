@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, Conflict, BadRequest, UnsupportedMediaType
 import database as app
 
+
 @pytest.fixture
 def client():
     db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
@@ -25,10 +26,12 @@ def client():
     os.close(db_fd)
     os.unlink(app.app.config['DATABASE'])
 
+
 mockFactBody = {
     "breed": "Test breed for api",
     "fact": "Test fact for breed"
 }
+
 
 def _group():
     """
@@ -39,22 +42,24 @@ def _group():
     )
     return group
 
+
 def _breed(group=False):
     """
     Init one breed to database and return the breed
     """
     if group:
         breed = Breed(
-        name="Test breed for api",
-        group=_group(),
+            name="Test breed for api",
+            group=_group(),
         )
     else:
         breed = Breed(
             name="Test breed for api"
-            )
+        )
     app.db.session.add(breed)
     app.db.session.commit()
     return breed
+
 
 def _fact(fact="Fun test fact"):
     """
@@ -71,14 +76,16 @@ def _fact(fact="Fun test fact"):
 
 # Tests for facts
 
+
 def test_facts_post(client):
     """
     Can post single facts with proper input
     """
-    _breed() # init one breed to database
+    _breed()  # init one breed to database
     res = client.post("/api/facts/", json=mockFactBody)
     assert res.status == '201 CREATED'
     assert Facts.query.count() == 1
+
 
 def test_facts_get(client):
     """
@@ -86,7 +93,7 @@ def test_facts_get(client):
     """
     mock_fact = "Test fact for GET method"
 
-    _fact(mock_fact) # init one breed to database
+    _fact(mock_fact)  # init one breed to database
     res = client.get("/api/facts/")
     # decode bytes to string
     data = res.data.decode("utf-8")
@@ -94,8 +101,61 @@ def test_facts_get(client):
     data = json.loads(data)
     assert data["items"][0]["fact"] == mock_fact
 
-def test_facts_post_unsupported_media(client):
+
+def test_breeds_get(client):
     """
-    If request body is not in application/json, raise UnsupportedMedia error 
+    GET breeds results in empty array if no facts in db, else return all breeds in array
     """
-    pass
+
+    _breed(True)  # init one breed to database
+    res = client.get("/api/breeds/")
+    # decode bytes to string
+    data = res.data.decode("utf-8")
+    # parse json string
+    data = json.loads(data)
+    print(data["items"])
+    assert len(data["items"]) == 1
+
+
+def test_groups_get(client):
+    """
+    GET groups results in empty array if no facts in db, else return all groups in array
+    """
+    _group()
+    _breed(True)
+    group1 = {
+        "name": "test_name"
+    }
+    res=client.post("/api/groups/", json=group1)
+    assert res.status_code == 201
+    res = client.get("/api/groups/")
+    data = res.data.decode("utf-8")
+    data = json.loads(data)
+    print(data)
+    assert len(data["items"]) == 2
+
+
+def test_post_unsupported_media(client):
+    """
+    If request body is not in correct format, raise UnsupportedMedia error 
+    """
+    _breed()
+    mock_body = {'asd': 'asd', 'perkele': 'perkele'}
+    res = client.post("/api/facts/", data=mock_body)
+    assert res.status_code == 415
+    res = client.post("/api/groups/", data=mock_body)
+    assert res.status_code == 415
+    res = client.post("/api/breeds/", data=mock_body)
+    assert res.status_code == 415
+
+
+def test_facts_delete(client):
+    """
+        Creates a fact to make sure there is one in the database, then
+        deletes it and makes sure it is deleted (status code 204).
+    """
+    _breed()  # init one breed to database
+    res = client.post("/api/facts/", json=mockFactBody)
+    assert res.status_code == 201
+    res = client.delete("/api/facts/1/")
+    assert res.status_code == 204

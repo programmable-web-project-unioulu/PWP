@@ -3,3 +3,8 @@
 *__pycache__
 .pytest*
 *coverage
+.env
+.pytest_cache
+.Pipfile
+.env/*
+.env

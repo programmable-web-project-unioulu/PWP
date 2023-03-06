@@ -37,16 +37,16 @@ class GroupCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
-            validate(request.json, Group.json_schema())
+            validate(request.is_json, Group.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
 
-        group = Group(name=request.json["name"])
-
+        group = Group(name=request.is_json["name"])
+        
         try:
             db.session.add(group)
             db.session.commit()
@@ -72,7 +72,7 @@ class BreedCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
@@ -113,9 +113,8 @@ class FactCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
-
         try:
             validate(request.json, Facts.json_schema())
         except ValidationError as e:
@@ -135,7 +134,6 @@ class FactCollection(Resource):
         return Response(
             status=201, headers={"Item": api.url_for(FactCollection, fact=fact)}
         )
-
 
 
 class CharacteristicsCollection(Resource):
@@ -223,17 +221,17 @@ class GroupItem(Resource):
                      )
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
-    
+
     def put(self, group):
         print(group)
         if not request.json:
             return "", 415
         try:
             validate(request.json, Group.json_schema())
-        
+
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
-        
+
         group = Group.query.filter_by(name=group.name).first()
         group.deserialize(request.json)
 
@@ -245,8 +243,10 @@ class GroupItem(Resource):
 
 
 class BreedItem(Resource):
-    def get(self, group, breed):
-        print(group, breed)
+    print("hello?")
+
+    def get(self, breed):
+        print(breed)
         pass
 
     def put(self, group, breed):
@@ -273,9 +273,9 @@ class BreedItem(Resource):
             return Response(status=204)
         except:
             return "moro", 404
-        
-class FactItem(Resource):
 
+
+class FactItem(Resource):
     def delete(self, fact):
         try:
             db.session.delete(fact)
@@ -284,11 +284,12 @@ class FactItem(Resource):
         except:
             return "moro", 404
 
+
 class GroupConverter(BaseConverter):
 
     def to_python(self, value):
         print(value)
-        value = value.capitalize() # add capitalization so URI does not need to be uppercase
+        value = value.capitalize()  # add capitalization so URI does not need to be uppercase
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:
             raise NotFound
@@ -301,7 +302,7 @@ class GroupConverter(BaseConverter):
 
 class BreedConverter(BaseConverter):
 
-    def to_python(self, value): # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
+    def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
         db_breed = Breed.query.filter_by(id=value).first()
         if db_breed is None:
             raise NotFound
@@ -310,6 +311,7 @@ class BreedConverter(BaseConverter):
     def to_url(self, value):
         print("BREED:", value)
         return str(value)
+
 
 class FactConverter(BaseConverter):
     def to_python(self, value):
@@ -337,9 +339,9 @@ api.add_resource(BreedItem, "/api/breeds/<breed:breed>/")
 api.add_resource(FactItem, "/api/facts/<fact:fact>/")
 
 debug = True
-
+"""
 if os.environ['DOCKER'] == True:
     debug = False
-
+"""
 if __name__ == '__main__':
     app.run(debug=debug, host="0.0.0.0")
