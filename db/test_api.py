@@ -102,7 +102,7 @@ def test_facts_get(client):
     assert data["items"][0]["fact"] == mock_fact
 
 
-def test_breed_get(client):
+def test_breeds_get(client):
     """
     GET breeds results in empty array if no facts in db, else return all facts in array
     """
@@ -116,6 +116,9 @@ def test_breed_get(client):
     print(data["items"])
     assert len(data["items"]) == 1
 
+
+def test_groups_get(client):
+    _group()
 
 def test_post_unsupported_media(client):
     """
