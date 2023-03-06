@@ -37,11 +37,7 @@ class GroupCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        print("hello")
-        print(len(request.data))
-        print(request.headers)
         if not request.json:
-            print("yoyo")
             raise UnsupportedMediaType
         
         try:
