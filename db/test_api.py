@@ -98,4 +98,7 @@ def test_facts_post_unsupported_media(client):
     """
     If request body is not in application/json, raise UnsupportedMedia error 
     """
-    pass
+    # definitely not a JSON
+    mock_res_body = 321321312
+    res = client.post("/api/group/")
+    assert res.status == "415"
