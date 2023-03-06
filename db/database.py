@@ -86,7 +86,7 @@ class Facts(db.Model):
     fact = db.Column(db.String(128), nullable=False)
     
     # creates a connection from Facts -> Breed
-    breed_id = db.Column(db.Integer, db.ForeignKey("breed.id"))
+    breed_id = db.Column(db.Integer, db.ForeignKey("breed.id", ondelete="CASCADE"))
     breed = db.relationship("Breed", back_populates="facts")
 
     def serialize(self):
@@ -116,10 +116,10 @@ class Facts(db.Model):
 class Breed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
-    char_id = db.Column(db.Integer, db.ForeignKey("characteristics.id"))
+    char_id = db.Column(db.Integer, db.ForeignKey("characteristics.id", ondelete="CASCADE"))
     
     # creates a connection from Breed -> Group
-    group_id = db.Column(db.Integer, db.ForeignKey("group.id"))
+    group_id = db.Column(db.Integer, db.ForeignKey("group.id", ondelete="CASCADE"))
     group = db.relationship("Group", back_populates="breeds")
     
     # creates a connection from Breed -> Characteristics
