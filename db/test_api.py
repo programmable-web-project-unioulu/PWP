@@ -100,5 +100,5 @@ def test_facts_post_unsupported_media(client):
     """
     # definitely not a JSON
     mock_res_body = 321321312
-    res = client.post("/api/group/")
+    res = client.post("/api/group/", json=mock_res_body)
     assert res.status == "415"
