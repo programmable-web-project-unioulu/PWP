@@ -37,17 +37,18 @@ class GroupCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
-
+        
         try:
             validate(request.json, Group.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
 
         group = Group(name=request.json["name"])
-
+        
         try:
+            
             db.session.add(group)
             db.session.commit()
         except IntegrityError:
@@ -72,7 +73,7 @@ class BreedCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
@@ -113,9 +114,8 @@ class FactCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
-
         try:
             validate(request.json, Facts.json_schema())
         except ValidationError as e:
@@ -137,7 +137,6 @@ class FactCollection(Resource):
         )
 
 
-
 class CharacteristicsCollection(Resource):
 
     def get(self):
@@ -149,22 +148,22 @@ class CharacteristicsCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
             validate(request.json, Characteristics.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
-
-        breed = [Breed.query.filter_by(name=request.json["in_breed"]).first()]
-
+        
+        breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
+        
         if not breed:
             # return ValueError("Breed '{breed}' does not exist".format(**request.json))
             return "Breed does not exist", 404
-
+        
         characteristics = Characteristics(
-            in_breed=breed, life_span=request.json["life_span"])
+            in_breed=[breed], life_span=request.json["life_span"])
 
         # to check if post request contains coat_length and exercise
         try:
@@ -175,18 +174,18 @@ class CharacteristicsCollection(Resource):
             exercise = request.json["exercise"]
         except KeyError:
             exercise = None
-
+        print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
-            characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+            characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               coat_length=request.json["coat_length"])
 
             if exercise:
-                characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+                characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                                   coat_length=request.json["coat_length"],
                                                   exercise=request.json["exercise"])
 
         if exercise:
-            characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+            characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               exercise=request.json["exercise"])
 
         try:
@@ -213,58 +212,46 @@ class GroupItem(Resource):
         print(group.name)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
-    def post(self, group):
-        if not request.json:
-            return "", 415
-
-        try:
-            validate(request.json, Facts.json_schema(),
-                     format_checker=draft7_format_checker,
-                     )
-        except ValidationError as exc:
-            raise BadRequest(description=str(exc)) from exc
-    
     def put(self, group):
-        print(group)
-        if not request.json:
+        print("GROUP222", group)
+        if not request.is_json:
             return "", 415
         try:
             validate(request.json, Group.json_schema())
-        
+
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
-        
+
         group = Group.query.filter_by(name=group.name).first()
         group.deserialize(request.json)
 
-        try:
-            db.session.add(group)
-            db.session.commit()
-        except IntegrityError as exc:
-            group = Breed.query.filter_by(name=group.name).first()
+        db.session.add(group)
+        db.session.commit()
+        
+        return Response(status=204)
 
 
 class BreedItem(Resource):
-    def get(self, group, breed):
-        print(group, breed)
-        pass
 
-    def put(self, group, breed):
-        # to be implemented
-        if not request.json:
+    def get(self, breed):
+        if "404" in str(breed):
+            return "", 404
+        else:
+            return Response(json.dumps(breed.serialize()), 200, mimetype=JSON)
+
+    def put(self, breed):
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
             validate(request.json, Breed.json_schema())
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
-
         breed.deserialize(request.json)
-        try:
-            db.session.add(breed)
-            db.session.commit()
-        except IntegrityError as exc:
-            group = Breed.query.filter_by(name=breed.name).first()
+        db.session.add(breed)
+        db.session.commit()
+        print(breed.serialize())
+        return Response(json.dumps(breed.serialize()), 204, mimetype=JSON)
 
     def delete(self, breed):
         try:
@@ -273,9 +260,9 @@ class BreedItem(Resource):
             return Response(status=204)
         except:
             return "moro", 404
-        
-class FactItem(Resource):
 
+
+class FactItem(Resource):
     def delete(self, fact):
         try:
             db.session.delete(fact)
@@ -284,41 +271,49 @@ class FactItem(Resource):
         except:
             return "moro", 404
 
+
+
 class GroupConverter(BaseConverter):
 
     def to_python(self, value):
+        value = value.capitalize()  # add capitalization so URI does not need to be uppercase
         print(value)
-        value = value.capitalize() # add capitalization so URI does not need to be uppercase
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:
             raise NotFound
         return db_group
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("BREED:", value)
         return str(value)
 
 
 class BreedConverter(BaseConverter):
 
-    def to_python(self, value): # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
+    def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
+        print(value)
         db_breed = Breed.query.filter_by(id=value).first()
         if db_breed is None:
-            raise NotFound
+            return Response(status=404)
         return db_breed
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("BREED:", value)
         return str(value)
+
 
 class FactConverter(BaseConverter):
     def to_python(self, value):
         db_fact = Facts.query.filter_by(id=value).first()
         if db_fact is None:
-            raise NotFound
+
+            return Response(status=404)
         return db_fact
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("fact:", value)
         return str(value)
 
@@ -337,9 +332,9 @@ api.add_resource(BreedItem, "/api/breeds/<breed:breed>/")
 api.add_resource(FactItem, "/api/facts/<fact:fact>/")
 
 debug = True
-
+"""
 if os.environ['DOCKER'] == True:
     debug = False
-
+"""
 if __name__ == '__main__':
     app.run(debug=debug, host="0.0.0.0")
