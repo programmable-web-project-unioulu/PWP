@@ -104,7 +104,7 @@ def test_facts_get(client):
 
 def test_breeds_get(client):
     """
-    GET breeds results in empty array if no facts in db, else return all facts in array
+    GET breeds results in empty array if no facts in db, else return all breeds in array
     """
 
     _breed(True)  # init one breed to database
@@ -118,7 +118,22 @@ def test_breeds_get(client):
 
 
 def test_groups_get(client):
+    """
+    GET groups results in empty array if no facts in db, else return all groups in array
+    """
     _group()
+    _breed(True)
+    group1 = {
+        "name": "test_name"
+    }
+    res=client.post("/api/groups/", json=group1)
+    assert res.status_code == 201
+    res = client.get("/api/groups/")
+    data = res.data.decode("utf-8")
+    data = json.loads(data)
+    print(data)
+    assert len(data["items"]) == 2
+
 
 def test_post_unsupported_media(client):
     """
