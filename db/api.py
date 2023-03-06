@@ -37,9 +37,13 @@ class GroupCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
+        print("hello")
+        print(len(request.data))
+        print(request.headers)
         if not request.json:
+            print("yoyo")
             raise UnsupportedMediaType
-
+        
         try:
             validate(request.json, Group.json_schema())
         except ValidationError as e:
@@ -337,9 +341,9 @@ api.add_resource(BreedItem, "/api/breeds/<breed:breed>/")
 api.add_resource(FactItem, "/api/facts/<fact:fact>/")
 
 debug = True
-
+"""
 if os.environ['DOCKER'] == True:
     debug = False
-
+"""
 if __name__ == '__main__':
     app.run(debug=debug, host="0.0.0.0")

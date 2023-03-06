@@ -96,9 +96,9 @@ def test_facts_get(client):
 
 def test_facts_post_unsupported_media(client):
     """
-    If request body is not in application/json, raise UnsupportedMedia error 
+    If request body is not in correct format, raise UnsupportedMedia error 
     """
     # definitely not a JSON
-    mock_res_body = 321321312
-    res = client.post("/api/group/", json=mock_res_body)
+    mock_res_body = {"asd": "asd"}
+    res = client.post("/api/groups/", json=mock_res_body)
     assert res.status == "415"
