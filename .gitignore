@@ -8,3 +8,4 @@
 .Pipfile
 .env/*
 .env
+instance*
