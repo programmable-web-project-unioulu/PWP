@@ -43,7 +43,7 @@ group2 = {
 
 breed1 = {
     "name": "test_1",
-    "group": "New fun group"
+    "group": "Test group"
 }
 
 breed2 = {
@@ -56,13 +56,15 @@ breed3 = {
 }
 
 
-def _group():
+def _group(name="Test group"):
     """
     Init one group to database and return it
     """
     group = Group(
-        name="New fun group"
+        name=name
     )
+    app.db.session.add(group)
+    app.db.session.commit()
     return group
 
 
@@ -140,6 +142,9 @@ def test_breeds_post(client):
     res = client.post("/api/breeds/", json=breed2)
     assert res.status_code == 400
 
+    res = client.post("/api/breeds/", json={"name": "mock", "group": "non-existent"})
+    assert res.status_code == 400
+
     # res = client.post("/api/breeds/", json=breed3)
     # assert res.status_code == 400
 
@@ -205,6 +210,10 @@ def test_post_unsupported_media(client):
     assert res.status_code == 415
 
     res = client.post("/api/characteristics/", data=mock_body)
+    assert res.status_code == 415
+
+    _group(name="Testgroup123")
+    res = client.put("/api/groups/testgroup123/", data=mock_body)
     assert res.status_code == 415
 
 
@@ -309,7 +318,7 @@ def test_characteristics_post_exercise_and_coatlength(client):
 
 def test_notfound(client):
     """
-        Tests if not found error is correctly outputted.
+        Tests if not found error is correctly outputted for breed and group.
         For formatters.
     """
     res = client.get("/api/breeds/1337/")
@@ -319,7 +328,7 @@ def test_notfound(client):
     assert res.status_code == 404
 
 
-def test_put(client):
+def test_put_group(client):
     """
         Tests if put is possible.
     """
@@ -329,3 +338,118 @@ def test_put(client):
 
     res = client.put("/api/groups/Test1/", json=group2)
     assert res.status_code == 204
+
+def test_group_validation(client):
+    """
+    Test that group return bad request 400 with invalid json
+    """
+
+    body = {
+        "group_name": "value does not exist"
+    }
+
+    res = client.post("/api/groups/", json=body)
+    assert res.status_code == 400
+
+def test_group_already_exists(client):
+    """
+    Returns conflict 409 if named group already exists in db
+    """
+    group_name = "Fun test group yeah!"
+    _group(name=group_name)
+
+    body = {
+        "name": group_name
+    }
+
+    res = client.post("/api/groups/", json=body)
+    assert res.status_code == 409
+
+def test_breed_already_exists(client):
+    """
+    Return 409 if named breed already exists in db
+    """
+    breed_name = "Haha fun breed L0L"
+    _breed(name=breed_name, group=True)
+
+    body = {
+        "name": breed_name,
+        "group": "Test group"
+    }
+
+    res = client.post("/api/breeds/", json=body)
+    assert res.status_code == 409
+
+def test_fact_breed_exists(client):
+    """
+    Return 404 if breed does not exist when giving a fact
+    """
+    res = client.post("/api/facts/", json={"fact": "mock fact", "breed": "non existing"})
+    assert res.status_code == 404
+
+def test_get_characteristics(client):
+    """
+    All characteristics in db are returned in list
+    TODO
+    """
+
+    res = client.get("/api/characteristics/")
+    assert res.status_code == 200
+
+def test_group_item_get(client):
+    """
+    Test that singular group can be found with url, and the uri does not need capitalized group
+    """
+    _group(name="Marttionparas")
+
+    res = client.get("/api/groups/marttionparas/")
+    data = res.data.decode("utf-8")
+    data = json.loads(data)
+    assert data == {"name": "Marttionparas"}
+    
+def test_group_put_validation(client):
+    """
+    Returns 400 bad request if body does not conform to group schema
+    """
+    _group(name="Testgroup123")
+    res = client.put("/api/groups/testgroup123/", json={"not_valid": "attribute"})
+    assert res.status_code == 400
+
+def test_get_breed(client):
+    """
+    Test that return breed by id
+    """
+    _breed(group=True)
+
+    res = client.get("/api/breeds/1/") # 1 for first id
+    data = res.data.decode("utf-8")
+    data = json.loads(data)
+    assert data == {"name": "Test breed for api", "id": 1, "group": {"name": "Test group", "id": 1}, "facts": []}
+
+def test_put_breed(client):
+    """
+    Test that breeds name and group can be changed
+    """
+    _breed(group=True)
+    _group(name="Changegroup") # group to be changed
+
+    # Validation by Breed validator so group is needed, maybe other validator here    
+    body = {
+        "name": "testbreed200003000",
+        "group": "Changegroup"
+    }
+
+    res = client.put("/api/breeds/1/", json=body)
+    assert res.status_code == 204
+
+def test_put_validation(client):
+    """
+    PUT method should return 400 for bad body
+    """
+    _breed(group=True)
+    body = {
+        "martti": "hajottaa"
+    }
+
+    res = client.put("api/breeds/1/", json=body)
+    assert res.status_code == 400

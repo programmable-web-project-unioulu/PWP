@@ -178,12 +178,12 @@ def test_breed_serializer_long_w_characteristics(db_handle):
         "id": None
     }
 
-def test_breed_deserializer():
+def test_breed_deserializer(db_handle):
     """
     Breed deserialize works properly
     """
-    breed = _breed()
-    breed.deserialize(doc={"name": "Breed name"})
+    breed = _breed(db_handle, group=True)
+    breed.deserialize(doc={"name": "Breed name", "group": "test change group"})
     
     assert breed.name == "Breed name"
 

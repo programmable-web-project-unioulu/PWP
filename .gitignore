@@ -5,7 +5,9 @@
 *coverage
 .env
 .pytest_cache
-.Pipfile
+Pipfile
 .env/*
 .env
 instance/test.db
+*__pycache__
+.pytest_cache

@@ -145,7 +145,9 @@ class Breed(db.Model):
     
     def deserialize(self, doc):
         self.name = doc["name"]
-        #self.group = doc["group"]
+        if not doc["group"]:
+           return
+        self.group = Group.query.filter_by(name=doc["group"]).first()
     
     @staticmethod
     def json_schema():

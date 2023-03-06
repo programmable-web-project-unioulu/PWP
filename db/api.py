@@ -212,19 +212,8 @@ class GroupItem(Resource):
         print(group.name)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
-    def post(self, group):
-        if not request.is_json:
-            return "", 415
-
-        try:
-            validate(request.json, Facts.json_schema(),
-                     format_checker=draft7_format_checker,
-                     )
-        except ValidationError as exc:
-            raise BadRequest(description=str(exc)) from exc
-
     def put(self, group):
-        print("GROUP", group)
+        print("GROUP222", group)
         if not request.is_json:
             return "", 415
         try:
@@ -236,31 +225,21 @@ class GroupItem(Resource):
         group = Group.query.filter_by(name=group.name).first()
         group.deserialize(request.json)
 
-        try:
-            db.session.add(group)
-            db.session.commit()
-        except IntegrityError:
-            raise Conflict(
-            409,
-            description="Sensor with name '{name}' already exists.".format(
-                **request.json
-            )
-        )
+        db.session.add(group)
+        db.session.commit()
         
         return Response(status=204)
 
 
 class BreedItem(Resource):
-    print("hello?")
 
     def get(self, breed):
         if "404" in str(breed):
             return "", 404
         else:
-            return breed
+            return Response(json.dumps(breed.serialize()), 200, mimetype=JSON)
 
-    def put(self, group, breed):
-        # to be implemented
+    def put(self, breed):
         if not request.is_json:
             raise UnsupportedMediaType
 
@@ -268,13 +247,11 @@ class BreedItem(Resource):
             validate(request.json, Breed.json_schema())
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
-
         breed.deserialize(request.json)
-        try:
-            db.session.add(breed)
-            db.session.commit()
-        except IntegrityError as exc:
-            group = Breed.query.filter_by(name=breed.name).first()
+        db.session.add(breed)
+        db.session.commit()
+        print(breed.serialize())
+        return Response(json.dumps(breed.serialize()), 204, mimetype=JSON)
 
     def delete(self, breed):
         try:
@@ -307,6 +284,7 @@ class GroupConverter(BaseConverter):
         return db_group
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("BREED:", value)
         return str(value)
 
@@ -314,12 +292,14 @@ class GroupConverter(BaseConverter):
 class BreedConverter(BaseConverter):
 
     def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
+        print(value)
         db_breed = Breed.query.filter_by(id=value).first()
         if db_breed is None:
             return Response(status=404)
         return db_breed
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("BREED:", value)
         return str(value)
 
@@ -333,6 +313,7 @@ class FactConverter(BaseConverter):
         return db_fact
 
     def to_url(self, value):
+        # THESE NEED TO BE IMPLEMENTED
         print("fact:", value)
         return str(value)
 
