@@ -39,15 +39,16 @@ class GroupCollection(Resource):
     def post(self):
         if not request.is_json:
             raise UnsupportedMediaType
-
+        
         try:
-            validate(request.is_json, Group.json_schema())
+            validate(request.json, Group.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
 
-        group = Group(name=request.is_json["name"])
+        group = Group(name=request.json["name"])
         
         try:
+            
             db.session.add(group)
             db.session.commit()
         except IntegrityError:
@@ -147,7 +148,7 @@ class CharacteristicsCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
@@ -212,7 +213,7 @@ class GroupItem(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self, group):
-        if not request.json:
+        if not request.is_json:
             return "", 415
 
         try:
@@ -223,8 +224,8 @@ class GroupItem(Resource):
             raise BadRequest(description=str(exc)) from exc
 
     def put(self, group):
-        print(group)
-        if not request.json:
+        print("GROUP", group)
+        if not request.is_json:
             return "", 415
         try:
             validate(request.json, Group.json_schema())
@@ -238,16 +239,25 @@ class GroupItem(Resource):
         try:
             db.session.add(group)
             db.session.commit()
-        except IntegrityError as exc:
-            group = Breed.query.filter_by(name=group.name).first()
+        except IntegrityError:
+            raise Conflict(
+            409,
+            description="Sensor with name '{name}' already exists.".format(
+                **request.json
+            )
+        )
+        
+        return Response(status=204)
 
 
 class BreedItem(Resource):
     print("hello?")
 
     def get(self, breed):
-        print(breed)
-        pass
+        if "404" in str(breed):
+            return "", 404
+        else:
+            return breed
 
     def put(self, group, breed):
         # to be implemented
@@ -285,11 +295,12 @@ class FactItem(Resource):
             return "moro", 404
 
 
+
 class GroupConverter(BaseConverter):
 
     def to_python(self, value):
-        print(value)
         value = value.capitalize()  # add capitalization so URI does not need to be uppercase
+        print(value)
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:
             raise NotFound
@@ -305,7 +316,7 @@ class BreedConverter(BaseConverter):
     def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
         db_breed = Breed.query.filter_by(id=value).first()
         if db_breed is None:
-            raise NotFound
+            return Response(status=404)
         return db_breed
 
     def to_url(self, value):
@@ -317,7 +328,8 @@ class FactConverter(BaseConverter):
     def to_python(self, value):
         db_fact = Facts.query.filter_by(id=value).first()
         if db_fact is None:
-            raise NotFound
+
+            return Response(status=404)
         return db_fact
 
     def to_url(self, value):
