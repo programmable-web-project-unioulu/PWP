@@ -27,21 +27,25 @@ class ReloadDoc(Resource):
             print(data["reloaddocchat"])
             query = []
             response = []
+            timestamp_sort = []
             if data["reloaddocchat"] == "True":
                 for chat in Chat_History.objects(document_id=data.get('document_id')):
                     chat_details = (json.loads((chat).to_json()))
                     query.append(chat_details['query'])
                     response.append( chat_details['response'])
+                    timestamp_sort.append( chat_details['timestamp'])
                     
                 session_response = {'message' : "Document and chat reloaded", 
                                     'chathistory': {'query':query,
-                                'response':response
+                                'response':response,
+                                'timestamp' :timestamp_sort
                     },
                 'docdetails':{
                     'document_id': doc_details['document_id'],
                     'document_name': doc_details['document_name'],
                     'doc_summaries': doc_details['document_summary'],
-                    'doc_tag': doc_details['document_tag']}
+                    'doc_tag': doc_details['document_tag'],
+                    'doc_timestamp' : doc_details['timestamp'] }
                 } 
         return Response(json.dumps(session_response), 200)
     

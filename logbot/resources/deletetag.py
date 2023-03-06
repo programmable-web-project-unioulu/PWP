@@ -29,7 +29,44 @@ class DelTag(Resource):
                 else:
                     doc_details = json.loads(User_Document.objects.get(document_id=data.get('document_id')).to_json())
                     if doc_details['document_tag'] == "No tag generation requested":
-                        session_response = {'message' : 'Summary already deleted'}
+                        data_load_chat = {"user_id": [], "chat_id":[],"query":[],"response":[], 'document_id' : []}
+                        data_load_chat['user_id'] = user_details['user_id']
+                        data_load_chat['chat_id']= doc_details['chat_id']
+                        data_load_chat['query'] = "delete tag"
+                        data_load_chat['response'] = 'Tag already deleted'
+                        data_load_chat['document_id'] = doc_details['document_id']
+                        chat_load = Chat_History(**data_load_chat)
+                        chat_load.save()
+                        query = []
+                        response = []
+                        timestamp_sort = []
+                        for chat in Chat_History.objects(user_id = user_details['user_id']):
+                            chat_details = (json.loads((chat).to_json()))
+                            query.append(chat_details['query'])
+                            response.append( chat_details['response'])
+                            timestamp_sort.append( chat_details['timestamp'])
+                        doc_name = []
+                        doc_summary = []
+                        doc_tag = []
+                        doc_timestamp = []
+                        for doc in User_Document.objects(user_id = user_details['user_id']):
+                            doc_details = (json.loads((doc).to_json()))
+                            doc_name.append(doc_details['document_name'])
+                            doc_summary.append(doc_details['document_summary'])
+                            doc_tag.append(doc_details['document_tag'])
+                            doc_timestamp.append(doc_details['timestamp'])
+                        session_response = {'message' : "Document and chat reloaded", 
+                                                'chathistory': {'query':query,
+                                            'response':response,
+                                            'timestamp' :timestamp_sort
+                                },
+                            'docdetails':{
+                                'document_id': doc_details['document_id'],
+                                'document_name': doc_details['document_name'],
+                                'doc_summaries': doc_details['document_summary'],
+                                'doc_tag': doc_details['document_tag'],
+                                'doc_timestamp' : doc_details['timestamp'] }
+                            }
                     else:   
                         User_Document.objects(document_id=data.get('document_id')).update_one(set__document_summary="No tag generation requested")
                         data_load_chat = {"user_id": [], "chat_id":[],"query":[],"response":[], 'document_id' : []}
@@ -40,6 +77,35 @@ class DelTag(Resource):
                         data_load_chat['document_id'] = doc_details['document_id']
                         chat_load = Chat_History(**data_load_chat)
                         chat_load.save()
-                        session_response = {'message' : data_load_chat['response']} 
+                        query = []
+                        response = []
+                        timestamp_sort = []
+                        for chat in Chat_History.objects(user_id = user_details['user_id']):
+                            chat_details = (json.loads((chat).to_json()))
+                            query.append(chat_details['query'])
+                            response.append( chat_details['response'])
+                            timestamp_sort.append( chat_details['timestamp'])
+                        doc_name = []
+                        doc_summary = []
+                        doc_tag = []
+                        doc_timestamp = []
+                        for doc in User_Document.objects(user_id = user_details['user_id']):
+                            doc_details = (json.loads((doc).to_json()))
+                            doc_name.append(doc_details['document_name'])
+                            doc_summary.append(doc_details['document_summary'])
+                            doc_tag.append(doc_details['document_tag'])
+                            doc_timestamp.append(doc_details['timestamp'])
+                        session_response = { 
+                                                'chathistory': {'query':query,
+                                            'response':response,
+                                            'timestamp' :timestamp_sort
+                                },
+                            'docdetails':{
+                                'document_id': doc_details['document_id'],
+                                'document_name': doc_details['document_name'],
+                                'doc_summaries': doc_details['document_summary'],
+                                'doc_tag': doc_details['document_tag'],
+                                'doc_timestamp' : doc_details['timestamp'] }
+                            } 
         return Response(json.dumps(session_response), 200)
     
