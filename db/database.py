@@ -54,7 +54,7 @@ class Characteristics(db.Model):
                     db.CheckConstraint('exercise<5'), nullable=True)
     
     in_breed = db.relationship("Breed", back_populates="characteristics")
-
+    
     def serialize(self):
         return {
             "breed": [breed.name for breed in self.in_breed],

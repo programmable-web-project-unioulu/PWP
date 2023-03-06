@@ -43,18 +43,18 @@ def _group():
     return group
 
 
-def _breed(group=False):
+def _breed(group=False, name="Test breed for api"):
     """
     Init one breed to database and return the breed
     """
     if group:
         breed = Breed(
-            name="Test breed for api",
+            name=name,
             group=_group(),
         )
     else:
         breed = Breed(
-            name="Test breed for api"
+            name=name
         )
     app.db.session.add(breed)
     app.db.session.commit()
@@ -159,3 +159,64 @@ def test_facts_delete(client):
     assert res.status_code == 201
     res = client.delete("/api/facts/1/")
     assert res.status_code == 204
+
+def test_characteristics_post(client):
+    """
+    
+    """
+    bad_body ={
+        "life_span": 6,
+        "in_breed": "non existing breed"
+    }
+
+    res = client.post("/api/characteristics/", json=bad_body)
+    assert res.status_code == 404
+    
+def test_characteristics_post(client):
+    """
+    Existing breed can be given a characteristic, with different combinations
+
+    """
+    breed = _breed(group=True,name="First good boy")
+
+    good_body = {
+        "life_span": 6, # Not nullable
+        "in_breed": breed.name
+        }
+
+    res = client.post("/api/characteristics/", json=good_body)
+    assert res.status_code == 201
+    good_body["exercise"] = 6
+    res2 = client.post("/api/characteristics/", json=good_body)
+    assert res2.status_code == 409
+
+def test_characteristics_post_exercise(client):
+    """
+    
+    """
+    breed = _breed(group=True,name="First good boy")
+
+    good_body = {
+        "life_span": 6, # Not nullable
+        "in_breed": breed.name,
+        "exercise": 4
+        }
+
+    res = client.post("/api/characteristics/", json=good_body)
+    assert res.status_code == 201
+
+def test_characteristics_post_exercise_and_coatlength(client):
+    """
+    
+    """
+    breed = _breed(group=True,name="First good boy")
+
+    good_body = {
+        "life_span": 6, # Not nullable
+        "in_breed": breed.name,
+        "exercise": 4,
+        "coat_length": 2
+        }
+
+    res = client.post("/api/characteristics/", json=good_body)
+    assert res.status_code == 201

@@ -41,11 +41,11 @@ class GroupCollection(Resource):
             raise UnsupportedMediaType
 
         try:
-            validate(request.is_json, Group.json_schema())
+            validate(request.json, Group.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
 
-        group = Group(name=request.is_json["name"])
+        group = Group(name=request.json["name"])
         
         try:
             db.session.add(group)
@@ -147,22 +147,22 @@ class CharacteristicsCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:
             validate(request.json, Characteristics.json_schema())
         except ValidationError as e:
             raise BadRequest(description=str(e))
-
-        breed = [Breed.query.filter_by(name=request.json["in_breed"]).first()]
-
+        
+        breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
+        
         if not breed:
             # return ValueError("Breed '{breed}' does not exist".format(**request.json))
             return "Breed does not exist", 404
-
+        
         characteristics = Characteristics(
-            in_breed=breed, life_span=request.json["life_span"])
+            in_breed=[breed], life_span=request.json["life_span"])
 
         # to check if post request contains coat_length and exercise
         try:
@@ -173,18 +173,18 @@ class CharacteristicsCollection(Resource):
             exercise = request.json["exercise"]
         except KeyError:
             exercise = None
-
+        print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
-            characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+            characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               coat_length=request.json["coat_length"])
 
             if exercise:
-                characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+                characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                                   coat_length=request.json["coat_length"],
                                                   exercise=request.json["exercise"])
 
         if exercise:
-            characteristics = Characteristics(in_breed=breed, life_span=request.json["life_span"],
+            characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               exercise=request.json["exercise"])
 
         try:
@@ -251,7 +251,7 @@ class BreedItem(Resource):
 
     def put(self, group, breed):
         # to be implemented
-        if not request.json:
+        if not request.is_json:
             raise UnsupportedMediaType
 
         try:

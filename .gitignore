@@ -8,4 +8,4 @@
 .Pipfile
 .env/*
 .env
-instance*
+instance/test.db
