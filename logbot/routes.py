@@ -1,5 +1,4 @@
 from flask_restful import Api
-
 # Project Resources
 from resources.authentication import SignUp, Login
 from resources.actions import UserApi
@@ -12,7 +11,7 @@ from resources.deletetag import DelTag
 from resources.reloaddocchat import ReloadDoc
 from resources.updatesum import UpdateSum
 from resources.updatetag import UpdateTag
-
+from resources.chatwindowQ import QueriesRes
 
 def create_routes(api: Api):
     """
@@ -36,4 +35,5 @@ def create_routes(api: Api):
     api.add_resource(ReloadDoc, '/reloaddocchat/ReloadDoc/')
     api.add_resource(UpdateSum, '/updatesum/UpdateSum/')
     api.add_resource(UpdateTag, '/updatetag/UpdateTag/')
+    api.add_resource(QueriesRes, '/chatwindowQ/QueriesRes/')
     
