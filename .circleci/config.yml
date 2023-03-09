@@ -40,10 +40,13 @@ workflows:
     jobs:
       - test
       - build:
-        requires:
-          - test
-        context: dogdict
+          requires:
+            - test
+          context: dogdict
+      - deploy
+          requires:
+            - build
   aws_cli:
     jobs:
       - aws-cli-cred-setup:
-        context: dogdict
+          context: dogdict
