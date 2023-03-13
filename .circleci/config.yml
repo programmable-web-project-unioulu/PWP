@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - run: pip install -r requirements.txt
-      - run: cd db && python -m pytest --cov=. -cov-fail-under=99
+      - run: cd db && coverage run -m pytest && coverage report --fail-under=99
 
 # Orchestrate our job run sequence
 workflows:
