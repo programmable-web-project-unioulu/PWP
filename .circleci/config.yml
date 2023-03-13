@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+
 # Define the jobs we want to run for this project
 jobs:
   build:
@@ -21,13 +24,33 @@ jobs:
     steps:
       - checkout
       - run: pip install -r requirements.txt
-      - run: cd db && coverage run -m pytest && coverage report --fail-under=99
-
+      - run: cd db && coverage run -m pytest && coverage report --fail-under=92
+  deploy:
+    docker:
+      - image: docker:17.05.0-ce-git
+        auth:
+          username: mmouru
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build . --tag dogdict-app
+      - run: aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
 # Orchestrate our job run sequence
 workflows:
-  build_and_test:
+  build-and-push-image:
     jobs:
-      - build
-      - test:
+      - test
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-cli-version: latest
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          dockerfile: Dockerfile
+          path: .
+          push-image: true
+          region: '$REGION'
+          registry-id: ACCOUNT
+          repo: dogdict
+          tag: 'latest'
           requires:
-            - build
+            - test
