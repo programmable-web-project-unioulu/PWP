@@ -1,5 +1,6 @@
 # PWP SPRING 2023
 # DogDict API
+![CircleCI](https://dl.circleci.com/status-badge/img/gh/mmouru/pwp-RESTful-api/tree/master.svg?style=shield)
 # Group information
 * Student 1. Martti Mourujärvi   mmouruja19@student.oulu.fi
 * Student 2. Kalle Veijalainen   kveijala19@student.oulu.fi

@@ -2,7 +2,7 @@
 *.instance
 *__pycache__
 .pytest*
-*coverage
+.coverage
 .env
 .pytest_cache
 Pipfile
