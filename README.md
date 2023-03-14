@@ -41,18 +41,10 @@ To view the contents of the database, a VSCode extension such as [SQLite Viewer]
 Models are tested using pytest with coverage reports. Currently could only get coverage report to work for
 singular files, e.g. for database.py only.
 
-*TODO*
-- Better folder structure
-- Find good parameters to call pytest to get full coverage report
-- Get 100% test coverage
-
-How to get coverage % for separate files:
--v flag is for verbose
-add -vv for more information in testing if needed
+How to get coverage % for separate files, these test fill fail if coverage is under 92% in files specified in ````/db/.coveragerc```.
+Here database.py and api.py
 ```
-python -m pytest --cov=api -v
-python -m pytest --cov=database -v
-
+coverage run -m pytest && coverage report --fail-under=92
 ```
 
 ## Running with docker
