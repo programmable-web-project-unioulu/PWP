@@ -44,7 +44,8 @@ singular files, e.g. for database.py only.
 How to get coverage % for separate files, these test fill fail if coverage is under 92% in files specified in ````/db/.coveragerc```.
 Here database.py and api.py
 ```
-coverage run -m pytest && coverage report --fail-under=92
+coverage run -m pytest
+coverage report --fail-under=92
 ```
 
 ## Running with docker
