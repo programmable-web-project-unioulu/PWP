@@ -33,4 +33,3 @@ class Users(Document):
         if self._created:
             self.generate_pw_hash()
         super(Users, self).save(*args, **kwargs)
-
