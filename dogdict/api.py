@@ -1,4 +1,7 @@
-import os
+"""
+    API defining file, here all resources are attached to their routes
+    and a blueprint is created for the app
+"""
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 from flask_restful import Api
