@@ -61,7 +61,10 @@ Discussion about the database model that we have provided thus far. Lightly eval
 * **ASSISTANTS:**
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+Better routing, maybe route breeds under groups, link facts to breeds /api/groups/breed/facts/n-fact
+/api/groups/terrier/breeds/23872
+maybe hash groups breeds in database to not EXPOSE PRIMARY KEYS in url, maybe add url in underscore e.g. Australian_terrier or Australian%20terrier, latter is handled in SQLalchemy to result in Australian terrier
+Explain addressability and uniform interface more betterly, architecture statelesness, Use better project layout from lovelace. Better documentation
 
 ### Action points
 *List here the actions points discussed with assistants*

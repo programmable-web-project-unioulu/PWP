@@ -1,0 +1,49 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+# Create a SQL database
+db = SQLAlchemy()
+
+"""
+Application factory to create the dogdict app, this is __init__.py file is run first when ever
+flask run command is used in command line. The application must be started with flask run command!
+"""
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+    
+    # some common testing config
+    app.config.from_mapping(
+        SECRET_KEY="test",
+        SQLALCHEMY_DATABASE_URI="sqlite:///test.db",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+
+    #TODO production config
+    """
+    app.config.from_mapping(
+        SECRET_KEY="test",
+        SQLALCHEMY_DATABASE_URI="sqlite:///test.db",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+    """
+
+    # Register the SQL database with dogdict app
+    with app.app_context():
+        db.init_app(app)
+
+    # Import resources and models after defining DB and app to counter circular imports
+    from . import api
+    from . import models
+    from .utils import BreedConverter, FactConverter, GroupConverter
+    
+    # Add db init command to flask cli, test db can be created with command "flask init-db", this replaces former
+    # populate.py, see details in models.py 
+    app.cli.add_command(models.init_db)
+    
+    app.url_map.converters["group"] = GroupConverter
+    app.url_map.converters["breed"] = BreedConverter
+    app.url_map.converters["fact"] = FactConverter
+    # register blueprint for API routes
+    app.register_blueprint(api.api_bp)
+    
+    return app
