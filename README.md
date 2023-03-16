@@ -91,6 +91,11 @@ coverage run -m pytest
 
 coverage report --fail-under=92
 
+To see missing lines during development
+python -m pytest --cov-report term-missing --cov=dogdict tests/
+
+also run pylint to check the code quality, a 9/10 should be reached
+pylint dogdict
 ```
 
 ## CircleCI
