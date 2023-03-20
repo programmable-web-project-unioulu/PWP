@@ -12,12 +12,13 @@ from dogdict.resources.group import GroupCollection, GroupItem
 from dogdict.resources.fact import FactCollection, FactItem
 from dogdict.resources.characteristic import CharacteristicCollection
 
-"""
-Config is copied from exercises
-"""
+
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
+    """
+        Config is copied from exercises
+    """
     cursor = dbapi_connection.cursor()
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()

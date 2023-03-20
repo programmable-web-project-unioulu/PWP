@@ -1,3 +1,6 @@
+"""
+    Contains all the resources that are used to access the Breed model in the database.
+"""
 import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
@@ -8,8 +11,13 @@ from dogdict.models import Breed, Group, db
 from dogdict.constants import JSON
 
 class BreedCollection(Resource):
-
+    """
+        Used to access multiple breeds at once.
+    """
     def get(self):
+        """
+            Used to access ALL the breeds at once.
+        """
         body = {"items": []}
         for db_breed in Breed.query.all():
             item = db_breed.serialize()
@@ -17,14 +25,16 @@ class BreedCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
+        """
+            Used to POST a breed into the breed collection and to make sure it fits the schema.
+        """
         if not request.is_json:
             raise UnsupportedMediaType
         try:
             print(request.json,"moroo")
             validate(request.json, Breed.json_schema())
-        except ValidationError as e:
-            raise BadRequest(description=str(e))
-        
+        except ValidationError as exc:
+            raise BadRequest(description=str(exc))
         group = Group.query.filter_by(name=request.json["group"]).first()
 
         if not group:
@@ -38,9 +48,7 @@ class BreedCollection(Resource):
             db.session.commit()
         except IntegrityError:
             raise Conflict(
-                "Breed with name '{name}' already exists.".format(
-                    **request.json
-                )
+                f"Breed with name '{request.json}' already exists."
             )
 
         return Response(
@@ -48,14 +56,21 @@ class BreedCollection(Resource):
         )
 
 class BreedItem(Resource):
-
+    """
+        Used to access specific breeds from the database.
+    """
     def get(self, breed):
+        """
+            GETs a specific breed
+        """
         if "404" in str(breed):
             return "", 404
-        else:
-            return Response(json.dumps(breed.serialize()), 200, mimetype=JSON)
+        return Response(json.dumps(breed.serialize()), 200, mimetype=JSON)
 
     def put(self, breed):
+        """
+            Changes the values of an existing singular breed.
+        """
         if not request.is_json:
             raise UnsupportedMediaType
 
@@ -70,9 +85,12 @@ class BreedItem(Resource):
         return Response(json.dumps(breed.serialize()), 204, mimetype=JSON)
 
     def delete(self, breed):
+        """
+            DELETEs one single breed.
+        """
         try:
             db.session.delete(breed)
             db.session.commit()
             return Response(status=204)
-        except:
+        except Exception:
             return "moro", 404

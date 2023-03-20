@@ -9,22 +9,36 @@ from dogdict import db
 
 class Group(db.Model):
     """
-        Write this
+        Group is an object that is used to categorize breeds. 
+        Example: Australian Terrier belongs to the Terrier group of breeds.
+
+        Each Group is unique and must have a name.
     """
     id = db.Column(db.Integer, primary_key=True)
+    # must be unique
     name = db.Column(db.String(64), unique=True, nullable=False)
 
     # creates a connection from Group -> Breed
     breeds = db.relationship("Breed", back_populates="group")
 
     def serialize(self):
+        """
+            Used to serialize the Group Python model objects,
+            since they can't directly be serialized with json.dumps
+        """
         return {"name": self.name, "id": self.id}
 
     def deserialize(self, doc):
+        """
+            Used to deserialize the a dictionary into a suitable model instance.
+        """
         self.name = doc["name"]
 
     @staticmethod
     def json_schema():
+        """
+            defines the JSON format of the Group object and describes the values
+        """
         schema = {"type": "object", "required": ["name"]}
         props = schema["properties"] = {}
         props["name"] = {"description": "Group's unique name", "type": "string"}
@@ -33,7 +47,11 @@ class Group(db.Model):
 
 class Characteristics(db.Model):
     """
-        Write this
+        Each characteristics can only have an 1 to 1 connection to a breed.
+        This object characterises the breed and contains values such as
+        life span, coat length and the amount of daily exercise the breed requires (in hours).
+
+        There can be multiple similar characteristics, they are only separated by the ID.
     """
     id = db.Column(db.Integer, primary_key=True)
     life_span = db.Column(
@@ -52,9 +70,14 @@ class Characteristics(db.Model):
         nullable=True,
     )
 
+    # creates a connection between characteristics and breed
     in_breed = db.relationship("Breed", back_populates="characteristics")
 
     def serialize(self):
+        """
+            Used to serialize the Characteristics Python model objects,
+            since they can't directly be serialized with json.dumps
+        """
         return {
             "breed": [breed.name for breed in self.in_breed],
             "char_id": self.id,
@@ -65,6 +88,9 @@ class Characteristics(db.Model):
 
     @staticmethod
     def json_schema():
+        """
+            defines the JSON format of the Characteristics object and describes the values
+        """
         schema = {"type": "object", "required": ["in_breed", "life_span"]}
         props = schema["properties"] = {}
         props["in_breed"] = {
@@ -77,7 +103,8 @@ class Characteristics(db.Model):
 
 class Facts(db.Model):
     """
-        Write this
+        Facts contain short information about breeds such as: "____ is a small dog"
+        Facts can be non unique, but each fact can only belong to one breed.
     """
     id = db.Column(db.Integer, primary_key=True)
     fact = db.Column(db.String(128), nullable=False)
@@ -87,10 +114,17 @@ class Facts(db.Model):
     breed = db.relationship("Breed", back_populates="facts")
 
     def serialize(self):
+        """
+            Used to serialize the Facts Python model objects,
+            since they can't directly be serialized with json.dumps
+        """
         return {"fact": self.fact, "breed": self.breed.serialize(), "id": self.id}
 
     @staticmethod
     def json_schema():
+        """
+            defines the JSON format of the Facts object and describes the values
+        """
         schema = {"type": "object", "required": ["fact", "breed"]}
         props = schema["properties"] = {}
         props["fact"] = {"description": "Fact about a breed", "type": "string"}
@@ -100,7 +134,9 @@ class Facts(db.Model):
 
 class Breed(db.Model):
     """
-        Write this
+        Each breed is unique and can only belong to one group.
+        Each breed has characteristics that give information about the breeds. 1 to 1 Relationship.
+        Each breed can have multiple facts.
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
@@ -121,6 +157,12 @@ class Breed(db.Model):
     facts = db.relationship("Facts", back_populates="breed")
 
     def serialize(self, short_form=False):
+        """
+            Used to serialize the Breed Python model objects,
+            since they can't directly be serialized with json.dumps.
+            
+            Currently short_form doesn't affect anything.
+        """
         doc = {"name": self.name, "id": self.id}
         if not short_form:
             doc["group"] = self.group.serialize()
@@ -135,6 +177,9 @@ class Breed(db.Model):
         return doc
 
     def deserialize(self, doc):
+        """
+            Used to deserialize the a dictionary into a suitable model instance.
+        """
         self.name = doc["name"]
         if not doc["group"]:
             return
@@ -142,19 +187,22 @@ class Breed(db.Model):
 
     @staticmethod
     def json_schema():
+        """
+            defines the JSON format of the Breed object and describes the values
+        """
         schema = {"type": "object", "required": ["name", "group"]}
         props = schema["properties"] = {}
         props["name"] = {"description": "Breeds unique name", "type": "string"}
         props["group"] = {"description": "Name of the breed's group", "type": "string"}
         return schema
 
-"""
-Command line interface to initiliaze a test db to instances/test.db
-"""
 
 @click.command("init-db")
 @with_appcontext
 def init_db():
+    """
+        Command line interface to initiliaze a test db to instances/test.db
+    """
     db.create_all()
     terriergroup = Group(name="Terrier")
     pastoralgroup = Group(name="Pastoral")
