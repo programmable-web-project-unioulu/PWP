@@ -70,6 +70,6 @@ class FactItem(Resource):
         try:
             db.session.delete(fact)
             db.session.commit()
-            return Response(status=204)
+            return Response(f"Successfully deleted fact {fact}", status=204)
         except:
-            return "moro", 404
+            return "Fact not found!", 404

@@ -86,6 +86,14 @@ class Characteristics(db.Model):
             "exercise": self.exercise,
         }
 
+    def deserialize(self, characteristic):
+        """
+            Used to deserialize the Characteristics objects to get specific
+            characteristics from the DB (currently not required)
+        """
+        self.char = Characteristics.query.filter_by(name=characteristic["char_id"]).first()
+
+
     @staticmethod
     def json_schema():
         """
@@ -118,7 +126,16 @@ class Facts(db.Model):
             Used to serialize the Facts Python model objects,
             since they can't directly be serialized with json.dumps
         """
-        return {"fact": self.fact, "breed": self.breed.serialize(), "id": self.id}
+        return {"fact": self.fact, "breed": self.breed_id, "id": self.id}
+
+    def deserialize(self, doc):
+        """
+            Used to deserialize the Facts object and extract the wanted data
+            Returns one specific fact currently
+        """
+        self.fact = doc["fact"]
+        self.fact = Facts.query.filter_by(fact=doc["fact"]).first()
+
 
     @staticmethod
     def json_schema():
