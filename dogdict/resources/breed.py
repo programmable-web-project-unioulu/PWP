@@ -93,4 +93,4 @@ class BreedItem(Resource):
             db.session.commit()
             return Response(status=204)
         except Exception:
-            return "moro", 404
+            return "Breed not found!", 404

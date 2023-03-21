@@ -265,14 +265,13 @@ def test_fact_serializer(app):
         db.session.add(breed)
         db.session.commit()
 
+        print(fact.serialize())
+
+        # muutin tätä mielestäni tulee kivemman näköistä kuin että
+        # faktojen haussa haettaisiin erikseen vielä breedien tiedot?
         assert fact.serialize() == {
             "fact": "Test fact for breed",
-            "breed": {
-                "facts": ["Test fact for breed"],
-                "group": {"id": 1, "name": "Test group"},
-                "name": "Test breed",
-                "id": 1
-            },
+            "breed": 1,
             "id": 1
         }
 
