@@ -1,15 +1,25 @@
+"""
+    Contains all the resources that are used to access the Facts model in the database.
+"""
+
 import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
-from werkzeug.exceptions import NotFound, Conflict, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
 from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Group, db
 from dogdict.constants import JSON
 
-class GroupCollection(Resource):
 
+class GroupCollection(Resource):
+    """
+        Used to access all of the Groups in the DB at once.
+    """
     def get(self):
+        """
+            GETs all the groups in the database (currently their names)
+        """
         body = {"items": []}
         for db_group in Group.query.all():
             item = db_group.serialize()
@@ -18,25 +28,26 @@ class GroupCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
+        """
+            Used to POST a new Group object and validate it against the Group
+            JSON schema.
+        """
         if not request.is_json:
             raise UnsupportedMediaType
-        
+
         try:
             validate(request.json, Group.json_schema())
-        except ValidationError as e:
-            raise BadRequest(description=str(e))
+        except ValidationError as exc:
+            raise BadRequest(description=str(exc))
 
         group = Group(name=request.json["name"])
-        
+
         try:
-            
             db.session.add(group)
             db.session.commit()
         except IntegrityError:
             raise Conflict(
-                "Group with name '{name}' already exists.".format(
-                    **request.json
-                )
+                f"Group with name '{request.json['name']}' already exists."
             )
 
         return Response(
@@ -45,7 +56,13 @@ class GroupCollection(Resource):
 
 
 class GroupItem(Resource):
+    """
+        Used to access a specific group
+    """
     def get(self, group):
+        """
+            GETs a specific groups information from the DB (name only)
+        """
         group = Group.query.filter_by(name=group.name).first()
         body = {
             "name": group.name
@@ -54,6 +71,9 @@ class GroupItem(Resource):
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def put(self, group):
+        """
+            Used to change the name of a specific group from the database.
+        """
         print("GROUP222", group)
         if not request.is_json:
             return "", 415
@@ -68,5 +88,5 @@ class GroupItem(Resource):
 
         db.session.add(group)
         db.session.commit()
-        
+
         return Response(status=204)

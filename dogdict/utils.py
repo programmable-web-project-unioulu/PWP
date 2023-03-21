@@ -1,13 +1,13 @@
 from flask import Response
-from dogdict.models import Breed, Facts, Group
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import BaseConverter
-"""
-Converters
-"""
+from dogdict.models import Breed, Facts, Group
+
 
 class GroupConverter(BaseConverter):
-
+    """
+        This can be used to query unique Group information from the database
+    """
     def to_python(self, value):
         value = value.capitalize()  # add capitalization so URI does not need to be uppercase
         print(value)
@@ -23,7 +23,9 @@ class GroupConverter(BaseConverter):
 
 
 class BreedConverter(BaseConverter):
-
+    """
+        This can be used to query unique Breed information from the database
+    """
     def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
         print(value)
         db_breed = Breed.query.filter_by(id=value).first()
@@ -38,6 +40,9 @@ class BreedConverter(BaseConverter):
 
 
 class FactConverter(BaseConverter):
+    """
+        This can be used to query unique Fact information from the database
+    """
     def to_python(self, value):
         db_fact = Facts.query.filter_by(id=value).first()
         if db_fact is None:

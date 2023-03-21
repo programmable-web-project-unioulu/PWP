@@ -295,9 +295,9 @@ def test_characteristics_post(app):
 
         res = client.post("/api/characteristics/", json=good_body)
         assert res.status_code == 201
-        good_body["exercise"] = 6
-        res2 = client.post("/api/characteristics/", json=good_body)
-        assert res2.status_code == 409
+        #good_body["exercise"] = 6
+        #res2 = client.post("/api/characteristics/", json=good_body)
+        #assert res2.status_code == 409
 
 def test_characteristics_post_exercise(app):
     """
@@ -333,6 +333,7 @@ def test_characteristics_post_exercise_and_coatlength(app):
 
         res = client.post("/api/characteristics/", json=good_body)
         assert res.status_code == 201
+        
         res = client.delete("/api/breeds/1/")
         assert res.status_code == 204
 
@@ -423,6 +424,29 @@ def test_fact_breed_exists(app):
         client = app.test_client()
         res = client.post("/api/facts/", json={"fact": "mock fact", "breed": "non existing"})
         assert res.status_code == 404
+
+def test_post_characteristics_duplicate(app):
+    """
+    Test that POSTs characteristics twice to a breed, resulting in error 409 (1 to 1 relationship)
+    """
+    body = {
+    "in_breed":"test_1",
+    "char_id": 1,
+    "coat_length": 0.2,
+    "life_span": 6,
+    "exercise": 1.2
+    }
+    with app.app_context():
+        client = app.test_client()
+        _group()
+        res = client.post("/api/groups/", json=group1)
+        assert res.status_code == 201
+        res = client.post("/api/breeds/", json=breed1)
+        assert res.status_code == 201
+        res = client.post("/api/characteristics/", json=body)
+        assert res.status_code == 201
+        res = client.post("/api/characteristics/", json=body)
+        assert res.status_code == 409
 
 def test_get_characteristics(app):
     """
