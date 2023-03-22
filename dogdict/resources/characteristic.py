@@ -40,6 +40,9 @@ class CharacteristicCollection(Resource):
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
 
+        if request.json["life_span"] < 5:
+            return "Life span is too short!", 400
+
         breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
 
         if not breed:
@@ -80,7 +83,7 @@ class CharacteristicCollection(Resource):
         try:
             db.session.add(characteristics)
             db.session.commit()
-        except IntegrityError:
+        except IntegrityError as exc:
             raise Conflict(
                 f"Characteristics for breed '{request.json}' already exists."
             )

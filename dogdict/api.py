@@ -12,6 +12,7 @@ from dogdict.resources.group import GroupCollection, GroupItem
 from dogdict.resources.fact import FactCollection, FactItem
 from dogdict.resources.characteristic import CharacteristicCollection
 
+from flasgger import Swagger, swag_from
 
 
 @event.listens_for(Engine, "connect")
@@ -23,7 +24,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
+
 api_bp = Blueprint("api", __name__, url_prefix="/api")
+
 api = Api(api_bp)
 
 api.add_resource(GroupCollection, "/groups/")

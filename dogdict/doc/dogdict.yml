@@ -1,0 +1,428 @@
+---
+openapi: 3.0.3
+
+servers:
+  - url: /api
+
+info:
+  title: DogDict
+  version: 0.0.1
+  description: |
+    This is an API developed for Programmable Web Project course
+    held at University of Oulu (Spring 2023). It is an API that
+    returns information about different types of dogs, breeds and
+    facts and characteristics about specific breeds. THIS FILE IS DOGDICT!!!
+  
+components:
+
+  parameters:
+  
+    group_name:
+      description: Selected groups unique name
+      in: path
+      name: group
+      required: true
+      schema:
+        type: string
+        
+    breed_id:
+      description: Selected product's unique breed
+      in: path
+      name: breed
+      required: true
+      schema:
+        type: number
+        
+        
+  schemas:
+  
+    Group:
+      properties:
+        name:
+          description: Name of the group of dogs e.x. Terrier
+          type: string
+      required:
+      - name
+      
+    BreedGet: 
+      properties: 
+        name:
+          description: Breed's unique name
+          type: string
+        id:
+          description: Breed's unique id
+          type: number
+        group:
+          description: The information about group of dogs that the breed belongs to (ex. Terrier)
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: integer
+        facts:
+          description: Facts related to the dog.
+          type: array
+          items:
+            type: string
+        characteristics:
+          description: Characteristics of the dog (char_id, life_span, coat_length, exercise)
+          type: array
+          items:
+            type: integer
+            
+    BreedPost:
+      properties:
+        name:
+          description: Breed's unique name
+          type: string
+        group:
+          description: The name of the group of dogs that the breed belongs to (ex. Terrier)
+          type: string
+      required:
+      - name
+      - group
+      
+    Fact:
+      properties:
+        breed:
+          description: Breed's unique name
+          type: string
+        fact:
+          description: A fact about the specific breed
+          type: string
+          
+    Characteristics:
+      properties:
+        breed:
+          description: Names of the breed(s) that the characteristics belong to.
+          type: string
+        char_id:
+          description: The Id of the characteristics
+          type: number
+        coat_length:
+          description: Coat length of the breed(s) in question
+          type: number
+          maximum: 1
+        life_span:
+          description: Life span of the breed(s)
+          type: number
+          minimum: 5
+          maximum: 25
+        exercise:
+          description: Daily exercise in hours required by the breed(s)
+          type: number
+          minimum: 0
+          maximum: 5
+      required:
+      - breed
+      - char_id
+      - life_span
+  
+  
+# need to implement these into different files but I just cant figure out how currently ....
+paths:
+
+  # GroupCollection
+  /api/groups/:
+    get:
+      description: "Gets the names of groups of dogs"
+      responses:
+        "200":
+          description: List of the names of groups of dogs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+              example:
+                - name: Terrier
+                  id: 1
+                - name: Pastoral
+                  id: 2
+                - name: Working
+                  id: 3
+    post:
+      description: "Posts a new dog group"
+      requestBody:
+        description: String of group name
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+            example:
+              - name: Bulldog
+      responses:
+        "409":
+          description: That group already exists.
+        "200":
+          description: The group was created successfully
+          headers:
+            Location: 
+              description: URI of the new Group that was created
+              schema: 
+                type: string
+        "400":
+          description: Request body was not valid.
+          
+  /api/groups/{group_name}:
+    put:
+      description: "Changes the name of a group of dogs"
+      parameters:
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+      responses:
+       "204":
+          description: Successfully changed the group name
+          headers:
+            Location: 
+              description: URI of the changed Group that was created
+              schema: 
+                type: string
+       "415":
+          description: Unsupported Media Type
+
+  # BreedCollection
+  /api/breeds/:
+    get:
+      description: "Gets the list of breeds"
+      responses:
+        "200":
+          description: List of breeds with information about them and their group.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BreedGet"
+              example:
+                - name: Australian Terrier
+                  id: 1
+                  group:
+                    name: Terrier
+                    id: 1
+                  facts: They are small dogs
+                  characteristics:
+                    char_id: 1
+                    life_span: 6
+                    coat_length: 0.2
+                - name: Malamutian Bulldog
+                  id: 1
+                  group: 
+                    name: Bulldog
+                    id: 5
+                  facts: null
+                  characteristics:
+                    char_id: 1
+                    life_span: 6
+                    coat_length: null
+                    exercise: null
+    post:
+      description: "Posts a breed into the breed collection if it fits the schema."
+      requestBody:
+        description: JSON document that contains the basic information for a new breed
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BreedPost"
+            example:
+              name: Malamutian Terrier
+              group: 1
+      responses:
+        '201':
+          description: The product was created successfully
+          headers:
+            Location: 
+              description: URI of the new Breed that was created
+              schema: 
+                type: string
+        '400':
+          description: The request body was not valid
+        '409':
+          description: A breed with the same name already exists
+        '415':
+          description: Wrong media type was used
+          
+  # BreedItem
+  /api/breeds/{breed_id}:
+    get:
+      description: "Gets a specific breed"
+      parameters:
+      - in: path
+        name: breed_id
+        schema:
+          type: integer
+        required: true
+      responses:
+        "200":
+          description: Gives information about a specific breed which may or may not have facts and/or characteristics.
+          content:
+            application/json:
+              example:
+                - name: Australian Terrier
+                  id: 1
+                  group:
+                    name: Terrier,
+                    id: 1
+                  facts: They are small dogs
+                  characteristics:
+                    char_id: 1
+                    life_span: 6
+                    coat_length: 0.2
+                    exercise: 1.0
+                - name: Laurin Terrier
+                  id: 1
+                  group:
+                    name: Terrier,
+                    id: 1
+        "400":
+          description: "Breed was not found"
+    put:
+      description: "Posts a breed into the breed collection if it fits the schema."
+      parameters:
+      - in: path
+        name: breed_id
+        schema:
+          type: integer
+        required: true
+      requestBody:
+        description: JSON document that contains the basic information for a new breed
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BreedPost"
+            example:
+              name: Malamutian Terrier
+              group: 1
+      responses:
+        '204':
+          description: The breed was changed successfully
+          headers:
+            Location: 
+              description: URI of the Breed that was changed
+              schema: 
+                type: string
+        '400':
+          description: The request body was not valid or the breed was not found
+        '409':
+          description: A breed with the same name already exists
+        '415':
+          description: Wrong media type was used
+    delete:
+      description: "Deletes a specific breed from the database"
+      parameters:
+      - in: path
+        name: breed_id
+        schema:
+          type: integer
+        required: true
+      responses:
+        "204":
+          description: Successfully removed a breed from database
+        "404":
+          description: The breed with id was not found
+          
+# CharacteristicsCollection
+  /api/characteristics:
+    get:
+      description: "Gets the list of characteristics"
+      responses:
+        "200":
+          description: List of characteristics with information about them and the breed(s) they belong to.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Characteristics"
+              example:
+              - in_breed: Australian Terrier
+                char_id: 1
+                life_span: 6
+                coat_length: 0.2
+                exercise: 1.2
+              - breed: ["Australian Terrier", "Laurin Terrier"]
+                char_id: 2
+                life_span: 8
+        "400":
+          description: "No characteristics was found"
+    post:
+      description: "Posts a new characteristics and links it to an existing breed"
+      requestBody:
+        description: JSON document that contains the basic information for a new breed
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Characteristics"
+            example:
+              - in_breed: Australian Terrier
+                char_id: 1
+                life_span: 6
+                coat_length: 0.2
+                exercise: 1.2
+              - in_breed: Laurin Terrier
+                char_id: 1
+                life_span: 6
+              
+      responses:
+        '201':
+          description: The Characteristics was created successfully
+          headers:
+            Location: 
+              description: URI of the new Characteristics that was created
+              schema: 
+                type: string
+        '400':
+          description: The request body was not valid
+        '409':
+          description: The characteristics already exists
+        '415':
+          description: Wrong media type was used
+
+
+  # FactCollection
+  /api/facts/:
+    get:
+      description: "Gets all of the facts in the database"
+      responses:
+        "200":
+          description: List of facts in the database
+    post:
+      description: "Posts a new fact into the database"
+      requestBody:
+        description: JSON document that contains the fact and a breed name that it is linked to
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Fact'
+            example:
+              - breed: Australian terrier
+                fact: "They are very funny dogs!"
+      responses:
+        "201":
+          description: "New fact successfully created"
+          headers:
+            Location: 
+              description: URI of the new Fact that was created
+              schema: 
+                type: string
+        "404":
+          description: "Breed that the fact was tried to link to does not exist"
+        "400":
+          description: "Bad body"
+  
+  # FactItem
+  /api/facts/{fact_id}:
+    delete:
+      parameters:
+      - in: path
+        name: fact_id
+        schema:
+          type: integer
+        required: true
+      description: "Deletes a specific fact from the database"
+      responses:
+        "204":
+          description: Successfully deleted a fact!
+        "404":
+          description: Fact with that id not found
+
+
+        
