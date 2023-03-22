@@ -74,9 +74,8 @@ class GroupItem(Resource):
         """
             Used to change the name of a specific group from the database.
         """
-        print("GROUP222", group)
         if not request.is_json:
-            return "", 415
+            return "Unsupported Media Type!", 415
         try:
             validate(request.json, Group.json_schema())
 
