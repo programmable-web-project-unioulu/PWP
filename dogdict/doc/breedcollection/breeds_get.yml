@@ -1,0 +1,34 @@
+---
+paths:
+  /api/breeds:
+    get:
+      description: "Gets the list of breeds"
+      responses:
+        "200":
+          description: List of breeds with information about them and their group.
+          content:
+            application/json:
+              example 1:
+                - name: Australian Terrier
+                  id: 1
+                  group:
+                    name: Terrier,
+                    id: 1
+                  facts: They are small dogs
+                  characteristics:
+                    char_id: 1,
+                    life_span: 6,
+                    coat_length: 0.2,
+                    exercise: 1.2
+              example 2:
+                - name: Malamutian Bulldog
+                  id: 1
+                  group: 
+                    name: Bulldog,
+                    id: 5
+                  facts: null
+                  characteristics:
+                    char_id: 1,
+                    life_span: 6,
+                    coat_length: null,
+                    exercise: null

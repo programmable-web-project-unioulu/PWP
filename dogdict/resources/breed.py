@@ -2,6 +2,7 @@
     Contains all the resources that are used to access the Breed model in the database.
 """
 import json
+import os
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
 from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
@@ -9,11 +10,15 @@ from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Breed, Group, db
 from dogdict.constants import JSON
+from flasgger import Swagger, swag_from
+from flasgger.utils import swag_from
+
 
 class BreedCollection(Resource):
     """
         Used to access multiple breeds at once.
     """
+    #@swag_from("../doc/breedcollection/breeds_get.yml")
     def get(self):
         """
             Used to access ALL the breeds at once.
@@ -23,7 +28,7 @@ class BreedCollection(Resource):
             item = db_breed.serialize()
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
-
+    
     def post(self):
         """
             Used to POST a breed into the breed collection and to make sure it fits the schema.
@@ -31,7 +36,6 @@ class BreedCollection(Resource):
         if not request.is_json:
             raise UnsupportedMediaType
         try:
-            print(request.json,"moroo")
             validate(request.json, Breed.json_schema())
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
@@ -47,12 +51,10 @@ class BreedCollection(Resource):
             db.session.add(breed)
             db.session.commit()
         except IntegrityError:
-            raise Conflict(
-                f"Breed with name '{request.json}' already exists."
-            )
+            return "Breed already exists", 409
 
         return Response(
-            status=201, headers={"Item": url_for("api.breedcollection", breed=breed)}
+            status=201, headers={"Location": url_for(BreedItem, breed=breed)}
         )
 
 class BreedItem(Resource):

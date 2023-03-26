@@ -3,7 +3,7 @@
 """
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
+from flasgger import Swagger, swag_from
 # Create a SQL database
 db = SQLAlchemy()
 
@@ -20,6 +20,14 @@ def create_app():
         SQLALCHEMY_DATABASE_URI="sqlite:///test.db",
         SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
+
+    app.config["SWAGGER"] = {
+        "title": "Dogdict API",
+        "openapi": "3.0.3",
+        "uiversion": 3,
+        "doc_dir": "/doc",
+    }
+    swagger = Swagger(app, template_file="./doc/dogdict.yml")
 
     # Create production config later here
 

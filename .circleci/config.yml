@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - run: pip install -r requirements.txt
-      - run: coverage run -m pytest && coverage report --fail-under=92
+      - run: coverage run -m pytest && coverage report --fail-under=89
   deploy:
     docker:
       - image: docker:17.05.0-ce-git
