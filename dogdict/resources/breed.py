@@ -93,7 +93,7 @@ class BreedCollection(Resource):
             return "Breed already exists", 409
 
         return Response(
-            status=201, headers={"Location": url_for(BreedItem, breed=breed)}
+            status=201, headers={"Location": url_for("api.breeditem", breed=breed.name)}
         )
 
 

@@ -22,7 +22,7 @@ class CharacteristicsBuilder(MasonBuilder):
     def add_control_all_characteristics(self):
         self.add_control(
             "characteristics:characteristics-all",
-            url_for(CharacteristicCollection),
+            url_for("api.characteristicscollection"),
             title="All characteristics",
             method="GET"
         )
@@ -31,7 +31,7 @@ class CharacteristicsBuilder(MasonBuilder):
         self.add_control_post(
             "characteristics:add-characteristic",
             "Add a new characteristics and connects it to an existing breed",
-            url_for(CharacteristicCollection),
+            url_for("api.characteristicscollection"),
             CharacteristicCollection.json_schema()
         )
 
