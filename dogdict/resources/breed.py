@@ -12,13 +12,52 @@ from dogdict.models import Breed, Group, db
 from dogdict.constants import JSON
 from flasgger import Swagger, swag_from
 from flasgger.utils import swag_from
+from dogdict.resources.mason import MasonBuilder
+
+
+class BreedBuilder(MasonBuilder):
+    """
+    Creates link relations for the Breed resource.
+    These include POST, GET, DELETE and PUT methods.
+    """
+
+    def add_control_all_breeds(self):
+        self.add_control(
+            "breeds:breeds-all",
+            url_for(BreedCollection),
+            title="All breeds",
+            method="GET"
+        )
+
+    def add_control_delete_breeds(self, breed_name):
+        self.add_control(
+            "breed:delete",
+            url_for(BreedItem, breed=breed_name),
+            method="DELETE"
+        )
+
+    def add_control_add_breeds(self):
+        self.add_control_post(
+            "breeds:add-breed",
+            "Add a new breed and connects it to an existing group",
+            url_for(BreedCollection),
+            BreedItem.json_schema()
+        )
+
+    def add_control_edit_breeds(self, breed_name):
+        self.add_control_put(
+            "breed:edit",
+            url_for(BreedItem, breed=breed_name),
+            BreedItem.json_schema(),
+        )
 
 
 class BreedCollection(Resource):
     """
         Used to access multiple breeds at once.
     """
-    #@swag_from("../doc/breedcollection/breeds_get.yml")
+    # @swag_from("../doc/breedcollection/breeds_get.yml")
+
     def get(self):
         """
             Used to access ALL the breeds at once.
@@ -28,7 +67,7 @@ class BreedCollection(Resource):
             item = db_breed.serialize()
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
-    
+
     def post(self):
         """
             Used to POST a breed into the breed collection and to make sure it fits the schema.
@@ -57,10 +96,12 @@ class BreedCollection(Resource):
             status=201, headers={"Location": url_for(BreedItem, breed=breed)}
         )
 
+
 class BreedItem(Resource):
     """
         Used to access specific breeds from the database.
     """
+
     def get(self, breed):
         """
             GETs a specific breed

@@ -10,19 +10,64 @@ from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Group, db
 from dogdict.constants import JSON
+from dogdict.resources.mason import MasonBuilder
+
+
+class GroupBuilder(MasonBuilder):
+    """
+    Creates link relations for the Group resource.
+    These include POST, GET and PUT methods.
+    """
+
+    def add_control_all_groups(self):
+        self.add_control(
+            "groups:groups-all",
+            url_for("api.groupcollection"),
+            title="All groups",
+            method="GET"
+        )
+
+    def add_control_add_groups(self):
+        self.add_control_post(
+            "groups:add-group",
+            "Add a new group",
+            url_for("api.groupcollection"),
+            Group.json_schema()
+        )
+
+    def add_control_edit_groups(self, group_name):
+        self.add_control_put(
+            "group:edit",
+            url_for("api.groupcollection", group=group_name),
+            Group.json_schema(),
+        )
 
 
 class GroupCollection(Resource):
     """
         Used to access all of the Groups in the DB at once.
     """
+
     def get(self):
         """
             GETs all the groups in the database (currently their names)
         """
-        body = {"items": []}
+        body = GroupBuilder(items=[])
+        body.add_namespace("groups", "/groups/")
+        body.add_control("self", href=url_for("api.groupcollection"))
+        body.add_control_add_groups()
+        body.add_control_all_groups()
+
         for db_group in Group.query.all():
-            item = db_group.serialize()
+            db_group_serialised = db_group.serialize()
+            print("DB GROUP SERIALISED", db_group_serialised)
+            item = {
+                "name": db_group_serialised["name"],
+                "id": db_group_serialised["id"],
+            }
+            item["@controls"] = {
+                "self": {"href": url_for("api.groupcollection", group=db_group.name)}
+            }
             body["items"].append(item)
 
         return Response(json.dumps(body), 200, mimetype=JSON)
@@ -59,14 +104,25 @@ class GroupItem(Resource):
     """
         Used to access a specific group
     """
+
     def get(self, group):
         """
             GETs a specific groups information from the DB (name only)
         """
+        body = GroupBuilder(items=[])
+        body.add_namespace("groups", "/groups/<group_name>/")
+        body.add_control("self", href=url_for(
+            "api.groupitem", group=group.name))
+        body.add_control_edit_groups(group)
+
         group = Group.query.filter_by(name=group.name).first()
-        body = {
+        item = {
             "name": group.name
         }
+        item["@controls"] = {
+            "self": {"href": url_for("api.groupitem", group=group.name)}
+        }
+
         print(group.name)
         return Response(json.dumps(body), 200, mimetype=JSON)
 

@@ -10,6 +10,36 @@ from flask import Response, request, url_for
 from flask_restful import Resource
 from dogdict.models import Breed, Facts, db
 from dogdict.constants import JSON
+from dogdict.resources.mason import MasonBuilder
+
+class FactBuilder(MasonBuilder):
+    """
+    Creates link relations for the Facts resource.
+    These include POST, GET and DELETE methods.
+    """
+
+    def add_control_all_facts(self):
+        self.add_control(
+            "facts:facts-all",
+            url_for(FactCollection),
+            title="All facts",
+            method="GET"
+        )
+
+    def add_control_add_facts(self):
+        self.add_control_post(
+            "facts:add-fact",
+            "Add a new fact and connects it to an existing breed",
+            url_for(FactCollection),
+            FactItem.json_schema()
+        )
+
+    def add_control_delete_facts(self, fact_id):
+        self.add_control(
+            "fact:delete",
+            url_for(FactItem, fact=fact_id),
+            method="DELETE"
+        )
 
 
 class FactCollection(Resource):

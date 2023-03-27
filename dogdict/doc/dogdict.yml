@@ -11,7 +11,7 @@ info:
     This is an API developed for Programmable Web Project course
     held at University of Oulu (Spring 2023). It is an API that
     returns information about different types of dogs, breeds and
-    facts and characteristics about specific breeds. THIS FILE IS DOGDICT!!!
+    facts and characteristics about specific breeds.
   
 components:
 

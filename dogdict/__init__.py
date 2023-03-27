@@ -21,6 +21,7 @@ def create_app():
         SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
 
+    # swagger configurations
     app.config["SWAGGER"] = {
         "title": "Dogdict API",
         "openapi": "3.0.3",
@@ -29,8 +30,11 @@ def create_app():
     }
     swagger = Swagger(app, template_file="./doc/dogdict.yml")
 
-    # Create production config later here
-
+    # create an entry point to the API
+    @app.route("/api/")
+    def api_entry_point():
+        return "Welcome to the entry point to DogDict API!"
+    
     # Register the SQL database with dogdict app
     with app.app_context():
         db.init_app(app)
