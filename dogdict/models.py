@@ -191,6 +191,7 @@ class Breed(db.Model):
                     "coat_length": self.characteristics.coat_length,
                     "exercise": self.characteristics.exercise,
                 }
+        print("this is breed.serialize", doc)
         return doc
 
     def deserialize(self, doc):

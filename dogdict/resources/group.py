@@ -109,6 +109,7 @@ class GroupItem(Resource):
         """
             GETs a specific groups information from the DB (name only)
         """
+        print("THIS IS GROUPITEM:", group)
         body = GroupBuilder(items=[])
         body.add_namespace("group", f"/api/groups/{group.name}/")
         body.add_control("self", href=url_for(

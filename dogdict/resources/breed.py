@@ -24,15 +24,15 @@ class BreedBuilder(MasonBuilder):
     def add_control_all_breeds(self):
         self.add_control(
             "breeds:breeds-all",
-            url_for(BreedCollection),
+            url_for("api.breedcollection"),
             title="All breeds",
             method="GET"
         )
 
-    def add_control_delete_breeds(self, breed_name):
+    def add_control_delete_breed(self, breed):
         self.add_control(
             "breed:delete",
-            url_for(BreedItem, breed=breed_name),
+            url_for("api.breeditem", breed=breed),
             method="DELETE"
         )
 
@@ -40,15 +40,15 @@ class BreedBuilder(MasonBuilder):
         self.add_control_post(
             "breeds:add-breed",
             "Add a new breed and connects it to an existing group",
-            url_for(BreedCollection),
-            BreedItem.json_schema()
+            url_for("api.breedcollection"),
+            Breed.json_schema()
         )
 
-    def add_control_edit_breeds(self, breed_name):
+    def add_control_edit_breed(self, breed):
         self.add_control_put(
             "breed:edit",
-            url_for(BreedItem, breed=breed_name),
-            BreedItem.json_schema(),
+            url_for("api.breeditem", breed=breed),
+            Breed.json_schema(),
         )
 
 
@@ -62,10 +62,24 @@ class BreedCollection(Resource):
         """
             Used to access ALL the breeds at once.
         """
-        body = {"items": []}
+        body = BreedBuilder(items=[])
+        body.add_namespace("breeds", "/api/breeds/")
+        body.add_control("self", href=url_for("api.breedcollection"))
+        body.add_control_add_breeds()
+        body.add_control_all_breeds()
+
         for db_breed in Breed.query.all():
-            item = db_breed.serialize()
+            db_breed_serialised = db_breed.serialize()
+            print("DB BREED SERIALISED", db_breed_serialised)
+            item = {
+                "name": db_breed_serialised["name"],
+                "id": db_breed_serialised["id"],
+            }
+            item["@controls"] = {
+                "self": {"href": url_for("api.breedcollection", breed=db_breed.name)}
+            }
             body["items"].append(item)
+
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self):
@@ -106,9 +120,32 @@ class BreedItem(Resource):
         """
             GETs a specific breed
         """
-        if "404" in str(breed):
-            return "", 404
-        return Response(json.dumps(breed.serialize()), 200, mimetype=JSON)
+        body = BreedBuilder(items=[])
+        body.add_namespace("breeds", f"/api/breeds/{breed.name}/")
+        body.add_control("self", href=url_for(
+            "api.breeditem", breed=breed.name))
+        body.add_control_edit_breed(breed.name)
+        body.add_control_delete_breed(breed.name)
+        breed = Breed.query.filter_by(id=breed.id).first()
+
+        group_info = {
+            "name": breed.group.name,
+            "id": breed.group.id
+        }
+        fact_info = []
+        print("breed.facts", breed.facts)
+        for i in breed.facts:
+            fact_info.append(i.fact)
+
+
+        item = breed.serialize()
+
+        item["@controls"] = {
+            "self": {"href": url_for("api.breeditem", breed=breed.name)}
+        }
+        body["items"].append(item)
+
+        return Response(json.dumps(body), 200, mimetype=JSON)
 
     def put(self, breed):
         """
