@@ -28,7 +28,7 @@ class BreedConverter(BaseConverter):
     """
     def to_python(self, value):  # MARTTI MUUTTI TÄMÄN ID:LLÄ TOIMIVAKSI, MIETITÄÄN MITÄ TAPAHTUU
         print(value)
-        db_breed = Breed.query.filter_by(id=value).first()
+        db_breed = Breed.query.filter_by(name=value).first()
         if db_breed is None:
             return Response(status=404)
         return db_breed

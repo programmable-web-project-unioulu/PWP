@@ -38,7 +38,7 @@ class GroupBuilder(MasonBuilder):
     def add_control_edit_groups(self, group_name):
         self.add_control_put(
             "group:edit",
-            url_for("api.groupcollection", group=group_name),
+            url_for("api.groupitem", group=group_name),
             Group.json_schema(),
         )
 
@@ -48,7 +48,7 @@ class GroupCollection(Resource):
         Used to access all of the Groups in the DB at once.
     """
 
-    def get(self):
+    def get(self, group=None):
         """
             GETs all the groups in the database (currently their names)
         """
@@ -66,7 +66,7 @@ class GroupCollection(Resource):
                 "id": db_group_serialised["id"],
             }
             item["@controls"] = {
-                "self": {"href": url_for("api.groupcollection", group=db_group.name)}
+                "self": {"href": url_for("api.groupitem", group=db_group.name)}
             }
             body["items"].append(item)
 
@@ -96,7 +96,7 @@ class GroupCollection(Resource):
             )
 
         return Response(
-            status=201, headers={"Item": url_for("api.groupcollection", group=group)}
+            status=201, headers={"Item": url_for("api.groupitem", group=group)}
         )
 
 
@@ -120,6 +120,7 @@ class GroupItem(Resource):
         item = {
             "name": group.name
         }
+
         item["@controls"] = {
             "self": {"href": url_for("api.groupitem", group=group.name)}
         }

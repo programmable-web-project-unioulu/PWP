@@ -30,9 +30,12 @@ class BreedBuilder(MasonBuilder):
         )
 
     def add_control_delete_breed(self, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control(
             "breed:delete",
-            url_for("api.breeditem", breed=breed),
+            url_for("api.breeditem", breed=uri_name),
             method="DELETE"
         )
 
@@ -45,9 +48,12 @@ class BreedBuilder(MasonBuilder):
         )
 
     def add_control_edit_breed(self, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control_put(
             "breed:edit",
-            url_for("api.breeditem", breed=breed),
+            url_for("api.breeditem", breed=uri_name),
             Breed.json_schema(),
         )
 
@@ -75,8 +81,13 @@ class BreedCollection(Resource):
                 "name": db_breed_serialised["name"],
                 "id": db_breed_serialised["id"],
             }
+
+            uri_name = db_breed.name
+            if " " in uri_name:
+                uri_name = uri_name.replace(" ", "%20")
+                print("this is uriname", uri_name)
             item["@controls"] = {
-                "self": {"href": url_for("api.breedcollection", breed=db_breed.name)}
+                "self": {"href": url_for("api.breeditem", breed=uri_name)}
             }
             body["items"].append(item)
 
@@ -105,9 +116,13 @@ class BreedCollection(Resource):
             db.session.commit()
         except IntegrityError:
             return "Breed already exists", 409
+        
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breed=breed.name)}
+            status=201, headers={"Location": url_for("api.breeditem", breeds=uri_name)}
         )
 
 
@@ -121,27 +136,23 @@ class BreedItem(Resource):
             GETs a specific breed
         """
         body = BreedBuilder(items=[])
-        body.add_namespace("breeds", f"/api/breeds/{breed.name}/")
+
+        # if a space in breed name insert %20 
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
+        body.add_namespace("breeds", f"/api/breeds/{uri_name}/")
         body.add_control("self", href=url_for(
-            "api.breeditem", breed=breed.name))
+            "api.breeditem", breed=uri_name))
         body.add_control_edit_breed(breed.name)
         body.add_control_delete_breed(breed.name)
         breed = Breed.query.filter_by(id=breed.id).first()
 
-        group_info = {
-            "name": breed.group.name,
-            "id": breed.group.id
-        }
-        fact_info = []
-        print("breed.facts", breed.facts)
-        for i in breed.facts:
-            fact_info.append(i.fact)
-
-
         item = breed.serialize()
 
         item["@controls"] = {
-            "self": {"href": url_for("api.breeditem", breed=breed.name)}
+            "self": {"href": url_for("api.breeditem", breed=uri_name)}
         }
         body["items"].append(item)
 
