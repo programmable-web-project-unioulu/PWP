@@ -97,6 +97,7 @@ class BreedCollection(Resource):
         """
             Used to POST a breed into the breed collection and to make sure it fits the schema.
         """
+
         if not request.is_json:
             raise UnsupportedMediaType
         try:
@@ -122,7 +123,7 @@ class BreedCollection(Resource):
             uri_name = uri_name.replace(" ", "%20")
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breeds=uri_name)}
+            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name)}
         )
 
 
@@ -138,6 +139,9 @@ class BreedItem(Resource):
         body = BreedBuilder(items=[])
 
         # if a space in breed name insert %20 
+        if "404" in str(breed):
+            return "", 404
+
         uri_name = breed.name
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
