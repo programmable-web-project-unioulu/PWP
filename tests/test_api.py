@@ -469,7 +469,8 @@ def test_group_item_get(app):
         res = client.get("/api/groups/marttionparas/")
         data = res.data.decode("utf-8")
         data = json.loads(data)
-        assert data == {"name": "Marttionparas"}
+        print(data["items"])
+        assert data["items"] == [{'name': 'Marttionparas', '@controls': {'self': {'href': '/api/groups/Marttionparas/'}}}]
     
 def test_group_put_validation(app):
     """

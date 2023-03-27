@@ -53,7 +53,7 @@ class GroupCollection(Resource):
             GETs all the groups in the database (currently their names)
         """
         body = GroupBuilder(items=[])
-        body.add_namespace("groups", "/groups/")
+        body.add_namespace("groups", "/api/groups/")
         body.add_control("self", href=url_for("api.groupcollection"))
         body.add_control_add_groups()
         body.add_control_all_groups()
@@ -110,10 +110,10 @@ class GroupItem(Resource):
             GETs a specific groups information from the DB (name only)
         """
         body = GroupBuilder(items=[])
-        body.add_namespace("groups", "/groups/<group_name>/")
+        body.add_namespace("group", f"/api/groups/{group.name}/")
         body.add_control("self", href=url_for(
             "api.groupitem", group=group.name))
-        body.add_control_edit_groups(group)
+        body.add_control_edit_groups(group.name)
 
         group = Group.query.filter_by(name=group.name).first()
         item = {
@@ -122,8 +122,8 @@ class GroupItem(Resource):
         item["@controls"] = {
             "self": {"href": url_for("api.groupitem", group=group.name)}
         }
+        body["items"].append(item)
 
-        print(group.name)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def put(self, group):
