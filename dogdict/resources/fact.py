@@ -12,6 +12,7 @@ from dogdict.models import Breed, Facts, db
 from dogdict.constants import JSON
 from dogdict.resources.mason import MasonBuilder
 
+
 class FactBuilder(MasonBuilder):
     """
     Creates link relations for the Facts resource.
@@ -47,13 +48,13 @@ class FactCollection(Resource):
         Used to access all the Facts in the database at once.
     """
 
-    def get(self):
+    def get(self, group, breed):
         """
             GETs all the facts from the database
         """
         body = {"items": []}
-        for db_fact in Facts.query.all():
-            item = db_fact.serialize()
+        for db_fact in Facts.query.filter_by(breed=breed):
+            item = db_fact.serialize(short_form=True)
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
@@ -82,12 +83,12 @@ class FactCollection(Resource):
         More information about url_for comment in course lovelace 
         https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/flask-api-project-layout/#avoiding-circular-imports
         """
-    
+
         uri_id = fact.id
 
         return Response(
             status=201, headers={"Item": url_for("api.factcollection", fact=fact),
-                                "Location": url_for("api.factitem", fact=uri_id)}
+                                 "Location": url_for("api.factitem", fact=uri_id)}
         )
 
 
@@ -96,7 +97,26 @@ class FactItem(Resource):
         Used to access a singular fact item
     """
 
-    def delete(self, fact):
+    def get(self, group, breed, fact):
+        print(fact)
+        if fact == None:
+            return Response("Fact not found", 404)
+        body = {"items": [fact.fact]}
+        return Response(json.dumps(body), 200, mimetype=JSON)
+
+    def put(self, group, breed, fact):
+        if not request.is_json:
+            raise UnsupportedMediaType
+        try:
+            validate(request.json, Facts.json_schema_for_put())
+        except ValidationError as exc:
+            raise BadRequest(description=str(exc)) from exc
+        fact.deserialize(request.json)
+        db.session.add(fact)
+        db.session.commit()
+        return Response(json.dumps({"fact": fact.fact}), 204, mimetype=JSON)
+
+    def delete(self, fact, group, breed):
         """
             Deletes a single specific fact from the database.
         """

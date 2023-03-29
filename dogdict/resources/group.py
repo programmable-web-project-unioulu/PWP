@@ -8,7 +8,7 @@ from flask import Response, request, url_for
 from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
 from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
-from dogdict.models import Group, db
+from dogdict.models import Group, Breed, db
 from dogdict.constants import JSON
 from dogdict.resources.mason import MasonBuilder
 
@@ -59,12 +59,17 @@ class GroupCollection(Resource):
         body.add_control_all_groups()
 
         for db_group in Group.query.all():
-            db_group_serialised = db_group.serialize()
+            db_group_serialised = db_group.serialize(short_form=False)
             print("DB GROUP SERIALISED", db_group_serialised)
             item = {
                 "name": db_group_serialised["name"],
                 "id": db_group_serialised["id"],
+                "breeds": []
             }
+            # Get all breeds that are under group
+            for breed in Breed.query.filter_by(group=group).all():
+                body["breeds"].append(breed.name)
+
             item["@controls"] = {
                 "self": {"href": url_for("api.groupitem", group=db_group.name)}
             }
@@ -101,7 +106,7 @@ class GroupCollection(Resource):
 
         return Response(
             status=201, headers={"Item": url_for("api.groupitem", group=group),
-                                  "Location": url_for("api.groupitem", group=uri_name)}
+                                 "Location": url_for("api.groupitem", group=uri_name)}
         )
 
 
@@ -157,5 +162,5 @@ class GroupItem(Resource):
 
         return Response(
             status=201, headers={"Item": url_for("api.groupitem", group=group),
-                                  "Location": url_for("api.groupitem", group=uri_name)}
+                                 "Location": url_for("api.groupitem", group=uri_name)}
         )

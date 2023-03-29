@@ -41,13 +41,13 @@ class CharacteristicCollection(Resource):
         Used to access all the characteristics at once.
     """
 
-    def get(self):
+    def get(self, group, breed):
         """
             GETs all the characteristics
         """
         body = {"items": []}
-        for db_characteristics in Characteristics.query.all():
-            item = db_characteristics.serialize()
+        for db_characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
+            item = db_characteristics.serialize(short_form=True)
             body["items"].append(item)
         print(body["items"])
         return Response(json.dumps(body), 200, mimetype=JSON)
@@ -89,7 +89,7 @@ class CharacteristicCollection(Resource):
             exercise = request.json["exercise"]
         except KeyError:
             exercise = None
-        #print(characteristics.in_breed, characteristics.life_span)
+        # print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
             characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               coat_length=request.json["coat_length"])
@@ -117,5 +117,24 @@ class CharacteristicCollection(Resource):
         return Response(
             status=201, headers={"Item": url_for("api.characteristiccollection",
                                                  characteristics=characteristics),
-                                "Location": url_for("api.characteristiccollection", characteristics=uri_id)}
+                                 "Location": url_for("api.characteristiccollection", characteristics=uri_id)}
         )
+
+    def put(self, group, breed):
+        """
+            Change characteristics of one breed from given url
+            put "/api/terrier/australian_terrier/charateristics/
+        """
+        if not request.is_json:
+            raise UnsupportedMediaType
+        try:
+            validate(request.json, Characteristics.json_schema_for_put())
+        except ValidationError as exc:
+            raise BadRequest(description=str(exc)) from exc
+
+        for characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
+            print(characteristics, "MARTTI SEKOAA")
+        characteristics.deserialize(request.json)
+        print(characteristics.serialize)
+        db.session.add(characteristics)
+        db.session.commit()
