@@ -87,7 +87,7 @@ class BreedCollection(Resource):
                 uri_name = uri_name.replace(" ", "%20")
                 print("this is uriname", uri_name)
             item["@controls"] = {
-                "self": {"href": url_for("api.breeditem", breed=uri_name)}
+                "self": {"href": url_for("api.breeditem", breed=uri_name, group=db_breed.group.name)}
             }
             body["items"].append(item)
 
