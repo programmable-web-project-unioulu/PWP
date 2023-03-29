@@ -8,7 +8,7 @@ from flask import Response, request, url_for
 from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
 from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
-from dogdict.models import Breed, Group, db
+from dogdict.models import Breed, Characteristics, Group, db
 from dogdict.constants import JSON
 from flasgger import Swagger, swag_from
 from flasgger.utils import swag_from
@@ -177,13 +177,25 @@ class BreedItem(Resource):
         db.session.add(breed)
         db.session.commit()
         print(breed.serialize())
-        return Response(json.dumps(breed.serialize()), 204, mimetype=JSON)
+        
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
+        return Response(
+            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name)}
+        )
 
     def delete(self, breed):
         """
             DELETEs one single breed.
         """
         try:
+            breed = Breed.query.filter_by(id=breed.id).first()
+            characteristics = Characteristics.query.filter_by(id=breed.char_id).first()
+            if characteristics:
+                db.session.delete(characteristics)
+                db.session.commit()
             db.session.delete(breed)
             db.session.commit()
             return Response(status=204)

@@ -82,9 +82,12 @@ class FactCollection(Resource):
         More information about url_for comment in course lovelace 
         https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/flask-api-project-layout/#avoiding-circular-imports
         """
+    
+        uri_id = fact.id
+
         return Response(
-            status=201, headers={"Item": url_for("api.factcollection",
-                                                 fact=fact)}  # have to change this
+            status=201, headers={"Item": url_for("api.factcollection", fact=fact),
+                                "Location": url_for("api.factitem", fact=uri_id)}
         )
 
 

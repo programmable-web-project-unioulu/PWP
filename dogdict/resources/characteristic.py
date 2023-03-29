@@ -89,18 +89,17 @@ class CharacteristicCollection(Resource):
             exercise = request.json["exercise"]
         except KeyError:
             exercise = None
-        print(characteristics.in_breed, characteristics.life_span)
+        #print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
             characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               coat_length=request.json["coat_length"])
-
             if exercise:
                 characteristics = Characteristics(in_breed=[breed],
                                                   life_span=request.json["life_span"],
                                                   coat_length=request.json["coat_length"],
                                                   exercise=request.json["exercise"])
 
-        if exercise:
+        elif exercise:
             characteristics = Characteristics(in_breed=[breed],
                                               life_span=request.json["life_span"],
                                               exercise=request.json["exercise"])
@@ -113,7 +112,10 @@ class CharacteristicCollection(Resource):
                 f"Characteristics for breed '{request.json}' already exists."
             )
 
+        uri_id = characteristics.id
+
         return Response(
             status=201, headers={"Item": url_for("api.characteristiccollection",
-                                                 characteristics=characteristics)}
+                                                 characteristics=characteristics),
+                                "Location": url_for("api.characteristiccollection", characteristics=uri_id)}
         )

@@ -95,8 +95,13 @@ class GroupCollection(Resource):
                 f"Group with name '{request.json['name']}' already exists."
             )
 
+        uri_name = group.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
         return Response(
-            status=201, headers={"Item": url_for("api.groupitem", group=group)}
+            status=201, headers={"Item": url_for("api.groupitem", group=group),
+                                  "Location": url_for("api.groupitem", group=uri_name)}
         )
 
 
@@ -146,4 +151,11 @@ class GroupItem(Resource):
         db.session.add(group)
         db.session.commit()
 
-        return Response(status=204)
+        uri_name = group.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
+        return Response(
+            status=201, headers={"Item": url_for("api.groupitem", group=group),
+                                  "Location": url_for("api.groupitem", group=uri_name)}
+        )
