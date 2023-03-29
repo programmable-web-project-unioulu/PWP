@@ -12,7 +12,17 @@ info:
     held at University of Oulu (Spring 2023). It is an API that
     returns information about different types of dogs, breeds and
     facts and characteristics about specific breeds.
-  
+
+tags:
+  - name: group
+    description: Contains everything related to Groups (of dogs)
+  - name: breed
+    description: Contains everything related dog breeds, each of which belongs to a Group (of dogs)
+  - name: characteristics
+    description: Contains everything related characteristics of dogs, each of which belong to a Breed
+  - name: facts
+    description: Contains everything related to facts of breeds, each of which belong to a Breed
+    
 components:
 
   parameters:
@@ -25,8 +35,8 @@ components:
       schema:
         type: string
         
-    breed_id:
-      description: Selected product's unique breed
+    breed_name:
+      description: Selected breeds unique name
       in: path
       name: breed
       required: true
@@ -125,6 +135,8 @@ paths:
   # GroupCollection
   /api/groups/:
     get:
+      tags:
+      - group
       description: "Gets the names of groups of dogs"
       responses:
         "200":
@@ -141,6 +153,8 @@ paths:
                 - name: Working
                   id: 3
     post:
+      tags:
+      - group
       description: "Posts a new dog group"
       requestBody:
         description: String of group name
@@ -165,6 +179,8 @@ paths:
           
   /api/groups/{group_name}:
     put:
+      tags:
+      - group
       description: "Changes the name of a group of dogs"
       parameters:
       - in: path
@@ -186,6 +202,8 @@ paths:
   # BreedCollection
   /api/breeds/:
     get:
+      tags:
+      - breed
       description: "Gets the list of breeds"
       responses:
         "200":
@@ -217,6 +235,8 @@ paths:
                     coat_length: null
                     exercise: null
     post:
+      tags:
+      - breed
       description: "Posts a breed into the breed collection if it fits the schema."
       requestBody:
         description: JSON document that contains the basic information for a new breed
@@ -243,14 +263,16 @@ paths:
           description: Wrong media type was used
           
   # BreedItem
-  /api/breeds/{breed_id}:
+  /api/breeds/{breed_name}:
     get:
+      tags:
+      - breed
       description: "Gets a specific breed"
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
       responses:
         "200":
@@ -277,12 +299,14 @@ paths:
         "400":
           description: "Breed was not found"
     put:
+      tags:
+      - breed
       description: "Posts a breed into the breed collection if it fits the schema."
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
       requestBody:
         description: JSON document that contains the basic information for a new breed
@@ -308,12 +332,14 @@ paths:
         '415':
           description: Wrong media type was used
     delete:
+      tags:
+      - breed
       description: "Deletes a specific breed from the database"
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
       responses:
         "204":
@@ -324,6 +350,8 @@ paths:
 # CharacteristicsCollection
   /api/characteristics:
     get:
+      tags:
+      - characteristics
       description: "Gets the list of characteristics"
       responses:
         "200":
@@ -344,6 +372,8 @@ paths:
         "400":
           description: "No characteristics was found"
     post:
+      tags:
+      - characteristics
       description: "Posts a new characteristics and links it to an existing breed"
       requestBody:
         description: JSON document that contains the basic information for a new breed
@@ -380,11 +410,15 @@ paths:
   # FactCollection
   /api/facts/:
     get:
+      tags:
+      - facts
       description: "Gets all of the facts in the database"
       responses:
         "200":
           description: List of facts in the database
     post:
+      tags:
+      - facts
       description: "Posts a new fact into the database"
       requestBody:
         description: JSON document that contains the fact and a breed name that it is linked to
@@ -411,6 +445,8 @@ paths:
   # FactItem
   /api/facts/{fact_id}:
     delete:
+      tags:
+      - facts
       parameters:
       - in: path
         name: fact_id
