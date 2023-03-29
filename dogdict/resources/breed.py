@@ -29,13 +29,13 @@ class BreedBuilder(MasonBuilder):
             method="GET"
         )
 
-    def add_control_delete_breed(self, breed):
+    def add_control_delete_breed(self, breed, group):
         uri_name = breed
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
         self.add_control(
             "breed:delete",
-            url_for("api.breeditem", breed=uri_name),
+            url_for("api.breeditem", breed=uri_name, group=group),
             method="DELETE"
         )
 
@@ -47,13 +47,13 @@ class BreedBuilder(MasonBuilder):
             Breed.json_schema()
         )
 
-    def add_control_edit_breed(self, breed):
+    def add_control_edit_breed(self, breed, group):
         uri_name = breed
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
         self.add_control_put(
             "breed:edit",
-            url_for("api.breeditem", breed=uri_name),
+            url_for("api.breeditem", breed=uri_name, group=group),
             Breed.json_schema(),
         )
 
@@ -123,7 +123,7 @@ class BreedCollection(Resource):
             uri_name = uri_name.replace(" ", "%20")
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name)}
+            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=request.json["group"])}
         )
 
 
@@ -132,7 +132,7 @@ class BreedItem(Resource):
         Used to access specific breeds from the database.
     """
 
-    def get(self, breed):
+    def get(self, breed, group):
         """
             GETs a specific breed
         """
@@ -146,23 +146,30 @@ class BreedItem(Resource):
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
 
-        body.add_namespace("breeds", f"/api/breeds/{uri_name}/")
+        print("GOT HERE!", uri_name, group.name)
+
+        body.add_namespace("breeds", f"/api/{group.name}/{uri_name}/")
         body.add_control("self", href=url_for(
-            "api.breeditem", breed=uri_name))
-        body.add_control_edit_breed(breed.name)
-        body.add_control_delete_breed(breed.name)
+            "api.breeditem", breed=uri_name, group=group.name))
+        
+
+        body.add_control_edit_breed(breed.name, group.name)
+        body.add_control_delete_breed(breed.name, group.name)
         breed = Breed.query.filter_by(id=breed.id).first()
 
         item = breed.serialize()
 
+        print("DID WE GET HERE!?")
+        
+
         item["@controls"] = {
-            "self": {"href": url_for("api.breeditem", breed=uri_name)}
+            "self": {"href": url_for("api.breeditem", breed=uri_name, group=group.name)}
         }
         body["items"].append(item)
 
         return Response(json.dumps(body), 200, mimetype=JSON)
 
-    def put(self, breed):
+    def put(self, breed, group):
         """
             Changes the values of an existing singular breed.
         """
@@ -183,10 +190,10 @@ class BreedItem(Resource):
             uri_name = uri_name.replace(" ", "%20")
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name)}
+            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=group.name)}
         )
 
-    def delete(self, breed):
+    def delete(self, breed, group):
         """
             DELETEs one single breed.
         """
