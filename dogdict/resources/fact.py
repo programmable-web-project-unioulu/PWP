@@ -31,7 +31,7 @@ class FactBuilder(MasonBuilder):
         self.add_control_post(
             "facts:add-fact",
             "Add a new fact and connects it to an existing breed",
-            url_for(FactCollection),
+            url_for("api.factcollection"),
             FactItem.json_schema()
         )
 
@@ -58,24 +58,35 @@ class FactCollection(Resource):
             body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
-    def post(self):
+    def post(self, group, breed):
         """
             Used to validate a new fact against the correct Fact JSON schema
         """
+        print("THIS IS BREED:", breed.name)
+
         if not request.is_json:
             raise UnsupportedMediaType
         try:
-            validate(request.json, Facts.json_schema())
+            validate(request.json, Facts.json_schema_postput())
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
 
-        breed = Breed.query.filter_by(name=request.json["breed"]).first()
+        body = {"items": []}
+        for db_fact in Facts.query.filter_by(breed=breed):
+            item = db_fact.serialize(short_form=True)
+            body["items"].append(item)
+        
+        # Check if the new fact value is already present in the list
+        if any(item["fact"] == request.json["fact"]  for item in body["items"]):
+            return "The fact is already connected to the breed!", 409
 
-        if not breed:
+        db_breed = Breed.query.filter_by(name=breed.name).first()
+
+        if not db_breed:
             # return ValueError("Breed '{breed}' does not exist".format(**request.json))
             return "Breed does not exist", 404
 
-        fact = Facts(breed=breed, fact=request.json["fact"])
+        fact = Facts(breed=db_breed, fact=request.json["fact"])
 
         db.session.add(fact)
         db.session.commit()
@@ -87,8 +98,8 @@ class FactCollection(Resource):
         uri_id = fact.id
 
         return Response(
-            status=201, headers={"Item": url_for("api.factcollection", fact=fact),
-                                 "Location": url_for("api.factitem", fact=uri_id)}
+            status=201, headers={"Item": url_for("api.factcollection", fact=fact, group=group.name, breed=breed.name),
+                                 "Location": url_for("api.factitem", fact=uri_id,  group=group.name, breed=breed.name)}
         )
 
 
@@ -108,13 +119,13 @@ class FactItem(Resource):
         if not request.is_json:
             raise UnsupportedMediaType
         try:
-            validate(request.json, Facts.json_schema_for_put())
+            validate(request.json, Facts.json_schema_postput())
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
         fact.deserialize(request.json)
         db.session.add(fact)
         db.session.commit()
-        return Response(json.dumps({"fact": fact.fact}), 204, mimetype=JSON)
+        return Response(json.dumps({"fact": request.json["fact"]}), 204, mimetype=JSON)
 
     def delete(self, fact, group, breed):
         """

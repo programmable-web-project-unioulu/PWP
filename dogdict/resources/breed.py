@@ -191,7 +191,7 @@ class BreedItem(Resource):
 
         return Response(
             status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=group.name)}
-        )
+        )   
 
     def delete(self, breed, group):
         """

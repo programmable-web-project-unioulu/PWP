@@ -67,8 +67,8 @@ class GroupCollection(Resource):
                 "breeds": []
             }
             # Get all breeds that are under group
-            for breed in Breed.query.filter_by(group=group).all():
-                body["breeds"].append(breed.name)
+            for breed in Breed.query.filter_by(group=db_group).all():
+                item["breeds"].append(breed.name)
 
             item["@controls"] = {
                 "self": {"href": url_for("api.groupitem", group=db_group.name)}
@@ -128,12 +128,16 @@ class GroupItem(Resource):
 
         group = Group.query.filter_by(name=group.name).first()
         item = {
-            "name": group.name
+            "name": group.name,
+            "breeds": []
         }
+        for breed in Breed.query.filter_by(group=group).all():
+            print("this is breedname", breed.name)
+            item["breeds"].append(breed.name)
 
-        item["@controls"] = {
-            "self": {"href": url_for("api.groupitem", group=group.name)}
-        }
+            item["@controls"] = {
+                f"{breed.name}": {"href": url_for(f"api.groupitem", group=group.name + "/" + breed.name)}
+            }
         body["items"].append(item)
 
         return Response(json.dumps(body), 200, mimetype=JSON)

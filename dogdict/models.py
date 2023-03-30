@@ -108,12 +108,10 @@ class Characteristics(db.Model):
             Used to deserialize the doc object to assign
             new values to characteristics
         """
-        self.char = Characteristics.query.filter_by(name=doc["char_id"]).first()
-
         # Martyn muutoksia, halutaanko nämä vai toimiiko self.char paremmin?
-        #self.life_span = doc["life_span"]
-        #self.coat_length = doc["coat_length"]
-        #self.exercise = doc["exercise"]
+        self.life_span = doc["life_span"]
+        self.coat_length = doc["coat_length"]
+        self.exercise = doc["exercise"]
 
     @staticmethod
     def json_schema():
@@ -129,6 +127,18 @@ class Characteristics(db.Model):
         props["life_span"] = {"description": "Lifespan of a breed", "type": "number"}
         return schema
 
+    @staticmethod
+    def json_schema_for_put():
+        """
+            Defines different schema where in_breed is not needed for PUT method,
+            but all others are
+        """
+        schema = {"type": "object", "required": ["coat_length", "life_span", "exercise"]}
+        props = schema["properties"] = {}
+        props["life_span"] = {"description": "Lifespan of a breed", "type": "number"}
+        props["exercise"] = {"description": "Exercise needs of dog in scale 0-1", "type": "number"}
+        props["coat_length"] = {"description": "Breeds coat length in scale 0-1", "type": "number"}
+        return schema
 
 class Facts(db.Model):
     """
@@ -171,7 +181,20 @@ class Facts(db.Model):
         props["breed"] = {"description": "Breed regarding the fact", "type": "string"}
         return schema
 
+    @staticmethod
+    def json_schema_postput():
+        """
+            this is facts json.schema for post which does not require breed in the request body! 
+            (it is in url already) for example api/Terrier/Laurin%20Terrier/facts/ already contains
+            Laurin%20Terrier
+        """
+        schema = {"type": "object", "required": ["fact"]}
+        props = schema["properties"] = {}
+        props["fact"] = {"description": "Fact about a breed", "type": "string"}
+        props["breed"] = {"description": "Breed regarding the fact", "type": "string"}
+        return schema
 
+    
 class Breed(db.Model):
     """
         Each breed is unique and can only belong to one group.
