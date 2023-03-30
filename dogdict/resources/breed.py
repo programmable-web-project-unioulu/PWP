@@ -69,7 +69,7 @@ class BreedCollection(Resource):
             Used to access ALL the breeds at once.
         """
         body = BreedBuilder(items=[])
-        body.add_namespace("breeds", "/api/breeds/")
+        body.add_namespace("breeds", "/api/<group:group>/breeds/")
         body.add_control("self", href=url_for("api.breedcollection"))
         body.add_control_add_breeds()
         body.add_control_all_breeds()

@@ -19,26 +19,36 @@ class FactBuilder(MasonBuilder):
     These include POST, GET and DELETE methods.
     """
 
-    def add_control_all_facts(self):
+    def add_control_all_facts(self, group, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control(
             "facts:facts-all",
-            url_for(FactCollection),
+            url_for("api.factcollection", group=group, breed=uri_name),
             title="All facts",
             method="GET"
         )
 
-    def add_control_add_facts(self):
+    def add_control_add_facts(self, group, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control_post(
             "facts:add-fact",
             "Add a new fact and connects it to an existing breed",
-            url_for("api.factcollection"),
-            FactItem.json_schema()
+            url_for("api.factcollection", group=group, breed=uri_name),
+            Facts.json_schema()
         )
 
-    def add_control_delete_facts(self, fact_id):
+    def add_control_delete_facts(self, fact_id, breed, group):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+        print("this is add control delete fact:", fact_id, breed, group)
         self.add_control(
             "fact:delete",
-            url_for(FactItem, fact=fact_id),
+            url_for("api.factitem", fact=fact_id, breed=uri_name, group=group),
             method="DELETE"
         )
 
@@ -52,10 +62,23 @@ class FactCollection(Resource):
         """
             GETs all the facts from the database
         """
-        body = {"items": []}
+        body = FactBuilder(items=[])
+        body.add_namespace("breeds", "/api/<group:group>/<breed:breed>/facts/")
+
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+        
+        body.add_control("self", href=url_for("api.factcollection", breed=breed.name, group=group.name))
+        body.add_control_all_facts(group.name, uri_name)
+        body.add_control_add_facts(group.name, uri_name)
+
         for db_fact in Facts.query.filter_by(breed=breed):
             item = db_fact.serialize(short_form=True)
             body["items"].append(item)
+            item["@controls"] = {
+                "self": {"href": url_for("api.factitem", breed=uri_name, group=group.name, fact=db_fact.id)}
+            }
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self, group, breed):
@@ -109,6 +132,18 @@ class FactItem(Resource):
     """
 
     def get(self, group, breed, fact):
+        body = FactBuilder(items=[])
+    
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
+        body.add_namespace("fact", f"/api/{group.name}/{uri_name}/facts/{fact.id}")
+
+        body.add_control("self", href=url_for("api.factitem", breed=uri_name, group=group.name, fact=fact.id))
+        print("HERE WE GOO ", fact.id, uri_name, group.name)
+        body.add_control_delete_facts(fact.id, breed.name, group.name)
+
         print(fact)
         if fact == None:
             return Response("Fact not found", 404)
@@ -123,9 +158,14 @@ class FactItem(Resource):
         except ValidationError as exc:
             raise BadRequest(description=str(exc)) from exc
         fact.deserialize(request.json)
+        if fact.deserialize(request.json):
+            fact = request.json["fact"]
+            print("ASDASD", fact)
+
         db.session.add(fact)
         db.session.commit()
-        return Response(json.dumps({"fact": request.json["fact"]}), 204, mimetype=JSON)
+        return Response(json.dumps({"fact": fact.fact}), 204, mimetype=JSON)
+    
 
     def delete(self, fact, group, breed):
         """

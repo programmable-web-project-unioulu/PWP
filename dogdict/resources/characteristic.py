@@ -19,19 +19,26 @@ class CharacteristicsBuilder(MasonBuilder):
     These include POST and GET methods.
     """
 
-    def add_control_all_characteristics(self):
+    def add_control_all_characteristics(self, group, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control(
             "characteristics:characteristics-all",
-            url_for("api.characteristicscollection"),
+            url_for("api.characteristiccollection",
+                    group=group, breed=uri_name),
             title="All characteristics",
             method="GET"
         )
 
-    def add_control_add_characteristics(self):
+    def add_control_add_characteristics(self, group, breed):
+        uri_name = breed
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
         self.add_control_post(
             "characteristics:add-characteristic",
             "Add a new characteristics and connects it to an existing breed",
-            url_for("api.characteristicscollection"),
+            url_for("api.characteristiccollection", group=group, breed=uri_name),
             Characteristics.json_schema()
         )
 
@@ -45,12 +52,28 @@ class CharacteristicCollection(Resource):
         """
             GETs all the characteristics
         """
+        body = CharacteristicsBuilder(items=[])
+        body.add_namespace(
+            "breeds", "/api/<group:group>/<breed:breed>/characteristics/")
+        
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
+
+        body.add_control("self", href=url_for(
+            "api.characteristiccollection", breed=breed.name, group=group.name))
+        
+        body.add_control_all_characteristics(group.name, uri_name)
+        body.add_control_add_characteristics(group.name, uri_name)
         body = {"items": []}
         print("this is group and breed", group, breed)
         for db_characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
             item = db_characteristics.serialize(short_form=True)
             body["items"].append(item)
-        print(body["items"])
+            item["@controls"] = {
+                "self": {"href": url_for("api.characteristiccollection", breed=uri_name, group=group.name)}
+            }
+        body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self, group, breed):
@@ -68,7 +91,6 @@ class CharacteristicCollection(Resource):
 
         if request.json["life_span"] < 5:
             return "Life span is too short!", 400
-        
 
         breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
 
@@ -140,6 +162,6 @@ class CharacteristicCollection(Resource):
 
         for characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
             characteristics.deserialize(request.json)
-            print(characteristics.serialize)
-            db.session.add(characteristics)
-            db.session.commit()
+        print(characteristics.serialize)
+        db.session.add(characteristics)
+        db.session.commit()

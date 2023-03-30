@@ -60,7 +60,6 @@ class FactConverter(BaseConverter):
     def to_python(self, value):
         db_fact = Facts.query.filter_by(id=value).first()
         if db_fact is None:
-
             return Response(status=404)
         return db_fact
 

@@ -51,7 +51,8 @@ class Group(db.Model):
         """
         schema = {"type": "object", "required": ["name"]}
         props = schema["properties"] = {}
-        props["name"] = {"description": "Group's unique name", "type": "string"}
+        props["name"] = {
+            "description": "Group's unique name", "type": "string"}
         return schema
 
 
@@ -94,7 +95,7 @@ class Characteristics(db.Model):
                 "life_span": self.life_span,
                 "exercise": self.exercise,
             }
-        
+
         return {
             "breed": [breed.name for breed in self.in_breed],
             "char_id": self.id,
@@ -124,7 +125,8 @@ class Characteristics(db.Model):
             "description": "Breed that the characteristics describe",
             "type": "string",
         }
-        props["life_span"] = {"description": "Lifespan of a breed", "type": "number"}
+        props["life_span"] = {
+            "description": "Lifespan of a breed", "type": "number"}
         return schema
 
     @staticmethod
@@ -133,12 +135,17 @@ class Characteristics(db.Model):
             Defines different schema where in_breed is not needed for PUT method,
             but all others are
         """
-        schema = {"type": "object", "required": ["coat_length", "life_span", "exercise"]}
+        schema = {"type": "object", "required": [
+            "coat_length", "life_span", "exercise"]}
         props = schema["properties"] = {}
-        props["life_span"] = {"description": "Lifespan of a breed", "type": "number"}
-        props["exercise"] = {"description": "Exercise needs of dog in scale 0-1", "type": "number"}
-        props["coat_length"] = {"description": "Breeds coat length in scale 0-1", "type": "number"}
+        props["life_span"] = {
+            "description": "Lifespan of a breed", "type": "number"}
+        props["exercise"] = {
+            "description": "Exercise needs of dog in scale 0-1", "type": "number"}
+        props["coat_length"] = {
+            "description": "Breeds coat length in scale 0-1", "type": "number"}
         return schema
+
 
 class Facts(db.Model):
     """
@@ -149,7 +156,8 @@ class Facts(db.Model):
     fact = db.Column(db.String(128), nullable=False)
 
     # creates a connection from Facts -> Breed
-    breed_id = db.Column(db.Integer, db.ForeignKey("breed.id", ondelete="CASCADE"))
+    breed_id = db.Column(db.Integer, db.ForeignKey(
+        "breed.id", ondelete="CASCADE"))
     breed = db.relationship("Breed", back_populates="facts")
 
     def serialize(self, short_form=False):
@@ -167,8 +175,6 @@ class Facts(db.Model):
             Returns one specific fact currently, used to change fact from given body.
         """
         self.fact = doc["fact"]
-        self.fact = Facts.query.filter_by(fact=doc["fact"]).first()
-
 
     @staticmethod
     def json_schema():
@@ -178,7 +184,8 @@ class Facts(db.Model):
         schema = {"type": "object", "required": ["fact", "breed"]}
         props = schema["properties"] = {}
         props["fact"] = {"description": "Fact about a breed", "type": "string"}
-        props["breed"] = {"description": "Breed regarding the fact", "type": "string"}
+        props["breed"] = {
+            "description": "Breed regarding the fact", "type": "string"}
         return schema
 
     @staticmethod
@@ -191,10 +198,9 @@ class Facts(db.Model):
         schema = {"type": "object", "required": ["fact"]}
         props = schema["properties"] = {}
         props["fact"] = {"description": "Fact about a breed", "type": "string"}
-        props["breed"] = {"description": "Breed regarding the fact", "type": "string"}
         return schema
 
-    
+
 class Breed(db.Model):
     """
         Each breed is unique and can only belong to one group.
@@ -208,7 +214,8 @@ class Breed(db.Model):
     )
 
     # creates a connection from Breed -> Group
-    group_id = db.Column(db.Integer, db.ForeignKey("group.id", ondelete="CASCADE"))
+    group_id = db.Column(db.Integer, db.ForeignKey(
+        "group.id", ondelete="CASCADE"))
     group = db.relationship("Group", back_populates="breeds")
 
     # creates a connection from Breed -> Characteristics
@@ -223,7 +230,7 @@ class Breed(db.Model):
         """
             Used to serialize the Breed Python model objects,
             since they can't directly be serialized with json.dumps.
-            
+
             Currently short_form doesn't affect anything.
         """
         doc = {"name": self.name, "id": self.id}
@@ -257,7 +264,8 @@ class Breed(db.Model):
         schema = {"type": "object", "required": ["name", "group"]}
         props = schema["properties"] = {}
         props["name"] = {"description": "Breeds unique name", "type": "string"}
-        props["group"] = {"description": "Name of the breed's group", "type": "string"}
+        props["group"] = {
+            "description": "Name of the breed's group", "type": "string"}
         return schema
 
 
@@ -273,10 +281,14 @@ def init_db():
     workinggroup = Group(name="Working")
 
     # Create a new characteristics
-    characteristics_at = Characteristics(life_span=6, coat_length=0.2, exercise=1.2)
-    characteristics_asd = Characteristics(life_span=7, coat_length=0.3, exercise=3.3)
-    characteristics_am = Characteristics(life_span=8, coat_length=0.4, exercise=3.5)
-    characteristics_as = Characteristics(life_span=9, coat_length=0.99, exercise=4.75)
+    characteristics_at = Characteristics(
+        life_span=6, coat_length=0.2, exercise=1.2)
+    characteristics_asd = Characteristics(
+        life_span=7, coat_length=0.3, exercise=3.3)
+    characteristics_am = Characteristics(
+        life_span=8, coat_length=0.4, exercise=3.5)
+    characteristics_as = Characteristics(
+        life_span=9, coat_length=0.99, exercise=4.75)
 
     # Create a new breed and associate it with the group and characteristics
     breed_at = Breed(
