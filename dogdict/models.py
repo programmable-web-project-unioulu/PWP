@@ -302,7 +302,9 @@ def init_db():
         characteristics=characteristics_asd,
     )
     breed_am = Breed(
-        name="Alaskan malamute", group=workinggroup, characteristics=characteristics_am
+        name="Alaskan Malamute",
+        group=workinggroup,
+        characteristics=characteristics_am
     )
     breed_as = Breed(
         name="Australian Shepherd",
@@ -343,6 +345,7 @@ def init_db():
     db.session.add(characteristics_as)
 
     db.session.add(breed_at)
+    db.session.add(breed_am)
     db.session.add(breed_as)
     db.session.add(fact1)
     db.session.add(fact2)

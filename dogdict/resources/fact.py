@@ -69,7 +69,7 @@ class FactCollection(Resource):
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
         
-        body.add_control("self", href=url_for("api.factcollection", breed=breed.name, group=group.name))
+        body.add_control("self", href=url_for("api.factcollection", breed=uri_name, group=group.name))
         body.add_control_all_facts(group.name, uri_name)
         body.add_control_add_facts(group.name, uri_name)
 
@@ -93,6 +93,10 @@ class FactCollection(Resource):
             validate(request.json, Facts.json_schema_postput())
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
+
+        uri_name = breed.name
+        if " " in uri_name:
+            uri_name = uri_name.replace(" ", "%20")
 
         body = {"items": []}
         for db_fact in Facts.query.filter_by(breed=breed):
@@ -121,7 +125,7 @@ class FactCollection(Resource):
         uri_id = fact.id
 
         return Response(
-            status=201, headers={"Item": url_for("api.factcollection", fact=fact, group=group.name, breed=breed.name),
+            status=201, headers={"Item": url_for("api.factcollection", fact=fact, group=group.name, breed=uri_name),
                                  "Location": url_for("api.factitem", fact=uri_id,  group=group.name, breed=breed.name)}
         )
 
@@ -142,7 +146,7 @@ class FactItem(Resource):
 
         body.add_control("self", href=url_for("api.factitem", breed=uri_name, group=group.name, fact=fact.id))
         print("HERE WE GOO ", fact.id, uri_name, group.name)
-        body.add_control_delete_facts(fact.id, breed.name, group.name)
+        body.add_control_delete_facts(fact.id, uri_name, group.name)
 
         print(fact)
         if fact == None:

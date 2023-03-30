@@ -132,11 +132,14 @@ class GroupItem(Resource):
             "breeds": []
         }
         for breed in Breed.query.filter_by(group=group).all():
-            print("this is breedname", breed.name)
+            uri_name = breed.name
+            if " " in uri_name:
+                uri_name = uri_name.replace(" ", "%20")
+
             item["breeds"].append(breed.name)
 
             item["@controls"] = {
-                f"{breed.name}": {"href": url_for(f"api.groupitem", group=group.name + "/" + breed.name)}
+                f"{breed.name}": {"href": url_for(f"api.groupitem", group=group.name + "/" + uri_name)}
             }
         body["items"].append(item)
 
