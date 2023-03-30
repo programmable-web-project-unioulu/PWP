@@ -65,7 +65,7 @@ class CharacteristicCollection(Resource):
         
         body.add_control_all_characteristics(group.name, uri_name)
         body.add_control_add_characteristics(group.name, uri_name)
-        body = {"items": []}
+
         print("this is group and breed", group, breed)
         for db_characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
             item = db_characteristics.serialize(short_form=True)
