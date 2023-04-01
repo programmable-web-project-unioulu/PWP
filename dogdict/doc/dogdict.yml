@@ -11,8 +11,18 @@ info:
     This is an API developed for Programmable Web Project course
     held at University of Oulu (Spring 2023). It is an API that
     returns information about different types of dogs, breeds and
-    facts and characteristics about specific breeds. THIS FILE IS DOGDICT!!!
-  
+    facts and characteristics about specific breeds.
+
+tags:
+  - name: group
+    description: Contains everything related to Groups (of dogs)
+  - name: breed
+    description: Contains everything related dog breeds, each of which belongs to a Group (of dogs)
+  - name: characteristics
+    description: Contains everything related characteristics of dogs, each of which belong to a Breed
+  - name: facts
+    description: Contains everything related to facts of breeds, each of which belong to a Breed
+    
 components:
 
   parameters:
@@ -25,8 +35,8 @@ components:
       schema:
         type: string
         
-    breed_id:
-      description: Selected product's unique breed
+    breed_name:
+      description: Selected breeds unique name
       in: path
       name: breed
       required: true
@@ -125,6 +135,8 @@ paths:
   # GroupCollection
   /api/groups/:
     get:
+      tags:
+      - group
       description: "Gets the names of groups of dogs"
       responses:
         "200":
@@ -141,6 +153,8 @@ paths:
                 - name: Working
                   id: 3
     post:
+      tags:
+      - group
       description: "Posts a new dog group"
       requestBody:
         description: String of group name
@@ -163,9 +177,19 @@ paths:
         "400":
           description: Request body was not valid.
           
-  /api/groups/{group_name}:
+  /api/{group_name}/:
     put:
+      tags:
+      - group
       description: "Changes the name of a group of dogs"
+      requestBody:
+        description: JSON document that contains the name for a new Group
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+            example:
+              name: Hunting
       parameters:
       - in: path
         name: group_name
@@ -182,10 +206,35 @@ paths:
                 type: string
        "415":
           description: Unsupported Media Type
+    get:
+      tags:
+      - group
+      description: Gets information from one specific group
+      parameters:
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+      responses:
+       "200":
+          description: Successfully found the specific group
+          content:
+            application/json:
+              example:
+                - name: "Pastoral"
+                  breeds: ["Anatolina Shepherd Dog", "Australian Shepherd"]
+                - name: "New Group Without Breeds"
+                  breeds: []
+       "400":
+          description: Did not find the group
+
 
   # BreedCollection
   /api/breeds/:
     get:
+      tags:
+      - breed
       description: "Gets the list of breeds"
       responses:
         "200":
@@ -217,6 +266,8 @@ paths:
                     coat_length: null
                     exercise: null
     post:
+      tags:
+      - breed
       description: "Posts a breed into the breed collection if it fits the schema."
       requestBody:
         description: JSON document that contains the basic information for a new breed
@@ -243,15 +294,24 @@ paths:
           description: Wrong media type was used
           
   # BreedItem
-  /api/breeds/{breed_id}:
+  /api/{group_name}/{breed_name}/:
     get:
+      tags:
+      - breed
       description: "Gets a specific breed"
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       responses:
         "200":
           description: Gives information about a specific breed which may or may not have facts and/or characteristics.
@@ -277,13 +337,22 @@ paths:
         "400":
           description: "Breed was not found"
     put:
+      tags:
+      - breed
       description: "Posts a breed into the breed collection if it fits the schema."
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       requestBody:
         description: JSON document that contains the basic information for a new breed
         content:
@@ -308,23 +377,47 @@ paths:
         '415':
           description: Wrong media type was used
     delete:
+      tags:
+      - breed
       description: "Deletes a specific breed from the database"
       parameters:
       - in: path
-        name: breed_id
+        name: breed_name
         schema:
-          type: integer
+          type: string
         required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       responses:
         "204":
           description: Successfully removed a breed from database
-        "404":
+        "400":
           description: The breed with id was not found
           
 # CharacteristicsCollection
-  /api/characteristics:
+  /api/{group_name}/{breed_name}/characteristics/:
     get:
+      tags:
+      - characteristics
       description: "Gets the list of characteristics"
+      parameters:
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       responses:
         "200":
           description: List of characteristics with information about them and the breed(s) they belong to.
@@ -344,7 +437,22 @@ paths:
         "400":
           description: "No characteristics was found"
     post:
+      tags:
+      - characteristics
       description: "Posts a new characteristics and links it to an existing breed"
+      parameters:
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       requestBody:
         description: JSON document that contains the basic information for a new breed
         content:
@@ -352,15 +460,12 @@ paths:
             schema:
               $ref: "#/components/schemas/Characteristics"
             example:
-              - in_breed: Australian Terrier
-                char_id: 1
+              - char_id: 1
                 life_span: 6
                 coat_length: 0.2
                 exercise: 1.2
-              - in_breed: Laurin Terrier
-                char_id: 1
+              - char_id: 1
                 life_span: 6
-              
       responses:
         '201':
           description: The Characteristics was created successfully
@@ -375,17 +480,96 @@ paths:
           description: The characteristics already exists
         '415':
           description: Wrong media type was used
+    put:
+      tags:
+      - characteristics
+      description: "Changes the characteristics of a breed"
+      parameters:
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
+      requestBody:
+        description: JSON document that contains atleast life_span characterisctics (others are optional)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Characteristics"
+            example:
+              - in_breed: Australian Terrier
+                char_id: 1
+                life_span: 6
+                coat_length: 0.2
+                exercise: 1.2
+              - in_breed: Laurin Terrier
+                char_id: 1
+                life_span: 6
+      responses:
+       "204":
+          description: Successfully changed the group name
+          headers:
+            Location: 
+              description: URI of the changed Group that was created
+              schema: 
+                type: string
+       "415":
+          description: Unsupported Media Type
 
 
   # FactCollection
-  /api/facts/:
+  /api/{group_name}/{breed_name}/facts/:
     get:
+      tags:
+      - facts
       description: "Gets all of the facts in the database"
+      parameters:
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       responses:
         "200":
           description: List of facts in the database
+          content:
+            application/json:
+              example:
+              - fact: "Example fact of a dog breed."
+                fact_id: 5
+        "400":
+          description: Fact not found
     post:
+      tags:
+      - facts
       description: "Posts a new fact into the database"
+      parameters:
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       requestBody:
         description: JSON document that contains the fact and a breed name that it is linked to
         content:
@@ -407,22 +591,96 @@ paths:
           description: "Breed that the fact was tried to link to does not exist"
         "400":
           description: "Bad body"
+        "409":
+          description: "Duplicate fact (for same breed)"
   
   # FactItem
-  /api/facts/{fact_id}:
+  /api/{group_name}/{breed_name}/{fact_id}/:
     delete:
+      tags:
+      - facts
+      description: Deletes a specific breed from the database using group_name and breed_name to query it
       parameters:
       - in: path
         name: fact_id
         schema:
           type: integer
         required: true
-      description: "Deletes a specific fact from the database"
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
       responses:
         "204":
           description: Successfully deleted a fact!
         "404":
           description: Fact with that id not found
+    get:
+      tags:
+      - facts
+      description: Gets a specific breed from the database using group_name and breed_name to query it
+      parameters:
+      - in: path
+        name: fact_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
+      responses:
+        "200":
+          description: Found the fact_id and returned the fact
+          content:
+            application/json:
+              example:
+                "items": ["This is fact1 about this breed.", "this is fact2 about this breed"]
+        "400":
+          description: Fact with that id not found
+    put:
+      description: Modifies a specific breed from the database using group_name and breed_name to query it
+      tags:
+      - facts
+      parameters:
+      - in: path
+        name: fact_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: breed_name
+        schema:
+          type: string
+        required: true
+        description: This is the breed's name that is being queried from the database
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: true
+        description: This is the group's name that is used to find the breed_name from
+      responses:
+        "204":
+          description: Successfully created a fact
+        "400":
+          description: Bad body
 
 
         

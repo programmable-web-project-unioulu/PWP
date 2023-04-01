@@ -334,7 +334,7 @@ def test_characteristics_post_exercise_and_coatlength(app):
         res = client.post("/api/characteristics/", json=good_body)
         assert res.status_code == 201
         
-        res = client.delete("/api/breeds/1/")
+        res = client.delete(f"/api/breeds/First%20good%20boy/")
         assert res.status_code == 204
 
         res = client.delete("/api/facts/1337/")
@@ -351,10 +351,10 @@ def test_notfound(app):
     """
     with app.app_context():
         client = app.test_client()
-        res = client.get("/api/breeds/1337/")
+        res = client.get(f"/api/breeds/PerkeleenKoira/")
         assert res.status_code == 404
 
-        res = client.get("/api/groups/1337/")
+        res = client.get(f"/api/groups/PerkeleenTerrier/")
         assert res.status_code == 404
 
 
@@ -469,7 +469,8 @@ def test_group_item_get(app):
         res = client.get("/api/groups/marttionparas/")
         data = res.data.decode("utf-8")
         data = json.loads(data)
-        assert data == {"name": "Marttionparas"}
+        print(data["items"])
+        assert data["items"] == [{'name': 'Marttionparas', '@controls': {'self': {'href': '/api/groups/Marttionparas/'}}}]
     
 def test_group_put_validation(app):
     """
@@ -489,10 +490,11 @@ def test_get_breed(app):
         client = app.test_client()
         _breed(group=True)
 
-        res = client.get("/api/breeds/1/") # 1 for first id
+        res = client.get(f"/api/breeds/Test%20breed%20for%20api/") # 1 for first id
         data = res.data.decode("utf-8")
         data = json.loads(data)
-        assert data == {"name": "Test breed for api", "id": 1, "group": {"name": "Test group", "id": 1}, "facts": []}
+        print(data)
+        assert data == {'items': [{'name': 'Test breed for api', 'id': 1, 'group': {'name': 'Test group', 'id': 1}, 'facts': [], '@controls': {'self': {'href': '/api/breeds/Test%20breed%20for%20api/'}}}], '@namespaces': {'breeds': {'name': '/api/breeds/Test%20breed%20for%20api/'}}, '@controls': {'self': {'href': '/api/breeds/Test%20breed%20for%20api/'}, 'edit': {'method': 'PUT', 'encoding': 'json', 'title': 'breed:edit', 'schema': {'type': 'object', 'required': ['name', 'group'], 'properties': {'name': {'description': 'Breeds unique name', 'type': 'string'}, 'group': {'description': "Name of the breed's group", 'type': 'string'}}}, 'href': '/api/breeds/Test%20breed%20for%20api/'}, 'breed:delete': {'method': 'DELETE', 'href': '/api/breeds/Test%20breed%20for%20api/'}}}
 
 def test_put_breed(app):
     """
@@ -508,7 +510,7 @@ def test_put_breed(app):
         _breed(group=True)
         _group(name="Changegroup") # group to be changed
 
-        res = client.put("/api/breeds/1/", json=body)
+        res = client.put(f"/api/breeds/Test%20breed%20for%20api/", json=body)
         assert res.status_code == 204
 
 def test_put_validation(app):
