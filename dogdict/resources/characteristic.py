@@ -69,11 +69,11 @@ class CharacteristicCollection(Resource):
         print("this is group and breed", group, breed)
         for db_characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
             item = db_characteristics.serialize(short_form=True)
+            print("This is item", item)
             body["items"].append(item)
             item["@controls"] = {
                 "self": {"href": url_for("api.characteristiccollection", breed=uri_name, group=group.name)}
             }
-        body["items"].append(item)
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self, group, breed):
@@ -98,6 +98,7 @@ class CharacteristicCollection(Resource):
             print("this is 404 breed does not exist")
             return "Breed does not exist", 404
 
+        print("breed.characteristics", breed.characteristics)
         if breed.characteristics is not None:
             return "Breed already has a characteristic", 409
 
@@ -115,15 +116,18 @@ class CharacteristicCollection(Resource):
             exercise = None
         # print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
+            print("Got here CL", coat_length)
             characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
                                               coat_length=request.json["coat_length"])
             if exercise:
+                print("Got here CL, exercise", coat_length, exercise)
                 characteristics = Characteristics(in_breed=[breed],
                                                   life_span=request.json["life_span"],
                                                   coat_length=request.json["coat_length"],
                                                   exercise=request.json["exercise"])
 
         elif exercise:
+            print("Got here exercise", coat_length)
             characteristics = Characteristics(in_breed=[breed],
                                               life_span=request.json["life_span"],
                                               exercise=request.json["exercise"])
@@ -165,3 +169,4 @@ class CharacteristicCollection(Resource):
         print(characteristics.serialize)
         db.session.add(characteristics)
         db.session.commit()
+        return Response(json.dumps({"characteristics": request.json}), 204, mimetype=JSON)
