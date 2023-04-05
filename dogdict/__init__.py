@@ -4,8 +4,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flasgger import Swagger, swag_from
+
 # Create a SQL database
 db = SQLAlchemy()
+
 
 def create_app():
     """
@@ -18,7 +20,7 @@ def create_app():
     app.config.from_mapping(
         SECRET_KEY="test",
         SQLALCHEMY_DATABASE_URI="sqlite:///test.db",
-        SQLALCHEMY_TRACK_MODIFICATIONS=False
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
     # swagger configurations
@@ -34,19 +36,18 @@ def create_app():
     @app.route("/api/")
     def api_entry_point():
         return "Welcome to the entry point to DogDict API!"
-    
+
     # Register the SQL database with dogdict app
     with app.app_context():
         db.init_app(app)
 
     # Import resources and models after defining DB and app to counter circular imports
     from . import api
-    from . import models
-    from .utils import BreedConverter, FactConverter, GroupConverter
+    from .utils import BreedConverter, FactConverter, GroupConverter, init_db
 
     # Add db init command to flask cli, test db can be created with command "flask init-db"
     # this replaces populate.py, see details in models.py
-    app.cli.add_command(models.init_db)
+    app.cli.add_command(init_db)
 
     app.url_map.converters["group"] = GroupConverter
     app.url_map.converters["breed"] = BreedConverter

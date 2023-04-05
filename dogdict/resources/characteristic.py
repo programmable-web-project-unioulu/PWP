@@ -4,10 +4,9 @@
 
 import json
 from jsonschema import validate, ValidationError
-from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 from flask import Response, request, url_for
 from flask_restful import Resource
-from sqlalchemy.exc import IntegrityError
 from dogdict.models import Characteristics, Breed, db
 from dogdict.constants import JSON
 from dogdict.resources.mason import MasonBuilder
@@ -25,10 +24,9 @@ class CharacteristicsBuilder(MasonBuilder):
             uri_name = uri_name.replace(" ", "%20")
         self.add_control(
             "characteristics:characteristics-all",
-            url_for("api.characteristiccollection",
-                    group=group, breed=uri_name),
+            url_for("api.characteristiccollection", group=group, breed=uri_name),
             title="All characteristics",
-            method="GET"
+            method="GET",
         )
 
     def add_control_add_characteristics(self, group, breed):
@@ -39,47 +37,58 @@ class CharacteristicsBuilder(MasonBuilder):
             "characteristics:add-characteristic",
             "Add a new characteristics and connects it to an existing breed",
             url_for("api.characteristiccollection", group=group, breed=uri_name),
-            Characteristics.json_schema()
+            Characteristics.json_schema(),
         )
 
 
 class CharacteristicCollection(Resource):
     """
-        Used to access all the characteristics at once.
+    Used to access all the characteristics at once.
     """
 
     def get(self, group, breed):
         """
-            GETs all the characteristics
+        GETs all the characteristics
         """
         body = CharacteristicsBuilder(items=[])
         body.add_namespace(
-            "breeds", "/api/<group:group>/<breed:breed>/characteristics/")
-        
+            "breeds", "/api/<group:group>/<breed:breed>/characteristics/"
+        )
+
         uri_name = breed.name
         if " " in uri_name:
             uri_name = uri_name.replace(" ", "%20")
 
-        body.add_control("self", href=url_for(
-            "api.characteristiccollection", breed=breed.name, group=group.name))
-        
+        body.add_control(
+            "self",
+            href=url_for(
+                "api.characteristiccollection", breed=breed.name, group=group.name
+            ),
+        )
+
         body.add_control_all_characteristics(group.name, uri_name)
         body.add_control_add_characteristics(group.name, uri_name)
 
         print("this is group and breed", group, breed)
-        for db_characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
+        for db_characteristics in Characteristics.query.join(
+            Characteristics.in_breed
+        ).filter_by(name=breed.name):
             item = db_characteristics.serialize(short_form=True)
             print("This is item", item)
             body["items"].append(item)
             item["@controls"] = {
-                "self": {"href": url_for("api.characteristiccollection", breed=uri_name, group=group.name)}
+                "self": {
+                    "href": url_for(
+                        "api.characteristiccollection", breed=uri_name, group=group.name
+                    )
+                }
             }
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def post(self, group, breed):
         """
-            Used to POST a characteristics into the collection
-            and validate it against the Characteristics JSON schema.
+        Used to POST a characteristics into the collection
+        and validate it against the Characteristics JSON schema.
         """
         if not request.is_json:
             raise UnsupportedMediaType
@@ -95,7 +104,6 @@ class CharacteristicCollection(Resource):
         breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
 
         if not breed:
-            print("this is 404 breed does not exist")
             return "Breed does not exist", 404
 
         print("breed.characteristics", breed.characteristics)
@@ -103,7 +111,8 @@ class CharacteristicCollection(Resource):
             return "Breed already has a characteristic", 409
 
         characteristics = Characteristics(
-            in_breed=[breed], life_span=request.json["life_span"])
+            in_breed=[breed], life_span=request.json["life_span"]
+        )
 
         # to check if post request contains coat_length and exercise
         try:
@@ -117,43 +126,56 @@ class CharacteristicCollection(Resource):
         # print(characteristics.in_breed, characteristics.life_span)
         if coat_length:
             print("Got here CL", coat_length)
-            characteristics = Characteristics(in_breed=[breed], life_span=request.json["life_span"],
-                                              coat_length=request.json["coat_length"])
+            characteristics = Characteristics(
+                in_breed=[breed],
+                life_span=request.json["life_span"],
+                coat_length=request.json["coat_length"],
+            )
             if exercise:
                 print("Got here CL, exercise", coat_length, exercise)
-                characteristics = Characteristics(in_breed=[breed],
-                                                  life_span=request.json["life_span"],
-                                                  coat_length=request.json["coat_length"],
-                                                  exercise=request.json["exercise"])
+                characteristics = Characteristics(
+                    in_breed=[breed],
+                    life_span=request.json["life_span"],
+                    coat_length=request.json["coat_length"],
+                    exercise=request.json["exercise"],
+                )
 
         elif exercise:
             print("Got here exercise", coat_length)
-            characteristics = Characteristics(in_breed=[breed],
-                                              life_span=request.json["life_span"],
-                                              exercise=request.json["exercise"])
-
-        try:
-            db.session.add(characteristics)
-            db.session.commit()
-        except IntegrityError as exc:
-            print(exc)
-            raise Conflict(
-                f"Characteristics for breed '{request.json}' already exists."
+            characteristics = Characteristics(
+                in_breed=[breed],
+                life_span=request.json["life_span"],
+                exercise=request.json["exercise"],
             )
+
+        db.session.add(characteristics)
+        db.session.commit()
 
         uri_id = characteristics.id
 
         print("This is char", breed.name, group.name)
         return Response(
-            status=201, headers={"Item": url_for("api.characteristiccollection",
-                                                 characteristics=characteristics, breed=breed.name, group=group.name),
-                                 "Location": url_for("api.characteristiccollection", characteristics=uri_id, breed=breed.name, group=group.name)}
+            status=201,
+            headers={
+                "Item": url_for(
+                    "api.characteristiccollection",
+                    characteristics=characteristics,
+                    breed=breed.name,
+                    group=group.name,
+                ),
+                "Location": url_for(
+                    "api.characteristiccollection",
+                    characteristics=uri_id,
+                    breed=breed.name,
+                    group=group.name,
+                ),
+            },
         )
 
     def put(self, group, breed):
         """
-            Change characteristics of one breed from given url
-            put "/api/terrier/australian_terrier/charateristics/
+        Change characteristics of one breed from given url
+        put "/api/terrier/australian_terrier/charateristics/
         """
         if not request.is_json:
             raise UnsupportedMediaType
@@ -164,9 +186,13 @@ class CharacteristicCollection(Resource):
             print("THIS IS EXC", exc)
             raise BadRequest(description=str(exc)) from exc
 
-        for characteristics in Characteristics.query.join(Characteristics.in_breed).filter_by(name=breed.name):
+        for characteristics in Characteristics.query.join(
+            Characteristics.in_breed
+        ).filter_by(name=breed.name):
             characteristics.deserialize(request.json)
         print(characteristics.serialize)
         db.session.add(characteristics)
         db.session.commit()
-        return Response(json.dumps({"characteristics": request.json}), 204, mimetype=JSON)
+        return Response(
+            json.dumps({"characteristics": request.json}), 204, mimetype=JSON
+        )
