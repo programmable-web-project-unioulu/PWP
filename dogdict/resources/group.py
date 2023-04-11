@@ -25,7 +25,7 @@ class GroupBuilder(MasonBuilder):
             "groups:groups-all",
             url_for("api.groupcollection"),
             title="All groups",
-            method="GET"
+            method="GET",
         )
 
     def add_control_add_groups(self):
@@ -33,7 +33,7 @@ class GroupBuilder(MasonBuilder):
             "groups:add-group",
             "Add a new group",
             url_for("api.groupcollection"),
-            Group.json_schema()
+            Group.json_schema(),
         )
 
     def add_control_edit_groups(self, group_name):
@@ -46,12 +46,12 @@ class GroupBuilder(MasonBuilder):
 
 class GroupCollection(Resource):
     """
-        Used to access all of the Groups in the DB at once.
+    Used to access all of the Groups in the DB at once.
     """
 
     def get(self, group=None):
         """
-            GETs all the groups in the database (currently their names)
+        GETs all the groups in the database (currently their names)
         """
         body = GroupBuilder(items=[])
         body.add_namespace("groups", "/api/groups/")
@@ -65,7 +65,7 @@ class GroupCollection(Resource):
             item = {
                 "name": db_group_serialised["name"],
                 "id": db_group_serialised["id"],
-                "breeds": []
+                "breeds": [],
             }
             # Get all breeds that are under group
             for breed in Breed.query.filter_by(group=db_group).all():
@@ -80,8 +80,8 @@ class GroupCollection(Resource):
 
     def post(self):
         """
-            Used to POST a new Group object and validate it against the Group
-            JSON schema.
+        Used to POST a new Group object and validate it against the Group
+        JSON schema.
         """
         if not request.is_json:
             raise UnsupportedMediaType
@@ -97,9 +97,7 @@ class GroupCollection(Resource):
             db.session.add(group)
             db.session.commit()
         except IntegrityError:
-            raise Conflict(
-                f"Group with name '{request.json['name']}' already exists."
-            )
+            raise Conflict(f"Group with name '{request.json['name']}' already exists.")
 
         uri_name = check_for_space(group.name)
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
@@ -107,39 +105,40 @@ class GroupCollection(Resource):
         print(uri_name)
 
         return Response(
-            status=201, headers={"Item": url_for("api.groupitem", group=group),
-                                 "Location": url_for("api.groupitem", group=uri_name)}
+            status=201,
+            headers={
+                "Item": url_for("api.groupitem", group=group),
+                "Location": url_for("api.groupitem", group=uri_name),
+            },
         )
 
 
 class GroupItem(Resource):
     """
-        Used to access a specific group
+    Used to access a specific group
     """
 
     def get(self, group):
         """
-            GETs a specific groups information from the DB (name only)
+        GETs a specific groups information from the DB (name only)
         """
         print("THIS IS GROUPITEM:", group)
         body = GroupBuilder(items=[])
         body.add_namespace("group", f"/api/groups/{group.name}/")
-        body.add_control("self", href=url_for(
-            "api.groupitem", group=group.name))
+        body.add_control("self", href=url_for("api.groupitem", group=group.name))
         body.add_control_edit_groups(group.name)
 
         group = Group.query.filter_by(name=group.name).first()
-        item = {
-            "name": group.name,
-            "breeds": []
-        }
+        item = {"name": group.name, "breeds": []}
         for breed in Breed.query.filter_by(group=group).all():
             uri_name = check_for_space(breed.name)
 
             item["breeds"].append(breed.name)
 
             item["@controls"] = {
-                f"{breed.name}": {"href": url_for(f"api.groupitem", group=group.name + "/" + uri_name)}
+                f"{breed.name}": {
+                    "href": url_for(f"api.groupitem", group=group.name + "/" + uri_name)
+                }
             }
         body["items"].append(item)
 
@@ -147,7 +146,7 @@ class GroupItem(Resource):
 
     def put(self, group):
         """
-            Used to change the name of a specific group from the database.
+        Used to change the name of a specific group from the database.
         """
         if not request.is_json:
             return "Unsupported Media Type!", 415
@@ -166,6 +165,9 @@ class GroupItem(Resource):
         uri_name = check_for_space(group.name)
 
         return Response(
-            status=201, headers={"Item": url_for("api.groupitem", group=group),
-                                 "Location": url_for("api.groupitem", group=uri_name)}
+            status=204,
+            headers={
+                "Item": url_for("api.groupitem", group=group),
+                "Location": url_for("api.groupitem", group=uri_name),
+            },
         )

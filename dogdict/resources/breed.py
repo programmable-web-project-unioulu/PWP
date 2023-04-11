@@ -5,7 +5,7 @@ import json
 import os
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for
-from werkzeug.exceptions import Conflict, BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Breed, Characteristics, Group, db
@@ -27,7 +27,7 @@ class BreedBuilder(MasonBuilder):
             "breeds:breeds-all",
             url_for("api.breedcollection"),
             title="All breeds",
-            method="GET"
+            method="GET",
         )
 
     def add_control_delete_breed(self, breed, group):
@@ -35,7 +35,7 @@ class BreedBuilder(MasonBuilder):
         self.add_control(
             "breed:delete",
             url_for("api.breeditem", breed=uri_name, group=group),
-            method="DELETE"
+            method="DELETE",
         )
 
     def add_control_add_breeds(self):
@@ -43,7 +43,7 @@ class BreedBuilder(MasonBuilder):
             "breeds:add-breed",
             "Add a new breed and connects it to an existing group",
             url_for("api.breedcollection"),
-            Breed.json_schema()
+            Breed.json_schema(),
         )
 
     def add_control_edit_breed(self, breed, group):
@@ -57,13 +57,14 @@ class BreedBuilder(MasonBuilder):
 
 class BreedCollection(Resource):
     """
-        Used to access multiple breeds at once.
+    Used to access multiple breeds at once.
     """
+
     # @swag_from("../doc/breedcollection/breeds_get.yml")
 
     def get(self):
         """
-            Used to access ALL the breeds at once.
+        Used to access ALL the breeds at once.
         """
         body = BreedBuilder(items=[])
         body.add_namespace("breeds", "/api/<group:group>/breeds/")
@@ -82,7 +83,11 @@ class BreedCollection(Resource):
             uri_name = check_for_space(db_breed.name)
 
             item["@controls"] = {
-                "self": {"href": url_for("api.breeditem", breed=uri_name, group=db_breed.group.name)}
+                "self": {
+                    "href": url_for(
+                        "api.breeditem", breed=uri_name, group=db_breed.group.name
+                    )
+                }
             }
             body["items"].append(item)
 
@@ -90,7 +95,7 @@ class BreedCollection(Resource):
 
     def post(self):
         """
-            Used to POST a breed into the breed collection and to make sure it fits the schema.
+        Used to POST a breed into the breed collection and to make sure it fits the schema.
         """
 
         if not request.is_json:
@@ -116,22 +121,27 @@ class BreedCollection(Resource):
         uri_name = check_for_space(breed.name)
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=request.json["group"])}
+            status=201,
+            headers={
+                "Location": url_for(
+                    "api.breeditem", breed=uri_name, group=request.json["group"]
+                )
+            },
         )
 
 
 class BreedItem(Resource):
     """
-        Used to access specific breeds from the database.
+    Used to access specific breeds from the database.
     """
 
     def get(self, breed, group):
         """
-            GETs a specific breed
+        GETs a specific breed
         """
         body = BreedBuilder(items=[])
 
-        # if a space in breed name insert %20 
+        # if a space in breed name insert %20
         if "404" in str(breed):
             return "", 404
 
@@ -140,9 +150,9 @@ class BreedItem(Resource):
         print("GOT HERE!", uri_name, group.name)
 
         body.add_namespace("breeds", f"/api/{group.name}/{uri_name}/")
-        body.add_control("self", href=url_for(
-            "api.breeditem", breed=uri_name, group=group.name))
-        
+        body.add_control(
+            "self", href=url_for("api.breeditem", breed=uri_name, group=group.name)
+        )
 
         body.add_control_edit_breed(breed.name, group.name)
         body.add_control_delete_breed(breed.name, group.name)
@@ -151,7 +161,6 @@ class BreedItem(Resource):
         item = breed.serialize()
 
         print("DID WE GET HERE!?")
-        
 
         item["@controls"] = {
             "self": {"href": url_for("api.breeditem", breed=uri_name, group=group.name)}
@@ -162,7 +171,7 @@ class BreedItem(Resource):
 
     def put(self, breed, group):
         """
-            Changes the values of an existing singular breed.
+        Changes the values of an existing singular breed.
         """
         if not request.is_json:
             raise UnsupportedMediaType
@@ -179,12 +188,15 @@ class BreedItem(Resource):
         uri_name = check_for_space(breed.name)
 
         return Response(
-            status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=group.name)}
-        )   
+            status=204,
+            headers={
+                "Location": url_for("api.breeditem", breed=uri_name, group=group.name)
+            },
+        )
 
     def delete(self, breed, group):
         """
-            DELETEs one single breed.
+        DELETEs one single breed.
         """
         try:
             breed = Breed.query.filter_by(id=breed.id).first()

@@ -1,5 +1,3 @@
-
-
 class MasonBuilder(dict):
     """
     A convenience class for managing dictionaries that represent Mason
@@ -46,12 +44,7 @@ class MasonBuilder(dict):
         """
 
         self.add_control(
-            ctrl_name,
-            href,
-            method="POST",
-            encoding="json",
-            title=title,
-            schema=schema
+            ctrl_name, href, method="POST", encoding="json", title=title, schema=schema
         )
 
     def add_control_put(self, title, href, schema):
@@ -66,12 +59,7 @@ class MasonBuilder(dict):
         """
 
         self.add_control(
-            "edit",
-            href,
-            method="PUT",
-            encoding="json",
-            title=title,
-            schema=schema
+            "edit", href, method="PUT", encoding="json", title=title, schema=schema
         )
 
     def add_control_delete(self, title, href):
@@ -104,6 +92,4 @@ class MasonBuilder(dict):
         if "@namespaces" not in self:
             self["@namespaces"] = {}
 
-        self["@namespaces"][ns] = {
-            "name": uri
-        }
+        self["@namespaces"][ns] = {"name": uri}
