@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Breed, Characteristics, Group, db
 from dogdict.constants import JSON
+from dogdict.utils import check_for_space
 from flasgger import Swagger, swag_from
 from flasgger.utils import swag_from
 from dogdict.resources.mason import MasonBuilder
@@ -30,9 +31,7 @@ class BreedBuilder(MasonBuilder):
         )
 
     def add_control_delete_breed(self, breed, group):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control(
             "breed:delete",
             url_for("api.breeditem", breed=uri_name, group=group),
@@ -48,9 +47,7 @@ class BreedBuilder(MasonBuilder):
         )
 
     def add_control_edit_breed(self, breed, group):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control_put(
             "breed:edit",
             url_for("api.breeditem", breed=uri_name, group=group),
@@ -82,10 +79,8 @@ class BreedCollection(Resource):
                 "id": db_breed_serialised["id"],
             }
 
-            uri_name = db_breed.name
-            if " " in uri_name:
-                uri_name = uri_name.replace(" ", "%20")
-                print("this is uriname", uri_name)
+            uri_name = check_for_space(db_breed.name)
+
             item["@controls"] = {
                 "self": {"href": url_for("api.breeditem", breed=uri_name, group=db_breed.group.name)}
             }
@@ -118,9 +113,7 @@ class BreedCollection(Resource):
         except IntegrityError:
             return "Breed already exists", 409
         
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         return Response(
             status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=request.json["group"])}
@@ -142,9 +135,7 @@ class BreedItem(Resource):
         if "404" in str(breed):
             return "", 404
 
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         print("GOT HERE!", uri_name, group.name)
 
@@ -185,9 +176,7 @@ class BreedItem(Resource):
         db.session.commit()
         print(breed.serialize())
         
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         return Response(
             status=201, headers={"Location": url_for("api.breeditem", breed=uri_name, group=group.name)}

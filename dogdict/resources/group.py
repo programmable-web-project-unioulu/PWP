@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
 from dogdict.models import Group, Breed, db
 from dogdict.constants import JSON
+from dogdict.utils import check_for_space
 from dogdict.resources.mason import MasonBuilder
 
 
@@ -100,9 +101,10 @@ class GroupCollection(Resource):
                 f"Group with name '{request.json['name']}' already exists."
             )
 
-        uri_name = group.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(group.name)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print(group)
+        print(uri_name)
 
         return Response(
             status=201, headers={"Item": url_for("api.groupitem", group=group),
@@ -132,9 +134,7 @@ class GroupItem(Resource):
             "breeds": []
         }
         for breed in Breed.query.filter_by(group=group).all():
-            uri_name = breed.name
-            if " " in uri_name:
-                uri_name = uri_name.replace(" ", "%20")
+            uri_name = check_for_space(breed.name)
 
             item["breeds"].append(breed.name)
 
@@ -163,9 +163,7 @@ class GroupItem(Resource):
         db.session.add(group)
         db.session.commit()
 
-        uri_name = group.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(group.name)
 
         return Response(
             status=201, headers={"Item": url_for("api.groupitem", group=group),

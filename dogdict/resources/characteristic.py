@@ -10,6 +10,7 @@ from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from dogdict.models import Characteristics, Breed, db
 from dogdict.constants import JSON
+from dogdict.utils import check_for_space
 from dogdict.resources.mason import MasonBuilder
 
 
@@ -20,9 +21,7 @@ class CharacteristicsBuilder(MasonBuilder):
     """
 
     def add_control_all_characteristics(self, group, breed):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control(
             "characteristics:characteristics-all",
             url_for("api.characteristiccollection",
@@ -32,9 +31,7 @@ class CharacteristicsBuilder(MasonBuilder):
         )
 
     def add_control_add_characteristics(self, group, breed):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control_post(
             "characteristics:add-characteristic",
             "Add a new characteristics and connects it to an existing breed",
@@ -56,9 +53,7 @@ class CharacteristicCollection(Resource):
         body.add_namespace(
             "breeds", "/api/<group:group>/<breed:breed>/characteristics/")
         
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         body.add_control("self", href=url_for(
             "api.characteristiccollection", breed=breed.name, group=group.name))

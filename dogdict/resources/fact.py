@@ -10,6 +10,7 @@ from flask import Response, request, url_for
 from flask_restful import Resource
 from dogdict.models import Breed, Facts, db
 from dogdict.constants import JSON
+from dogdict.utils import check_for_space
 from dogdict.resources.mason import MasonBuilder
 
 
@@ -20,9 +21,7 @@ class FactBuilder(MasonBuilder):
     """
 
     def add_control_all_facts(self, group, breed):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control(
             "facts:facts-all",
             url_for("api.factcollection", group=group, breed=uri_name),
@@ -31,9 +30,7 @@ class FactBuilder(MasonBuilder):
         )
 
     def add_control_add_facts(self, group, breed):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         self.add_control_post(
             "facts:add-fact",
             "Add a new fact and connects it to an existing breed",
@@ -42,9 +39,7 @@ class FactBuilder(MasonBuilder):
         )
 
     def add_control_delete_facts(self, fact_id, breed, group):
-        uri_name = breed
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed)
         print("this is add control delete fact:", fact_id, breed, group)
         self.add_control(
             "fact:delete",
@@ -65,9 +60,7 @@ class FactCollection(Resource):
         body = FactBuilder(items=[])
         body.add_namespace("breeds", "/api/<group:group>/<breed:breed>/facts/")
 
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
         
         body.add_control("self", href=url_for("api.factcollection", breed=uri_name, group=group.name))
         body.add_control_all_facts(group.name, uri_name)
@@ -94,9 +87,7 @@ class FactCollection(Resource):
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
 
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         body = {"items": []}
         for db_fact in Facts.query.filter_by(breed=breed):
@@ -138,9 +129,7 @@ class FactItem(Resource):
     def get(self, group, breed, fact):
         body = FactBuilder(items=[])
     
-        uri_name = breed.name
-        if " " in uri_name:
-            uri_name = uri_name.replace(" ", "%20")
+        uri_name = check_for_space(breed.name)
 
         body.add_namespace("fact", f"/api/{group.name}/{uri_name}/facts/{fact.id}")
 

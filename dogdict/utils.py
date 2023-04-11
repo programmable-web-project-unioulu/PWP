@@ -15,6 +15,15 @@ def breed_name_from_url(url_value):
     return breed.title()  # title capitalizes all words
 
 
+def check_for_space(name):
+    print("checking whether name had a space")
+    if " " in name:
+        print("name had a space... converting...")
+        name = name.replace(" ", "%20")
+    
+    return name
+
+
 class GroupConverter(BaseConverter):
     """
         This can be used to query unique Group information from the database
