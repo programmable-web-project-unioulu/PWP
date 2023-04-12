@@ -58,7 +58,7 @@ Discussion about the database model that we have provided thus far. Lightly eval
 
 ## Meeting 4.
 * **DATE:**
-* **ASSISTANTS:**
+* **ASSISTANTS: Ivan**
 
 ### Minutes
 Better routing, maybe route breeds under groups, link facts to breeds /api/groups/breed/facts/n-fact
@@ -69,7 +69,20 @@ Explain addressability and uniform interface more betterly, architecture statele
 ### Action points
 *List here the actions points discussed with assistants*
 
+## Meeting 5.
+* **DATE:12.4.2023**
+* **ASSISTANTS: Ivan**
 
+### Minutes
+Root route should be /api/ and be shown in dead end in Group -> GroupCollection, cannot get away, need to be connected, when you add, edit, delete you should stay in same state, not change it. Swagger to get the points from documentation, Update characteristics colletion, better hierarchy with /groups/.
+
+### Action points
+Edit the diagram, (add, edit, delete) should not modify the state, e.g. no jump from
+Link Relations should be named only (add, edit, delete) no add-breeds
+CharacteristicCollection should be named CharecteristicItem
+Add CharacacteristicCollection to get all chars
+Better Group hierarchy by adding /groups/ infront of all items
+Add documentation via Swagger
 
 
 ## Midterm meeting

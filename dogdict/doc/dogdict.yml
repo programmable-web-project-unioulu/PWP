@@ -90,7 +90,6 @@ components:
           type: string
       required:
       - name
-      - group
       
     Fact:
       properties:
@@ -100,7 +99,9 @@ components:
         fact:
           description: A fact about the specific breed
           type: string
-          
+      required:
+      - fact
+
     Characteristics:
       properties:
         breed:
@@ -124,8 +125,6 @@ components:
           minimum: 0
           maximum: 5
       required:
-      - breed
-      - char_id
       - life_span
   
   
@@ -177,7 +176,7 @@ paths:
         "400":
           description: Request body was not valid.
           
-  /api/{group_name}/:
+  /api/groups/{group_name}/:
     put:
       tags:
       - group
@@ -231,7 +230,7 @@ paths:
 
 
   # BreedCollection
-  /api/breeds/:
+  /api/groups/{group_name}/breeds/:
     get:
       tags:
       - breed
@@ -294,7 +293,7 @@ paths:
           description: Wrong media type was used
           
   # BreedItem
-  /api/{group_name}/{breed_name}/:
+  /api/groups/{group_name}/breeds/{breed_name}/:
     get:
       tags:
       - breed
@@ -400,7 +399,7 @@ paths:
           description: The breed with id was not found
           
 # CharacteristicsCollection
-  /api/{group_name}/{breed_name}/characteristics/:
+  /api/groups/{group_name}/breeds/{breed_name}/characteristics/:
     get:
       tags:
       - characteristics
@@ -460,12 +459,10 @@ paths:
             schema:
               $ref: "#/components/schemas/Characteristics"
             example:
-              - char_id: 1
-                life_span: 6
+              - life_span: 6
                 coat_length: 0.2
                 exercise: 1.2
-              - char_id: 1
-                life_span: 6
+              - life_span: 6
       responses:
         '201':
           description: The Characteristics was created successfully
@@ -504,13 +501,11 @@ paths:
             schema:
               $ref: "#/components/schemas/Characteristics"
             example:
-              - in_breed: Australian Terrier
-                char_id: 1
+              - char_id: 1
                 life_span: 6
                 coat_length: 0.2
                 exercise: 1.2
-              - in_breed: Laurin Terrier
-                char_id: 1
+              - char_id: 1
                 life_span: 6
       responses:
        "204":
@@ -525,7 +520,7 @@ paths:
 
 
   # FactCollection
-  /api/{group_name}/{breed_name}/facts/:
+  /api/groups/{group_name}/breeds/{breed_name}/facts/:
     get:
       tags:
       - facts
@@ -595,7 +590,7 @@ paths:
           description: "Duplicate fact (for same breed)"
   
   # FactItem
-  /api/{group_name}/{breed_name}/{fact_id}/:
+  /api/groups/{group_name}/breeds/{breed_name}/{fact_id}/:
     delete:
       tags:
       - facts

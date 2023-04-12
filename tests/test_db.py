@@ -228,7 +228,7 @@ def test_breed_json_schema():
     Breed json schema should require name and group
     """
     breed = _breed()
-    assert breed.json_schema()["required"] == ["name", "group"]
+    assert breed.json_schema()["required"] == ["name"]
 
 ## FACTS test
 
@@ -356,4 +356,4 @@ def test_characteristics_json_schema():
     Characteristics schema should require in what breed and life span inputs
     """
     char = _characteristics()
-    assert char.json_schema()["required"] == ["in_breed", "life_span"]
+    assert char.json_schema()["required"] == ["life_span"]

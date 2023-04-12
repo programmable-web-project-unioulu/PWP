@@ -58,7 +58,7 @@ class FactCollection(Resource):
         GETs all the facts from the database
         """
         body = FactBuilder(items=[])
-        body.add_namespace("breeds", "/api/<group:group>/<breed:breed>/facts/")
+        body.add_namespace("breeds", "/api/groups/<group:group>/breeds/<breed:breed>/facts/")
 
         uri_name = check_for_space(breed.name)
         
@@ -138,7 +138,7 @@ class FactItem(Resource):
     
         uri_name = check_for_space(breed.name)
 
-        body.add_namespace("fact", f"/api/{group.name}/{uri_name}/facts/{fact.id}")
+        body.add_namespace("fact", f"/api/groups/{group.name}/breeds/{uri_name}/facts/{fact.id}")
 
         body.add_control(
             "self",
@@ -165,7 +165,7 @@ class FactItem(Resource):
         db.session.commit()
         return Response(json.dumps({"fact": fact.fact}), 204, mimetype=JSON)
 
-    def delete(self, fact, group, breed):
+    def delete(self, fact, group=None, breed=None):
         """
         Deletes a single specific fact from the database.
         """

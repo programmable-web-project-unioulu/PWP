@@ -49,7 +49,7 @@ class CharacteristicCollection(Resource):
         """
         body = CharacteristicsBuilder(items=[])
         body.add_namespace(
-            "breeds", "/api/<group:group>/<breed:breed>/characteristics/")
+            "breeds", "/api/groups/<group:group>/breeds/<breed:breed>/characteristics/")
         
         uri_name = check_for_space(breed.name)
 
@@ -94,11 +94,6 @@ class CharacteristicCollection(Resource):
 
         if request.json["life_span"] < 5:
             return "Life span is too short!", 400
-
-        breed = Breed.query.filter_by(name=request.json["in_breed"]).first()
-
-        if not breed:
-            return "Breed does not exist", 404
 
         print("breed.characteristics", breed.characteristics)
         if breed.characteristics is not None:

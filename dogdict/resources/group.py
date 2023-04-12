@@ -77,7 +77,7 @@ class GroupCollection(Resource):
             body["items"].append(item)
 
         return Response(json.dumps(body), 200, mimetype=JSON)
-
+    
     def post(self):
         """
         Used to POST a new Group object and validate it against the Group

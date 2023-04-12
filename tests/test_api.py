@@ -43,7 +43,6 @@ group2 = {
 
 breed1 = {
     "name": "test_1",
-    "group": "Testgroup"
 }
 
 breed2 = {
@@ -52,7 +51,6 @@ breed2 = {
 
 breed3 = {
     "name": "test_3",
-    "group": "Terrier3"
 }
 
 def _group(name="Testgroup"):
@@ -117,7 +115,7 @@ def test_facts_post(app):
     with app.app_context():
         _breed(group=True, name=test_breed_name)
         client = app.test_client()
-        res = client.post(f"/api/{group_url}/{breed_url}/facts/", json=mockFactBody)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/facts/", json=mockFactBody)
         assert res.status_code == 201
         assert Facts.query.count() == 1
 
@@ -132,7 +130,7 @@ def test_facts_get(app):
     with app.app_context():
         client = app.test_client()
         _fact(mock_fact)  # init one breed, group and fact to database
-        res = client.get(f"/api/{group_url}/{breed_url}/facts/")
+        res = client.get(f"/api/groups/{group_url}/breeds/{breed_url}/facts/")
         # decode bytes to string
         data = res.data.decode("utf-8")
         # parse json string
@@ -153,14 +151,14 @@ def test_breeds_post(app):
         client = app.test_client()
         _group() # create one group with name Testgroup
 
-        res = client.post("/api/breeds/", json=breed1) # belongs in Testgroup
+        res = client.post("/api/groups/testgroup/breeds/", json=breed1) # belongs in Testgroup
         assert res.status_code == 201
 
-        res = client.post("/api/breeds/", json=breed2) # no name in json body
+        res = client.post("/api/groups/testgroup/breeds/", json=breed2) # no name in json body
         assert res.status_code == 400
 
-        res = client.post("/api/breeds/", json={"name": "mock", "group": "non-existent"})
-        assert res.status_code == 400
+        res = client.post("/api/groups/non-existent-group/breeds/", json={"name": "mock"})
+        assert res.status_code == 404
 
 def test_breeds_get(app):
     """
@@ -169,7 +167,7 @@ def test_breeds_get(app):
     with app.app_context():
         client = app.test_client()
         _breed(True)  # init one breed to database
-        res = client.get("/api/breeds/")
+        res = client.get("/api/groups/testgroup/breeds/")
         # decode bytes to string
         data = res.data.decode("utf-8")
         # parse json string
@@ -189,15 +187,15 @@ def test_post_fact_bad_body(app):
             "name2341": "sdfsdf"
         }
         good_body = {"in_breed": "Testgroup", "fact": "fact moro"}
-        res = client.post(f'/api/{group_url}/{breed_url}/facts/', json=bad_body1)
+        res = client.post(f'/api/groups/{group_url}/breeds/{breed_url}/facts/', json=bad_body1)
         assert res.status_code == 400
 
         # same fact can not be given twice to breed
-        client.post(f'/api/{group_url}/{breed_url}/facts/', json=good_body)
-        res = client.post(f'/api/{group_url}/{breed_url}/facts/', json=good_body)
+        client.post(f'/api/groups/{group_url}/breeds/{breed_url}/facts/', json=good_body)
+        res = client.post(f'/api/groups/{group_url}/breeds/{breed_url}/facts/', json=good_body)
         assert res.status_code == 409
 
-        res = client.post(f'/api/non-existent-group/{breed_url}/facts/', json=good_body)
+        res = client.post(f'/api/groups/non-existent-group/breeds/{breed_url}/facts/', json=good_body)
         assert res.status_code == 404
 
 
@@ -234,20 +232,20 @@ def test_post_unsupported_media(app):
         _group()
         mock_body = {'asd': 'asd', 'perkele': 'perkele'}
 
-        res = client.post(f"/api/{group_url}/{breed_url}/facts/", data=mock_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/facts/", data=mock_body)
         assert res.status_code == 415
 
         res = client.post(f"/api/groups/", data=mock_body)
         assert res.status_code == 415
 
-        res = client.post(f"/api/breeds/", data=mock_body)
+        res = client.post(f"/api/groups/testgroup/breeds/", data=mock_body)
         assert res.status_code == 415
 
-        res = client.post(f"/api/{group_url}/{breed_url}/characteristics/", data=mock_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", data=mock_body)
         assert res.status_code == 415
 
         _group(name="Testgroup123")
-        res = client.put("/api/testgroup123/", data=mock_body)
+        res = client.put("/api/groups/testgroup123/", data=mock_body)
         assert res.status_code == 415
 
 
@@ -281,14 +279,14 @@ def test_delete(app):
         client = app.test_client()
         _breed()  # init one breed to database
         _group()  # init one group to database
-        res = client.post(f"/api/{group_url}/{breed_url}/facts/", json=mockFactBody)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/facts/", json=mockFactBody)
         assert res.status_code == 201
 
-        res = client.delete(f"/api/{group_url}/{breed_url}/facts/1/")
+        res = client.delete(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1/")
         assert res.status_code == 204
 
         # fails if fact not found
-        res = client.delete(f"/api/{group_url}/{breed_url}/facts/1500606969696969/")
+        res = client.delete(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1500606969696969/")
         assert res.status_code == 404
 
 def test_characteristics_post(app):
@@ -302,11 +300,11 @@ def test_characteristics_post(app):
     with app.app_context():
         client = app.test_client()
         _group() # init the group
-        res = client.post(f"/api/{group_url}/non-existing-breed/characteristics/", json=bad_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/non-existing-breed/characteristics/", json=bad_body)
         assert res.status_code == 404
 
         # returns 400 if post validation fails
-        res = client.post(f"/api/{group_url}/non-existing-breed/characteristics/", json={"martti": "badbad"})
+        res = client.post(f"/api/groups/{group_url}/breeds/non-existing-breed/characteristics/", json={"martti": "badbad"})
         assert res.status_code == 400
 
 def test_characteristics_get_and_put_methods(app):
@@ -321,31 +319,31 @@ def test_characteristics_get_and_put_methods(app):
             "life_span": 7
         }
         # test that characteristics can be added if not exist in breed
-        res = client.post(f"/api/{group_url}/{breed_url}/characteristics/", json=chars)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", json=chars)
         assert res.status_code == 201
 
         # test that characteristics raise integrity error if already exist
-        res = client.post(f"/api/{group_url}/{breed_url}/characteristics/", json=chars)
+        res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", json=chars)
         assert res.status_code == 409
 
         # test posting characteristic to existing breed
         # we get the characteristics as response from get
-        res = client.get(f"/api/{group_url}/{breed_url}/characteristics/")
+        res = client.get(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/")
         assert res.status_code == 200
         data = res.data.decode("utf-8")
         data = json.loads(data)
-        assert data["items"][0] == {'@controls': {'self': {'href': '/api/Testgroup/Majestic%20Test%20Breed/characteristics/'}}, 'coat_length': None, 'exercise': None, 'life_span': 7}
+        assert data["items"][0] == {'@controls': {'self': {'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/characteristics/'}}, 'coat_length': None, 'exercise': None, 'life_span': 7}
 
         # returns 204 when characteristics is good
-        res = client.put(f"/api/{group_url}/{breed_url}/characteristics/", json={"life_span": 13, "coat_length": 0.8, "exercise": 4})
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", json={"life_span": 13, "coat_length": 0.8, "exercise": 4})
         assert res.status_code == 204
 
         # returns 415 for put if body is not in json
-        res = client.put(f"/api/{group_url}/{breed_url}/characteristics/", data="WRONG MEDIA TYPE")
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", data="WRONG MEDIA TYPE")
         assert res.status_code == 415
 
         # return 404 if put schema validation fails
-        res = client.put(f"/api/{group_url}/{breed_url}/characteristics/", json={"martti": "joujou"})
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", json={"martti": "joujou"})
         assert res.status_code == 400
 
 def test_characteristics_post(app):
@@ -362,7 +360,7 @@ def test_characteristics_post(app):
             "in_breed": breed.name
             }
 
-        res = client.post(f"/api/{group_url}/first_good_boy/characteristics/", json=good_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/first_good_boy/characteristics/", json=good_body)
         assert res.status_code == 201
 
 def test_characteristics_post_exercise(app):
@@ -379,7 +377,7 @@ def test_characteristics_post_exercise(app):
             "exercise": 4
             }
 
-        res = client.post(f"/api/{group_url}/first_good_boy/characteristics/", json=good_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/first_good_boy/characteristics/", json=good_body)
         assert res.status_code == 201
 
 def test_characteristics_post_exercise_and_coatlength(app):
@@ -397,18 +395,8 @@ def test_characteristics_post_exercise_and_coatlength(app):
             "coat_length": 1
             }
 
-        res = client.post(f"/api/{group_url}/first_good_boy/characteristics/", json=good_body)
+        res = client.post(f"/api/groups/{group_url}/breeds/first_good_boy/characteristics/", json=good_body)
         assert res.status_code == 201
-        """
-        res = client.delete(f"/api/{group_url}/First%20good%20boy/")
-        assert res.status_code == 204
-
-        res = client.delete("/api/facts/1337/")
-        assert res.status_code == 404
-
-        res = client.delete("/api/breeds/1337/")
-        assert res.status_code == 404"""
-
 
 def test_notfound(app):
     """
@@ -416,8 +404,9 @@ def test_notfound(app):
         For formatters.
     """
     with app.app_context():
+        _group()
         client = app.test_client()
-        res = client.get(f"/api/breeds/PerkeleenKoira/")
+        res = client.get(f"/api/groups/testgroup/breeds/PerkeleenKoira/")
         assert res.status_code == 404
 
         res = client.get(f"/api/groups/PerkeleenTerrier/")
@@ -433,7 +422,7 @@ def test_put_group(app):
         res = client.post("/api/groups/", json=group1)
         assert res.status_code == 201
         group_name = group1["name"]
-        res = client.put(f"/api/{group_name}/", json=group2)
+        res = client.put(f"/api/groups/{group_name}/", json=group2)
         assert res.status_code == 204
 
 def test_group_validation(app):
@@ -479,7 +468,7 @@ def test_breed_already_exists(app):
         client = app.test_client()
         _breed(name=breed_name, group=True)
 
-        res = client.post(f"/api/breeds/", json=body)
+        res = client.post(f"/api/groups/testgroup/breeds/", json=body)
         assert res.status_code == 409
 
 def test_post_fact_breed_exists(app):
@@ -490,7 +479,7 @@ def test_post_fact_breed_exists(app):
     with app.app_context():
         _group(name="mockgroup") # group named Testgroup exists
         client = app.test_client()
-        res = client.post(f"/api/mockgroup/{breed_name}/facts/", json={"fact": "mock fact", "breed": breed_name})
+        res = client.post(f"/api/groups/mockgroup/breeds/{breed_name}/facts/", json={"fact": "mock fact", "breed": breed_name})
         assert res.status_code == 404
 
 def test_post_characteristics_duplicate(app):
@@ -508,9 +497,9 @@ def test_post_characteristics_duplicate(app):
     with app.app_context():
         client = app.test_client()
         _breed(group=True, name="Fun Fun Breed Name")
-        res = client.post(f"/api/{group_url}/Fun%20Fun%20breed%20name/characteristics/", json=body)
+        res = client.post(f"/api/groups/{group_url}/breeds/Fun%20Fun%20breed%20name/characteristics/", json=body)
         assert res.status_code == 201
-        res = client.post(f"/api/{group_url}/Fun%20Fun%20breed%20name/characteristics/", json=body)
+        res = client.post(f"/api/groups/{group_url}/breeds/Fun%20Fun%20breed%20name/characteristics/", json=body)
         assert res.status_code == 409
         
 
@@ -522,8 +511,9 @@ def test_group_item_get(app):
         client = app.test_client()
         _group(name="Marttionparas")
 
-        res = client.get("/api/marttionparas/")
+        res = client.get("/api/groups/marttionparas/")
         data = res.data.decode("utf-8")
+        print(res)
         data = json.loads(data)
         print(data["items"])
         assert data["items"] == [{'name': 'Marttionparas', 'breeds': []}]
@@ -535,7 +525,7 @@ def test_group_put_validation(app):
     with app.app_context():
         client = app.test_client()
         _group(name="Testgroup123")
-        res = client.put("/api/testgroup123/", json={"not_valid": "attribute"})
+        res = client.put("/api/groups/testgroup123/", json={"not_valid": "attribute"})
         assert res.status_code == 400
 
 def test_get_breed(app):
@@ -547,11 +537,11 @@ def test_get_breed(app):
         client = app.test_client()
         _breed(group=True)
 
-        res = client.get(f"/api/{group_url}/{breed_url}/") 
+        res = client.get(f"/api/groups/{group_url}/breeds/{breed_url}/") 
         data = res.data.decode("utf-8")
         data = json.loads(data)
         print(data)
-        assert data == {'items': [{'name': 'Majestic Test Breed', 'id': 1, 'group': {'name': 'Testgroup', 'id': 1}, 'facts': [], '@controls': {'self': {'href': '/api/Testgroup/Majestic%20Test%20Breed/'}}}], '@namespaces': {'breeds': {'name': '/api/Testgroup/Majestic%20Test%20Breed/'}}, '@controls': {'self': {'href': '/api/Testgroup/Majestic%20Test%20Breed/'}, 'edit': {'method': 'PUT', 'encoding': 'json', 'title': 'breed:edit', 'schema': {'type': 'object', 'required': ['name', 'group'], 'properties': {'name': {'description': 'Breeds unique name', 'type': 'string'}, 'group': {'description': "Name of the breed's group", 'type': 'string'}}}, 'href': '/api/Testgroup/Majestic%20Test%20Breed/'}, 'breed:delete': {'method': 'DELETE', 'href': '/api/Testgroup/Majestic%20Test%20Breed/'}}}
+        assert data == {'items': [{'name': 'Majestic Test Breed', 'id': 1, 'group': {'name': 'Testgroup', 'id': 1}, 'facts': [], '@controls': {'self': {'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/'}}}], '@namespaces': {'breeds': {'name': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/'}}, '@controls': {'self': {'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/'}, 'edit': {'method': 'PUT', 'encoding': 'json', 'title': 'breed:edit', 'schema': {'type': 'object', 'required': ['name'], 'properties': {'name': {'description': 'Breeds unique name', 'type': 'string'}}}, 'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/'}, 'breed:delete': {'method': 'DELETE', 'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/'}}}
 
 def test_put_breed(app):
     """
@@ -568,7 +558,7 @@ def test_put_breed(app):
 
         _group(name="Changegroup") # we change group to this
 
-        res = client.put(f"/api/{group_url}/{breed_url}/", json=body)
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/", json=body)
         assert res.status_code == 204
 
 def test_breed_put_validation(app):
@@ -582,7 +572,7 @@ def test_breed_put_validation(app):
         client = app.test_client()
         _breed(group=True)
     
-        res = client.put(f"api/{group_url}/{breed_url}/", json=body)
+        res = client.put(f"api/groups/{group_url}/breeds/{breed_url}/", json=body)
         assert res.status_code == 400
 
 def test_fact_item_put(app):
@@ -594,14 +584,14 @@ def test_fact_item_put(app):
         _fact() # init fact, group, breed all at once
 
         # returns 415 for unsupported media
-        res = client.put(f"/api/{group_url}/{breed_url}/facts/1/", data="not json")
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1/", data="not json")
         assert res.status_code == 415
         
         # validation returns 409 if no fact in json
-        res = client.put(f"/api/{group_url}/{breed_url}/facts/1/", json={"martti": "mouru"})
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1/", json={"martti": "mouru"})
         assert res.status_code == 400
 
-        res = client.put(f"/api/{group_url}/{breed_url}/facts/1/", json={"fact": "changed fact about doggo"})
+        res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1/", json={"fact": "changed fact about doggo"})
         assert res.status_code == 204
 
 def test_fact_item_get(app):
@@ -613,20 +603,8 @@ def test_fact_item_get(app):
         client = app.test_client()
         _fact() # init fact, group, breed all at once
 
-        res = client.get(f"/api/{group_url}/{breed_url}/facts/1/")
+        res = client.get(f"/api/groups/{group_url}/breeds/{breed_url}/facts/1/")
         assert res.status_code == 200
-
-def test_group_item_get(app):
-    """
-    GET returns the groups name and breed names under group
-    """
-    with app.app_context():
-        client = app.test_client()
-        _breed(group=True)
-        res = client.get(f"/api/{group_url}/")
-        data = res.data.decode("utf-8")
-        data = json.loads(data)
-        assert data["items"][0]["breeds"] == [test_breed_name]
 
 def test_breed_delete(app):
     """
@@ -637,9 +615,9 @@ def test_breed_delete(app):
         client = app.test_client()
         _breed(group=True)
         # returns 404 for non existing breed
-        res = client.delete(f"/api/{group_url}/{breed_url}202020/")
+        res = client.delete(f"/api/groups/{group_url}/breeds/{breed_url}202020/")
         assert res.status_code == 404
         # returns 204 for found breed and deletes it
-        res = client.delete(f"/api/{group_url}/{breed_url}/")
+        res = client.delete(f"/api/groups/{group_url}/breeds/{breed_url}/")
         assert res.status_code == 204
     
