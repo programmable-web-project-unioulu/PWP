@@ -41,7 +41,7 @@ class GroupConverter(BaseConverter):
         )  # add capitalization so URI does not need to be uppercase
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:
-            raise NotFound
+            raise NotFound(f"Group {value} does not exist")
         return db_group
 
     def to_url(self, value):
@@ -60,7 +60,7 @@ class BreedConverter(BaseConverter):
         transformed_name = breed_name_from_url(value)
         db_breed = Breed.query.filter_by(name=transformed_name).first()
         if db_breed is None:
-            raise NotFound
+            raise NotFound(f"Breed by name {value} does not exist")
         return db_breed
 
     def to_url(self, value):
@@ -78,7 +78,7 @@ class FactConverter(BaseConverter):
     def to_python(self, value):
         db_fact = Facts.query.filter_by(id=value).first()
         if db_fact is None:
-            raise NotFound
+            raise NotFound(f"No fact by id {value} found")
         return db_fact
 
     def to_url(self, value):

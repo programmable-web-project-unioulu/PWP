@@ -114,12 +114,12 @@ class Characteristics(db.Model):
         """
         defines the JSON format of the Characteristics object and describes the values
         """
-        schema = {"type": "object", "required": ["in_breed", "life_span"]}
+        schema = {"type": "object", "required": ["life_span"]}
         props = schema["properties"] = {}
-        props["in_breed"] = {
+        """props["in_breed"] = {
             "description": "Breed that the characteristics describe",
             "type": "string",
-        }
+        }"""
         props["life_span"] = {"description": "Lifespan of a breed", "type": "number"}
         return schema
 
@@ -259,8 +259,8 @@ class Breed(db.Model):
         """
         defines the JSON format of the Breed object and describes the values
         """
-        schema = {"type": "object", "required": ["name", "group"]}
+        schema = {"type": "object", "required": ["name"]}
         props = schema["properties"] = {}
         props["name"] = {"description": "Breeds unique name", "type": "string"}
-        props["group"] = {"description": "Name of the breed's group", "type": "string"}
+        #props["group"] = {"description": "Name of the breed's group", "type": "string"}
         return schema

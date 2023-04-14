@@ -22,10 +22,10 @@ class BreedBuilder(MasonBuilder):
     These include POST, GET, DELETE and PUT methods.
     """
 
-    def add_control_all_breeds(self):
+    def add_control_all_breeds(self, group):
         self.add_control(
             "breeds:breeds-all",
-            url_for("api.breedcollection"),
+            url_for("api.breedcollection", group=group.name),
             title="All breeds",
             method="GET",
         )
@@ -38,11 +38,11 @@ class BreedBuilder(MasonBuilder):
             method="DELETE",
         )
 
-    def add_control_add_breeds(self):
+    def add_control_add_breeds(self, group):
         self.add_control_post(
             "breeds:add-breed",
             "Add a new breed and connects it to an existing group",
-            url_for("api.breedcollection"),
+            url_for("api.breedcollection", group=group.name),
             Breed.json_schema(),
         )
 
@@ -62,17 +62,19 @@ class BreedCollection(Resource):
 
     # @swag_from("../doc/breedcollection/breeds_get.yml")
 
-    def get(self):
+    def get(self, group):
         """
         Used to access ALL the breeds at once.
         """
+        print(group.name, "MARTTIII")
         body = BreedBuilder(items=[])
-        body.add_namespace("breeds", "/api/<group:group>/breeds/")
-        body.add_control("self", href=url_for("api.breedcollection"))
-        body.add_control_add_breeds()
-        body.add_control_all_breeds()
+        body.add_namespace("breeds", "/api/groups/<group:group>/breeds/")
+        print(group.name)
+        body.add_control("self", href=url_for("api.breedcollection", group=group.name))
+        body.add_control_add_breeds(group=group)
+        body.add_control_all_breeds(group=group)
 
-        for db_breed in Breed.query.all():
+        for db_breed in Breed.query.filter_by(group=group):
             db_breed_serialised = db_breed.serialize()
             print("DB BREED SERIALISED", db_breed_serialised)
             item = {
@@ -93,22 +95,22 @@ class BreedCollection(Resource):
 
         return Response(json.dumps(body), 200, mimetype=JSON)
 
-    def post(self):
+    def post(self, group):
         """
         Used to POST a breed into the breed collection and to make sure it fits the schema.
         """
-
+        
         if not request.is_json:
             raise UnsupportedMediaType
         try:
             validate(request.json, Breed.json_schema())
         except ValidationError as exc:
             raise BadRequest(description=str(exc))
-        group = Group.query.filter_by(name=request.json["group"]).first()
+        #group = Group.query.filter_by(name=request.json["group"]).first()
 
-        if not group:
+        #if not group:
             # return ValueError("Group '{group}' does not exist".format(**request.json))
-            return "Group does not exist", 400
+         #   return "Group does not exist", 400
 
         breed = Breed(group=group, name=request.json["name"])
 
@@ -124,7 +126,7 @@ class BreedCollection(Resource):
             status=201,
             headers={
                 "Location": url_for(
-                    "api.breeditem", breed=uri_name, group=request.json["group"]
+                    "api.breeditem", breed=uri_name, group=group.name
                 )
             },
         )
@@ -141,15 +143,14 @@ class BreedItem(Resource):
         """
         body = BreedBuilder(items=[])
 
-        # if a space in breed name insert %20
         if "404" in str(breed):
-            return "", 404
+            return f"No such breed found in {group.name}", 404
 
         uri_name = check_for_space(breed.name)
 
         print("GOT HERE!", uri_name, group.name)
 
-        body.add_namespace("breeds", f"/api/{group.name}/{uri_name}/")
+        body.add_namespace("breeds", f"/api/groups/{group.name}/breeds/{uri_name}/")
         body.add_control(
             "self", href=url_for("api.breeditem", breed=uri_name, group=group.name)
         )

@@ -1,6 +1,6 @@
 ---
 paths:
-  /api/breeds:
+  /api/groups/terrier/breeds:
     get:
       description: "Gets the list of breeds"
       responses:
@@ -21,11 +21,11 @@ paths:
                     coat_length: 0.2,
                     exercise: 1.2
               example 2:
-                - name: Malamutian Bulldog
+                - name: Border terrier
                   id: 1
                   group: 
-                    name: Bulldog,
-                    id: 5
+                    name: Terrier,
+                    id: 1
                   facts: null
                   characteristics:
                     char_id: 1,
