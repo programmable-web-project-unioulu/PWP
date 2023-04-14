@@ -12,7 +12,6 @@ info:
     held at University of Oulu (Spring 2023). It is an API that
     returns information about different types of dogs, breeds and
     facts and characteristics about specific breeds.
-
 tags:
   - name: group
     description: Contains everything related to Groups (of dogs)
@@ -235,6 +234,12 @@ paths:
       tags:
       - breed
       description: "Gets the list of breeds"
+      parameters:
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: True
       responses:
         "200":
           description: List of breeds with information about them and their group.
@@ -268,6 +273,12 @@ paths:
       tags:
       - breed
       description: "Posts a breed into the breed collection if it fits the schema."
+      parameters:
+      - in: path
+        name: group_name
+        schema:
+          type: string
+        required: True
       requestBody:
         description: JSON document that contains the basic information for a new breed
         content:
@@ -676,6 +687,3 @@ paths:
           description: Successfully created a fact
         "400":
           description: Bad body
-
-
-        
