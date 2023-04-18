@@ -242,7 +242,6 @@ class Breed(db.Model):
                     "coat_length": self.characteristics.coat_length,
                     "exercise": self.characteristics.exercise,
                 }
-        print("this is breed.serialize", doc)
         return doc
 
     def deserialize(self, doc):
@@ -250,11 +249,6 @@ class Breed(db.Model):
         Used to deserialize the a dictionary into a suitable model instance.
         """
         self.name = doc["name"]
-        """
-        if not doc["group"]:
-            return
-        self.group = Group.query.filter_by(name=doc["group"]).first()
-        """
 
     @staticmethod
     def json_schema():
