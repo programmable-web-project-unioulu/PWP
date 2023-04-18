@@ -37,6 +37,14 @@ class CharacteristicsBuilder(MasonBuilder):
             Characteristics.json_schema(),
         )
 
+    def add_control_edit_characteristics(self, group, breed):
+        uri_name = check_for_space(breed)
+        self.add_control_put(
+            "characteristics:edit",
+            url_for("api.characteristiccollection", group=group, breed=uri_name),
+            Characteristics.json_schema()
+        )
+
 
 class CharacteristicCollection(Resource):
     """
@@ -62,6 +70,7 @@ class CharacteristicCollection(Resource):
 
         body.add_control_all_characteristics(group.name, uri_name)
         body.add_control_add_characteristics(group.name, uri_name)
+        body.add_control_edit_characteristics(group.name, uri_name)
 
         print("this is group and breed", group, breed)
         for db_characteristics in Characteristics.query.join(

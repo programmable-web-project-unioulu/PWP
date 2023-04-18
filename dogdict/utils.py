@@ -3,7 +3,7 @@ Some utility functions and converters, also included init-db CLI command for gen
 for development
 """
 
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 from werkzeug.routing import BaseConverter
 from dogdict.models import Breed, Facts, Group, Characteristics
 from dogdict import db
@@ -18,12 +18,19 @@ def breed_name_from_url(url_value):
     breed = url_value
     if "_" in url_value:
         breed = breed.replace("_", " ")
-    return breed.title()  # title capitalizes all words
+    return breed
 
 
 def check_for_space(name):
     print("checking whether name had a space")
     if " " in name:
+        split_by_space = name.split()
+        for word in split_by_space:
+            if not word.isalpha():
+                raise BadRequest(
+                f"'{name}' contains unsupported characters. \
+                    Only letters and 'space' allowed."
+            )
         print("name had a space... converting...")
         name = name.replace(" ", "%20")
     
@@ -37,7 +44,7 @@ class GroupConverter(BaseConverter):
 
     def to_python(self, value):
         value = (
-            value.capitalize()
+            value
         )  # add capitalization so URI does not need to be uppercase
         db_group = Group.query.filter_by(name=value).first()
         if db_group is None:

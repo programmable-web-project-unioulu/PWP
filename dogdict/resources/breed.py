@@ -8,7 +8,7 @@ from flask import Response, request, url_for
 from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 from sqlalchemy.exc import IntegrityError
 from flask_restful import Resource
-from dogdict.models import Breed, Characteristics, Group, db
+from dogdict.models import Breed, Characteristics, Group, Facts, db
 from dogdict.constants import JSON
 from dogdict.utils import check_for_space
 from flasgger import Swagger, swag_from
@@ -202,8 +202,13 @@ class BreedItem(Resource):
         try:
             breed = Breed.query.filter_by(id=breed.id).first()
             characteristics = Characteristics.query.filter_by(id=breed.char_id).first()
+            facts = Facts.query.filter_by(breed_id=breed.id)
             if characteristics:
                 db.session.delete(characteristics)
+                db.session.commit()
+            if facts:
+                for fact in facts:
+                    db.session.delete(fact)
                 db.session.commit()
             db.session.delete(breed)
             db.session.commit()

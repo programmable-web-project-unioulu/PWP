@@ -47,6 +47,14 @@ class FactBuilder(MasonBuilder):
             method="DELETE",
         )
 
+    def add_control_edit_facts(self, fact_id, breed, group):
+        uri_name = check_for_space(breed)
+        self.add_control_put(
+            "fact:edit",
+            url_for("api.factitem", fact=fact_id, breed=uri_name, group=group),
+            Facts.json_schema()
+        )
+
 
 class FactCollection(Resource):
     """
@@ -148,8 +156,10 @@ class FactItem(Resource):
         )
         print("HERE WE GOO ", fact.id, uri_name, group.name)
         body.add_control_delete_facts(fact.id, uri_name, group.name)
+        body.add_control_edit_facts(fact.id, uri_name, group.name)
 
-        body = {"items": [fact.fact]}
+        #body = {"items": [fact.fact]}
+        body["items"] = fact.fact
         return Response(json.dumps(body), 200, mimetype=JSON)
 
     def put(self, group, breed, fact):
