@@ -2,12 +2,14 @@ import json
 import requests
 
 
-# check_for_space needs to be imported from utils
-#from dogdict import check_for_space
+# utils.check_for_space needs to be imported from utils
+import dogdict.utils as utils
 
 API_URL = "http://localhost:5000"
 
-def check_for_space(name):
+
+"""
+def utils.check_for_space(name):
     #print("checking whether name had a space")
     if " " in name:
         split_by_space = name.split()
@@ -21,6 +23,7 @@ def check_for_space(name):
         name = name.replace(" ", "%20")
     
     return name
+"""
 
 def prompt_from_schema(session, ctrl, **kwargs):
     """
@@ -165,7 +168,7 @@ def get(s):
     if user_input == "2":
         group = input("Group name: ")
 
-        group_url = check_for_space(group)
+        group_url = utils.check_for_space(group)
 
         resp = s.get(API_URL + "/api/groups/" + group_url)
         body = resp.json()
@@ -182,8 +185,8 @@ def get(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + "/api/groups/" + group_url + "/breeds/" 
                      + breed_url + "/" + "facts")
@@ -202,8 +205,8 @@ def get(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + "/api/groups/" + group_url + "/breeds/" 
                      + breed_url + "/" + "characteristics")
@@ -264,7 +267,7 @@ def post(s):
     if user_input == "2":
         group = input("Group name: ")
 
-        group_url = check_for_space(group)
+        group_url = utils.check_for_space(group)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/")
         if resp.status_code == 404:
@@ -291,8 +294,8 @@ def post(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}/facts/")
         if resp.status_code == 404:
@@ -306,7 +309,7 @@ def post(s):
 
 
         if response.status_code == 201:
-            print("\nNew fact successfully added")
+            print("\nNew fact successfully added\n")
             return
         
         else:
@@ -321,8 +324,8 @@ def post(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/")
         if resp.status_code == 404:
@@ -371,8 +374,8 @@ def delete(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}")
         if resp.status_code == 404:
@@ -395,8 +398,8 @@ def delete(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}/facts/")
         if resp.status_code == 404:
@@ -447,7 +450,7 @@ def put(s):
     if user_input == "1":
         group = input("Group name: ")
 
-        group_url = check_for_space(group)
+        group_url = utils.check_for_space(group)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/")
         body = resp.json()
@@ -471,8 +474,8 @@ def put(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}")
         if resp.status_code == 404:
@@ -499,8 +502,8 @@ def put(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}/facts/")
         if resp.status_code == 404:
@@ -545,8 +548,8 @@ def put(s):
         group = input("Group name: ")
         breed = input("Breed name: ")
 
-        group_url = check_for_space(group)
-        breed_url = check_for_space(breed)
+        group_url = utils.check_for_space(group)
+        breed_url = utils.check_for_space(breed)
 
         resp = s.get(API_URL + f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/")
         if resp.status_code == 404:

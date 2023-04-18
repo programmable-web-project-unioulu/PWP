@@ -22,7 +22,6 @@ def breed_name_from_url(url_value):
 
 
 def check_for_space(name):
-    print("checking whether name had a space")
     if " " in name:
         split_by_space = name.split()
         for word in split_by_space:
@@ -31,7 +30,6 @@ def check_for_space(name):
                 f"'{name}' contains unsupported characters. \
                     Only letters and 'space' allowed."
             )
-        print("name had a space... converting...")
         name = name.replace(" ", "%20")
     
     return name
