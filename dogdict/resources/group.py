@@ -97,12 +97,12 @@ class GroupCollection(Resource):
             db.session.add(group)
             db.session.commit()
         except IntegrityError:
-            raise Conflict(f"Group with name '{request.json['name']}' already exists.")
+            #raise Conflict(f"Group with name '{request.json['name']}' already exists.")
+            return Response(
+                status=409
+            )
 
         uri_name = check_for_space(group.name)
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        print(group)
-        print(uri_name)
 
         return Response(
             status=201,
