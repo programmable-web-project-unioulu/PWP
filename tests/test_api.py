@@ -28,16 +28,16 @@ def app():
     os.close(db_fd)
     os.unlink(db_fname)
 
-test_breed_name = "Majestic Test Breed"
+test_breed_name = "majestic test breed"
 group_url = "testgroup"
 breed_url = "majestic%20test_breed"
 
 group1 = {
-    "name": "Test1"
+    "name": "test1"
 }
 
 group2 = {
-    "name": "Test2"
+    "name": "test2"
 }
 
 
@@ -53,7 +53,7 @@ breed3 = {
     "name": "test_3",
 }
 
-def _group(name="Testgroup"):
+def _group(name="testgroup"):
     """
     Init one group to database and return it
     """
@@ -96,6 +96,7 @@ def _fact(fact="Fun test fact"):
     db.session.add(fact)
     db.session.commit()
     return fact
+
 
 mockFactBody = {
     "breed": test_breed_name,
@@ -186,7 +187,7 @@ def test_post_fact_bad_body(app):
         bad_body1 = {
             "name2341": "sdfsdf"
         }
-        good_body = {"in_breed": "Testgroup", "fact": "fact moro"}
+        good_body = {"in_breed": "testgroup", "fact": "fact moro"}
         res = client.post(f'/api/groups/{group_url}/breeds/{breed_url}/facts/', json=bad_body1)
         assert res.status_code == 400
 
@@ -244,7 +245,7 @@ def test_post_unsupported_media(app):
         res = client.post(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", data=mock_body)
         assert res.status_code == 415
 
-        _group(name="Testgroup123")
+        _group(name="testgroup123")
         res = client.put("/api/groups/testgroup123/", data=mock_body)
         assert res.status_code == 415
 
@@ -332,7 +333,7 @@ def test_characteristics_get_and_put_methods(app):
         assert res.status_code == 200
         data = res.data.decode("utf-8")
         data = json.loads(data)
-        assert data["items"][0] == {'@controls': {'self': {'href': '/api/groups/Testgroup/breeds/Majestic%20Test%20Breed/characteristics/'}}, 'coat_length': None, 'exercise': None, 'life_span': 7}
+        assert data["items"][0] == {'@controls': {'self': {'href': '/api/groups/testgroup/breeds/majestic%20test%20breed/characteristics/'}}, 'coat_length': None, 'exercise': None, 'life_span': 7}
 
         # returns 204 when characteristics is good
         res = client.put(f"/api/groups/{group_url}/breeds/{breed_url}/characteristics/", json={"life_span": 13, "coat_length": 0.8, "exercise": 4})
