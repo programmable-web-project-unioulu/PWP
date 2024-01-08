@@ -38,18 +38,28 @@ jobs:
   analyze-code:
     name: No code smells
     runs-on: [ubuntu-latest]
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - uses: actions/checkout@v4
-      - name: Setup environment
-        uses: ./.github/actions/setup-env
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
       - name: Lint code
         run: npm run lint
   run-tests:
     name: Tests pass
     runs-on: [ubuntu-latest]
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - uses: actions/checkout@v4
-      - name: Setup environment
-        uses: ./.github/actions/setup-env
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
       - name: Run unit tests
         run: npm run test
