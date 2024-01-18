@@ -1,7 +1,7 @@
 # PWP SPRING 2024
 # PROJECT NAME
 # Group information
-* Student 1. Name and email
+* Student 1. Joonas Ojanen jojanen20@student.oulu.fi
 * Student 2. Name and email
 * Student 3. Name and email
 * Student 4. Name and email
