@@ -6,7 +6,7 @@
 
 - Student 1. Janne Kerola janne.kerola@oulu.fi
 - Student 2. Janne Tahkola janne.tahkola@oulu.fi
-- Student 3. Name and email
+- Student 3. Emilia Pyyny epyyny20@student.oulu.fi
 - Student 4. Name and email
 
 **Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client**
