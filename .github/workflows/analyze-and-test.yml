@@ -12,11 +12,9 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          set-safe-directory: true
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+          python-version: "3.10"
       - name: Install detect-secrets
         run: pip install detect-secrets
       - name: Scan for secrets
@@ -26,11 +24,9 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
-        with:
-          set-safe-directory: true
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Install prettier
         run: npm install -g prettier
       - name: Run prettier against files
@@ -43,23 +39,14 @@ jobs:
         working-directory: ./api
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-python@v5
         with:
-          node-version: 20
-      - run: npm ci
+          python-version: "3.10"
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
       - name: Lint code
-        run: npm run lint
-  run-tests:
-    name: Tests pass
-    runs-on: [ubuntu-latest]
-    defaults:
-      run:
-        working-directory: ./api
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+        uses: chartboost/ruff-action@v1
+      - name: Check code formatting
+        uses: psf/black@stable
         with:
-          node-version: 20
-      - run: npm ci
-      - name: Run unit tests
-        run: npm run test
+          options: "--check"
