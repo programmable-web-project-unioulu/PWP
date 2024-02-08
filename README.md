@@ -31,7 +31,7 @@ pip install requirements.txt -r
 
 ## Initialize and Populate DB
 
-To intialize the database and populate it with dummy data follow the [README file](https://github.com/khacha329/PWP_CrustyCrabs/blob/talha-dev%232/inventorymanager/README.md) under the inventorymanager folder
+To intialize the database and populate it with dummy data follow the [README file]([https://github.com/khacha329/PWP_CrustyCrabs/blob/talha-dev%232/inventorymanager/README.md](https://github.com/khacha329/PWP_CrustyCrabs/blob/main/inventorymanager/README.md)) under the inventorymanager folder
 
 
 
