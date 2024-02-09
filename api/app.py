@@ -1,9 +1,16 @@
-import asyncio
 from flask import Flask
-from prisma import Prisma, register
+from api.controllers.auth import auth
+from api.database import connect_to_db
+from api.middleware.error_handler import handle_exception
+from werkzeug.exceptions import HTTPException
 
 
-db = Prisma()
-asyncio.run(db.connect())
-register(db)
-app = Flask(__name__)
+def create_app() -> Flask:
+    app = Flask(__name__)
+    app.register_blueprint(auth)
+    app.register_error_handler(HTTPException, handle_exception)
+    return app
+
+
+connect_to_db()
+app = create_app()
