@@ -13,14 +13,13 @@ items_warehouses_association = db.Table('items_warehouses',
 
 # Location model
 class Location(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    location_id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Float, nullable=True)
     longitude = db.Column(db.Float, nullable=True)
     country = db.Column(db.String(64), nullable=False, default="Finland")
     postal_code = db.Column(db.String(8), nullable=False)
     city = db.Column(db.String(64), nullable=False)
-    street_name = db.Column(db.String(64), nullable=False)
-    house_number = db.Column(db.Integer, nullable=True)
+    street = db.Column(db.String(64), nullable=False)
 
     def __repr__(self):
         return (f"<Location {self.id}, {self.city}, {self.country}, "
@@ -29,7 +28,7 @@ class Location(db.Model):
 
 # Warehouse model
 class Warehouse(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    warehouse_id = db.Column(db.Integer, primary_key=True)
     manager = db.Column(db.String(64), nullable=True)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id', ondelete='CASCADE'), nullable=True)
     location = db.relationship('Location', backref=db.backref('warehouses', lazy=True))
@@ -42,7 +41,7 @@ class Warehouse(db.Model):
 
 # Item model
 class Item(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     category = db.Column(db.String(64), nullable=True)
     weight = db.Column(db.Float, nullable=True)
