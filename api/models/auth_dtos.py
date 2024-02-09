@@ -1,38 +1,27 @@
 from dataclasses import dataclass, asdict
-from typing import List
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from werkzeug.exceptions import BadRequest
+from api.models.base_dto import BaseDto
 
 
-class _BaseDto:
-    username: str
-    password: str
+class _AuthBaseDto(BaseDto):
     _ph = PasswordHasher()
-
-    def generate_hash(self) -> str:
-        """Creates a salted hash of the password property."""
-        return self._ph.hash(self.password)
-
-    def _validate(data: dict) -> List[str]:
-        props = ["username", "password"]
-        errors = []
-        for prop in props:
-            val = data.get(prop)
-            if val is None:
-                errors.append(f"Missing property '{prop}'")
-            elif not isinstance(val, str):
-                errors.append(f"Property '{prop}' not of type str")
-        return errors
 
 
 @dataclass(frozen=True)
-class RegisterDto(_BaseDto):
+class RegisterDto(_AuthBaseDto):
+    """DTO for managing user signup"""
+
     username: str
     password: str
     email: str = None
     firstName: str = None
     lastName: str = None
+
+    def generate_hash(self) -> str:
+        """Creates a salted hash of the password property."""
+        return self._ph.hash(self.password)
 
     def to_insertable(self) -> dict:
         """Converts the password into a salted hash and
@@ -44,10 +33,16 @@ class RegisterDto(_BaseDto):
 
     @staticmethod
     def from_json(data: dict):
-        """Creates a new Dto from request.json"""
-        errors = RegisterDto._validate(data)
-        if len(errors) > 0:
-            raise BadRequest(errors)
+        """Creates a new Dto from request.json
+        data: request.json
+        """
+        RegisterDto.validate(
+            [
+                ("username", str),
+                ("password", str),
+            ],
+            data,
+        )
         return RegisterDto(
             username=data.get("username"),
             password=data.get("password"),
@@ -58,13 +53,17 @@ class RegisterDto(_BaseDto):
 
 
 @dataclass(frozen=True)
-class LoginDto(_BaseDto):
+class LoginDto(_AuthBaseDto):
+    """DTO for managing user authentication"""
+
     username: str
     password: str
 
     def verify(self, hash: str) -> bool:
         """Compares the login password to [hash]
-        returns True if match, else raise BadRequest"""
+        hash: str
+        returns True if match, else raise BadRequest
+        """
         try:
             return self._ph.verify(hash, self.password)
         except VerifyMismatchError:
@@ -72,10 +71,17 @@ class LoginDto(_BaseDto):
 
     @staticmethod
     def from_json(data: dict):
-        """Creates a new Dto from request.json"""
-        errors = LoginDto._validate(data)
-        if len(errors) > 0:
-            raise BadRequest(errors)
+        """Creates a new DTO from json
+        data: request.json
+        """
+        LoginDto.validate(
+            [
+                ("username", str),
+                ("password", str),
+            ],
+            data,
+        )
+
         return LoginDto(
             username=data.get("username"),
             password=data.get("password"),

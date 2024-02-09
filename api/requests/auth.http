@@ -9,8 +9,7 @@ Content-Type: application/json
 
 {
     "username": "{{username}}",
-    "password": "{{password}}",
-    "address": "test address 1"
+    "password": "{{password}}"
 }
 
 ###
