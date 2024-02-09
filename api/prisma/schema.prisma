@@ -25,7 +25,7 @@ model Poll {
   private         Boolean    @default(false)
   title           String
   description     String?
-  created         DateTime
+  created         DateTime  @default(now())
   expires         DateTime
   multipleAnswers Boolean    @default(false)
   items           PollItem[]
