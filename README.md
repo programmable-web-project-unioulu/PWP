@@ -5,8 +5,8 @@
 # Group information
 
 - Student 1. Janne Kerola janne.kerola@oulu.fi
-- Student 3. Emilia Pyyny epyyny20@student.oulu.fi
-- Student 4. Errafay Amine aerrafay19@student.oulu.fi
+- Student 2. Emilia Pyyny epyyny20@student.oulu.fi
+- Student 3. Errafay Amine aerrafay19@student.oulu.fi
 
 **Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client**
 
