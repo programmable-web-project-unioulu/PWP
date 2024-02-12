@@ -5,7 +5,6 @@
 # Group information
 
 - Student 1. Janne Kerola janne.kerola@oulu.fi
-- Student 2. Janne Tahkola janne.tahkola@oulu.fi
 - Student 3. Emilia Pyyny epyyny20@student.oulu.fi
 - Student 4. Errafay Amine aerrafay19@student.oulu.fi
 
