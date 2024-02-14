@@ -19,9 +19,9 @@ Duration of the meeting was 30 minutes. The agenda of the meeting was to receive
 
 RESTful API description
 
-- Focuses too much on technicalities. Focus more into motivating the API and explain it a bit more in detail.
-- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users.
-- Architecture not needed in this section.
+- Focuses too much on technicalities. Focus more into motivating the API and explain it a bit more in detail. ✅
+- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users. ✅ (recheck this) 
+- Architecture not needed in this section. ✅
 
 Main concepts and relations
 
