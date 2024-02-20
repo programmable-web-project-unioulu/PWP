@@ -1,3 +1,10 @@
+# PWP SPRING 2024
+# Custom Workout Playlist Generator
+# Group information
+* Student 1. Iresh Jayasundara - Iresh.JayasundaraMudiyanselage@student.oulu.fi
+* Student 2. Kavindu Wijesinghe - Kavindu.WijesingheArachchilage@student.oulu.fi
+* Student 3. Sonali Prasadika - Sonali.LiyanaBadalge@student.oulu.fi
+* Student 4. Nirasha Thennakoon - Nirasha.KaluarachchiThennakoonAppuhamilage@student.oulu.fi
 
 # Database Implementation :Custom Workout Playlist Generator
 The following chapter describes the the selection of databases, libraries and instructions to setup the requirements needed for the Custom Workout Playlist Generator. 
@@ -30,7 +37,7 @@ The Flask SQL Alchemy SQL Toolkit and Object Relational Mapper is a comprehensiv
 
 - [x]  Install FlaskSQLAlchemy. Use pip to install or refer [here](https://docs.sqlalchemy.org/en/20/intro.html#installation) for other methods of installation.
 ```bash
-pip install flask-sqlalchemy
+pip install flask-sqlalchemy sqlalchemy
 ```
 ![Static Badge](https://img.shields.io/badge/mysqlclient-2299ff)
 
