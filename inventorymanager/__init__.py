@@ -1,3 +1,6 @@
+"""
+This module is used to start and retrieve a Flask application complete with all the required setups
+"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 

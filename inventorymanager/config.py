@@ -1,3 +1,6 @@
+"""
+This module contains configuration settings to set up the database
+"""
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))

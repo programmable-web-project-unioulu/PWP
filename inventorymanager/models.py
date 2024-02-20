@@ -1,3 +1,14 @@
+"""
+This module contains all Model classes for our API, as well as click functions callable
+    from the command line
+The classes are:
+ - Location
+ - Warehouse
+ - Item
+ - Stock
+ - Catalogue
+The functions are responsible for initiliazing and populating the database
+"""
 import click
 
 from flask.cli import with_appcontext
