@@ -20,7 +20,7 @@ Duration of the meeting was 30 minutes. The agenda of the meeting was to receive
 RESTful API description
 
 - Focuses too much on technicalities. Focus more into motivating the API and explain it a bit more in detail. ✅
-- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users. ✅ (recheck this) 
+- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users. ✅ (recheck this)
 - Architecture not needed in this section. ✅
 
 Main concepts and relations
@@ -44,16 +44,23 @@ Update resources allocation if information is incorrect.
 
 ## Meeting 2.
 
-- **DATE:**
-- **ASSISTANTS:**
+- **DATE: 21st February 2024**
+- **ASSISTANTS: Ivan Sanchez Milara**
 
 ### Minutes
 
-_Summary of what was discussed during the meeting_
+Duration of the meeting was 25 minutes. The agenda of the meeting was to receive feedback for deliverable 2 - database design and implementation. At the start of the meeting we discussed about what tools will be utilized in the implementation. The application will be implemented using Python, while the client will be running on Node. The ORM being used is Prisma. PostgreSQL is used for the database, but assistant alternatively recommended using SQLite instead, as it can be easier to set up. The feedback from assistant was overall positive, and only a few changes were suggested.
 
 ### Action points
 
-_List here the actions points discussed with assistants_
+Database design
+
+- `Role Enumeration` can be moved into `User model`.
+- Improve `Restrictions` column's REGEX and make sure `schema.prisma` matches it.
+
+Resources allocation
+
+- Update Resources allocation table if information is not correct.
 
 ## Meeting 3.
 
