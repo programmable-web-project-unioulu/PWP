@@ -20,7 +20,7 @@ Duration of the meeting was 30 minutes. The agenda of the meeting was to receive
 RESTful API description
 
 - Focuses too much on technicalities. Focus more into motivating the API and explain it a bit more in detail. ✅
-- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users. ✅ (recheck this) 
+- Wrong terminology. Avoid terms like login or public link that are more referred to applications. Authentication instead of registered users. ✅ (recheck this)
 - Architecture not needed in this section. ✅
 
 Main concepts and relations
@@ -55,8 +55,8 @@ Duration of the meeting was 25 minutes. The agenda of the meeting was to receive
 
 Database design
 
-- ```Role Enumeration``` can be moved into ```User model```.
-- Improve ```Restrictions``` column's REGEX and make sure ```schema.prisma``` matches it. 
+- `Role Enumeration` can be moved into `User model`.
+- Improve `Restrictions` column's REGEX and make sure `schema.prisma` matches it.
 
 Resources allocation
 
