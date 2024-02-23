@@ -39,7 +39,6 @@ class Location(db.Model):
         return {
             "type": "object",
             "properties": {
-                "location_id": {"type": "integer"},
                 "latitude": {"type": "number"},
                 "longitude": {"type": "number"},
                 "country": {"type": "string"},
@@ -47,7 +46,7 @@ class Location(db.Model):
                 "city": {"type": "string"},
                 "street": {"type": "string"}
             },
-            "required": ["location_id", "country", "postal_code", "city", "street"],
+            "required": ["country", "postal_code", "city", "street"],
             "additionalProperties": False
         }
 
@@ -92,11 +91,10 @@ class Warehouse(db.Model):
         return {
             "type": "object",
             "properties": {
-                "warehouse_id": {"type": "integer"},
                 "manager": {"type": "string"},
                 "location_id": {"type": "integer"}
             },
-            "required": ["warehouse_id"],
+            "required": [],
             "additionalProperties": False
         }
     
@@ -129,12 +127,11 @@ class Item(db.Model):
         return {
             "type": "object",
             "properties": {
-                "item_id": {"type": "integer"},
                 "name": {"type": "string"},
                 "category": {"type": "string"},
                 "weight": {"type": "number"}
             },
-            "required": ["item_id", "name"],
+            "required": ["name"],
             "additionalProperties": False
         }
     
@@ -170,12 +167,10 @@ class Stock(db.Model):
         return {
             "type": "object",
             "properties": {
-                "item_id": {"type": "integer"},
-                "warehouse_id": {"type": "integer"},
                 "quantity": {"type": "integer"},
                 "shelf_price": {"type": "number"}
             },
-            "required": ["item_id", "warehouse_id", "quantity"],
+            "required": ["quantity"],
             "additionalProperties": False
         }
     
@@ -209,12 +204,11 @@ class Catalogue(db.Model):
         return {
             "type": "object",
             "properties": {
-                "item_id": {"type": "integer"},
                 "supplier_name": {"type": "string"},
                 "min_order": {"type": "integer"},
                 "order_price": {"type": "number"}
             },
-            "required": ["item_id", "supplier_name", "min_order"],
+            "required": ["supplier_name", "min_order"],
             "additionalProperties": False
         }
     def serialize(self):
@@ -294,5 +288,9 @@ if __name__ == "__main__":
 
     test_warehouse = Warehouse(manager="John Doe", location=test_location)
     print(test_warehouse.serialize())
+    test_warehouse_json = {'manager': 'Jane Doe', 'location_id': 5}
+    test_warehouse.deserialize(test_warehouse_json)
+    print(test_warehouse)
 
-
+    from jsonschema import validate
+    print(validate(test_warehouse_json, Warehouse.get_warehouse_schema()))
