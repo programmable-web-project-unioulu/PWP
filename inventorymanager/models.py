@@ -18,8 +18,8 @@ from inventorymanager import db
 # Association table for a many-to-many relationship between Items and Warehouses
 # From https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/introduction-to-web-development/#structure-of-databases
 items_warehouses_association = db.Table('items_warehouses',
-    db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
-    db.Column('warehouse_id', db.Integer, db.ForeignKey('warehouse.id'), primary_key=True)
+    db.Column('item_id', db.Integer, db.ForeignKey('item.item_id'), primary_key=True),
+    db.Column('warehouse_id', db.Integer, db.ForeignKey('warehouse.warehouse_id'), primary_key=True)
 )
 
 # Location model
@@ -32,23 +32,84 @@ class Location(db.Model):
     city = db.Column(db.String(64), nullable=False)
     street = db.Column(db.String(64), nullable=False)
 
+    @staticmethod
+    def get_location_schema():
+        return {
+            "type": "object",
+            "properties": {
+                "location_id": {"type": "integer"},
+                "latitude": {"type": "number"},
+                "longitude": {"type": "number"},
+                "country": {"type": "string"},
+                "postal_code": {"type": "string"},
+                "city": {"type": "string"},
+                "street": {"type": "string"}
+            },
+            "required": ["location_id", "country", "postal_code", "city", "street"],
+            "additionalProperties": False
+        }
+
+    def serialize(self):
+        return {
+            "location_id": self.location_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "country": self.country,
+            "postal_code": self.postal_code,
+            "city": self.city,
+            "street": self.street
+        }
+
+    def deserialize(self, doc):
+        self.latitude = doc.get("latitude", self.latitude)
+        self.longitude = doc.get("longitude", self.longitude)
+        self.country = doc.get("country", self.country)
+        self.postal_code = doc.get("postal_code", self.postal_code)
+        self.city = doc.get("city", self.city)
+        self.street = doc.get("street", self.street)
+
+
     def __repr__(self):
-        return (f"<Location {self.id}, {self.city}, {self.country}, "
+        return (f"<Location {self.location_id}, {self.city}, {self.country}, "
                 f"Latitude: {self.latitude}, Longitude: {self.longitude}, "
-                f"Postal Code: {self.postal_code}, Street: {self.street_name} {self.house_number}>")
+                f"Postal Code: {self.postal_code}, Street: {self.street}>")
 
 # Warehouse model
 class Warehouse(db.Model):
     warehouse_id = db.Column(db.Integer, primary_key=True)
     manager = db.Column(db.String(64), nullable=True)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id', ondelete='CASCADE'), nullable=True)
+    location_id = db.Column(db.Integer, db.ForeignKey('location.location_id', ondelete='CASCADE'), nullable=True)
     location = db.relationship('Location', backref=db.backref('warehouses', lazy=True))
 
     # Many-to-many relationship with Items
     items = db.relationship('Item', secondary=items_warehouses_association, back_populates="warehouses")
 
+    @staticmethod
+    def get_warehouse_schema():
+        return {
+            "type": "object",
+            "properties": {
+                "warehouse_id": {"type": "integer"},
+                "manager": {"type": "string"},
+                "location_id": {"type": "integer"}
+            },
+            "required": ["warehouse_id"],
+            "additionalProperties": False
+        }
+    
+    def serialize(self):
+        return {
+            "warehouse_id": self.warehouse_id,
+            "manager": self.manager,
+            "location_id": self.location_id
+        }
+    
+    def deserialize(self, doc):
+        self.manager = doc.get("manager", self.manager)
+        self.location_id = doc.get("location_id", self.location_id)
+
     def __repr__(self):
-        return f"<Warehouse(id={self.id}, manager='{self.manager}', location_id={self.location_id})>"
+        return f"<Warehouse(id={self.warehouse_id}, manager='{self.manager}', location_id={self.location_id})>"
 
 # Item model
 class Item(db.Model):
@@ -60,13 +121,40 @@ class Item(db.Model):
     # Many-to-many relationship with Warehouses
     warehouses = db.relationship('Warehouse', secondary=items_warehouses_association, back_populates="items")
 
+    @staticmethod
+    def get_item_schema():
+        return {
+            "type": "object",
+            "properties": {
+                "item_id": {"type": "integer"},
+                "name": {"type": "string"},
+                "category": {"type": "string"},
+                "weight": {"type": "number"}
+            },
+            "required": ["item_id", "name"],
+            "additionalProperties": False
+        }
+    
+    def serialize(self):
+        return {
+            "item_id": self.item_id,
+            "name": self.name,
+            "category": self.category,
+            "weight": self.weight
+        }
+    
+    def deserialize(self, doc):
+        self.name = doc.get("name", self.name)
+        self.category = doc.get("category", self.category)
+        self.weight = doc.get("weight", self.weight)
+
     def __repr__(self): 
-        return f"<Item(id={self.id}, name='{self.name}', category='{self.category}', weight={self.weight})>"
+        return f"<Item(id={self.item_id}, name='{self.name}', category='{self.category}', weight={self.weight})>"
 
 # Stock model
 class Stock(db.Model):
-    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), primary_key=True)
-    warehouse_id = db.Column(db.Integer, db.ForeignKey('warehouse.id'), primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.item_id'), primary_key=True)
+    warehouse_id = db.Column(db.Integer, db.ForeignKey('warehouse.warehouse_id'), primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
     shelf_price = db.Column(db.Float, nullable=True)
 
@@ -74,21 +162,75 @@ class Stock(db.Model):
     item = db.relationship('Item', backref=db.backref('stocks', lazy=True))
     warehouse = db.relationship('Warehouse', backref=db.backref('stocks', lazy=True))
 
+    @staticmethod
+    def get_stock_schema():
+        return {
+            "type": "object",
+            "properties": {
+                "item_id": {"type": "integer"},
+                "warehouse_id": {"type": "integer"},
+                "quantity": {"type": "integer"},
+                "shelf_price": {"type": "number"}
+            },
+            "required": ["item_id", "warehouse_id", "quantity"],
+            "additionalProperties": False
+        }
+    
+    def serialize(self):
+        return {
+            "item_id": self.item_id,
+            "warehouse_id": self.warehouse_id,
+            "quantity": self.quantity,
+            "shelf_price": self.shelf_price
+        }
+    
+    def deserialize(self, doc):
+        self.quantity = doc.get("quantity", self.quantity)
+        self.shelf_price = doc.get("shelf_price", self.shelf_price)
+    
     def __repr__(self):
         return f"<Stock(item_id={self.item_id}, warehouse_id={self.warehouse_id}, quantity={self.quantity}, shelf_price={self.shelf_price})>"
     
 # Catalogue model
 class Catalogue(db.Model):
-    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.item_id'), primary_key=True)
     supplier_name = db.Column(db.String(64), primary_key=True)
     min_order = db.Column(db.Integer, nullable=False)
     order_price = db.Column(db.Float, nullable=True)
 
     # Relationship
     item = db.relationship('Item', backref=db.backref('catalogues', lazy=True))
+    
+    @staticmethod
+    def get_catalogue_schema():
+        return {
+            "type": "object",
+            "properties": {
+                "item_id": {"type": "integer"},
+                "supplier_name": {"type": "string"},
+                "min_order": {"type": "integer"},
+                "order_price": {"type": "number"}
+            },
+            "required": ["item_id", "supplier_name", "min_order"],
+            "additionalProperties": False
+        }
+    def serialize(self):
+        return {
+            "item_id": self.item_id,
+            "supplier_name": self.supplier_name,
+            "min_order": self.min_order,
+            "order_price": self.order_price
+        }
+    
+    def deserialize(self, doc):
+        self.supplier_name = doc.get("supplier_name", self.supplier_name)
+        self.min_order = doc.get("min_order", self.min_order)
+        self.order_price = doc.get("order_price", self.order_price)
+
     def __repr__(self):
         return f"<Catalogue(item_id={self.item_id}, supplier_name='{self.supplier_name}', min_order={self.min_order}, order_price={self.order_price})>"
     
+
 
 @click.command('init-db')
 @with_appcontext
@@ -138,3 +280,8 @@ def create_dummy_data():
     db.session.add_all(locations + warehouses + items + stocks + catalogues)
     db.session.commit()
     
+
+if __name__ == "__main__":
+    test_location = Location(latitude=60.1699, longitude=24.9384, country="Finland", postal_code="00100", city="Helsinki", street="Mannerheimintie")
+    print(test_location)
+
