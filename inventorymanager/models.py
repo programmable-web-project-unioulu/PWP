@@ -32,6 +32,8 @@ class Location(db.Model):
     city = db.Column(db.String(64), nullable=False)
     street = db.Column(db.String(64), nullable=False)
 
+    warehouse = db.relationship("Warehouse", back_populates="location", uselist=False)
+
     @staticmethod
     def get_location_schema():
         return {
@@ -79,7 +81,8 @@ class Warehouse(db.Model):
     warehouse_id = db.Column(db.Integer, primary_key=True)
     manager = db.Column(db.String(64), nullable=True)
     location_id = db.Column(db.Integer, db.ForeignKey('location.location_id', ondelete='CASCADE'), nullable=True)
-    location = db.relationship('Location', backref=db.backref('warehouses', lazy=True))
+    #location = db.relationship('Location', backref=db.backref('warehouses', lazy=True))
+    location = db.relationship("Location", back_populates="warehouse")
 
     # Many-to-many relationship with Items
     items = db.relationship('Item', secondary=items_warehouses_association, back_populates="warehouses")
@@ -248,8 +251,8 @@ def create_dummy_data():
     """
     # Create dummy locations
     locations = [
-        Location(latitude=60.1699, longitude=24.9384, country="Finland", postal_code="00100", city="Helsinki", street_name="Mannerheimintie", house_number=1),
-        Location(latitude=60.4518, longitude=22.2666, country="Finland", postal_code="20100", city="Turku", street_name="Aurakatu", house_number=2),
+        Location(latitude=60.1699, longitude=24.9384, country="Finland", postal_code="00100", city="Helsinki", street="Mannerheimintie"),
+        Location(latitude=60.4518, longitude=22.2666, country="Finland", postal_code="20100", city="Turku", street="Aurakatu"),
     ]
 
     # Create dummy warehouses
@@ -282,6 +285,14 @@ def create_dummy_data():
     
 
 if __name__ == "__main__":
-    test_location = Location(latitude=60.1699, longitude=24.9384, country="Finland", postal_code="00100", city="Helsinki", street="Mannerheimintie")
+    test_location = Location(location_id = 5, latitude=60.1699, longitude=24.9384, country="Finland", postal_code="00100", city="Helsinki", street="Mannerheimintie")
+    print(test_location.serialize())
+
+    test_location_json = {'latitude': 69, 'longitude': 42, 'country': 'Finland', 'postal_code': '00100', 'city': 'Helsinki', 'street': 'Mannerheimintie'}
+    test_location.deserialize(test_location_json)
     print(test_location)
+
+    test_warehouse = Warehouse(manager="John Doe", location=test_location)
+    print(test_warehouse.serialize())
+
 
