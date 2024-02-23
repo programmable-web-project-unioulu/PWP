@@ -35,7 +35,7 @@ class Location(db.Model):
     warehouse = db.relationship("Warehouse", back_populates="location", uselist=False)
 
     @staticmethod
-    def get_location_schema():
+    def get_schema():
         return {
             "type": "object",
             "properties": {
@@ -87,7 +87,7 @@ class Warehouse(db.Model):
     items = db.relationship('Item', secondary=items_warehouses_association, back_populates="warehouses")
 
     @staticmethod
-    def get_warehouse_schema():
+    def get_schema():
         return {
             "type": "object",
             "properties": {
@@ -123,7 +123,7 @@ class Item(db.Model):
     warehouses = db.relationship('Warehouse', secondary=items_warehouses_association, back_populates="items")
 
     @staticmethod
-    def get_item_schema():
+    def get_schema():
         return {
             "type": "object",
             "properties": {
@@ -163,7 +163,7 @@ class Stock(db.Model):
     warehouse = db.relationship('Warehouse', backref=db.backref('stocks', lazy=True))
 
     @staticmethod
-    def get_stock_schema():
+    def get_schema():
         return {
             "type": "object",
             "properties": {
@@ -200,7 +200,7 @@ class Catalogue(db.Model):
     item = db.relationship('Item', backref=db.backref('catalogues', lazy=True))
     
     @staticmethod
-    def get_catalogue_schema():
+    def get_schema():
         return {
             "type": "object",
             "properties": {
