@@ -26,4 +26,9 @@ def create_app(config_Class=Config):
     app.cli.add_command(init_db_command)
     app.cli.add_command(create_dummy_data)
 
+
+    from inventorymanager.utils import WarehouseConverter, ItemConverter
+    app.url_map.converters["warehouse"] = WarehouseConverter
+    app.url_map.converters["item"] = ItemConverter
+
     return app
