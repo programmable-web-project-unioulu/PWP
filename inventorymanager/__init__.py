@@ -3,6 +3,7 @@ This module is used to start and retrieve a Flask application complete with all 
 """
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 from inventorymanager.config import Config
 
@@ -12,10 +13,33 @@ db = SQLAlchemy()
 # https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/
 # https://www.digitalocean.com/community/tutorials/how-to-structure-a-large-flask-application-with-flask-blueprints-and-flask-sqlalchemy#the-target-application-structure
 # https://www.digitalocean.com/community/tutorials/how-to-use-flask-sqlalchemy-to-interact-with-databases-in-a-flask-application#step-2-setting-up-the-database-and-model
-def create_app(config_Class=Config):
-    app = Flask(__name__)
-    app.config.from_object(config_Class)
+
+
+def create_app(test_config=None):
+    
+    app = Flask(__name__, instance_relative_config=True)
+    
+    app.config.from_mapping(
+        SECRET_KEY="dev",
+        SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "development.db"),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # CACHE_TYPE="FileSystemCache",
+        # CACHE_DIR=os.path.join(app.instance_path, "cache"),
+    )
+
+    if test_config is None:
+        app.config.from_pyfile("config.py", silent=True)
+    else:
+        app.config.from_mapping(test_config)
+
+    try:
+        os.makedirs(app.instance_path)
+    
+    except OSError:
+        pass
+
     db.init_app(app)
+    #cache.init_app(app)
 
     # Import All Models (not sure why yet, its a thing-to-do to make this work)
     from inventorymanager.models import Location, Warehouse, Item, Stock, Catalogue

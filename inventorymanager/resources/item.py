@@ -12,9 +12,6 @@ from inventorymanager.constants import *
 class ItemCollection(Resource):
     
     def post(self):
-        if not request.json:
-            abort(415, "Unsupported media type")
-
         try:
             validate(request.json, Item.get_schema())
             item = Item()

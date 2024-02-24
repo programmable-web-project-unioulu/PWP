@@ -115,7 +115,7 @@ class Warehouse(db.Model):
 # Item model
 class Item(db.Model):
     item_id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False)
+    name = db.Column(db.String(64), nullable=False, unique=True)
     category = db.Column(db.String(64), nullable=True)
     weight = db.Column(db.Float, nullable=True)
 
