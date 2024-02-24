@@ -46,17 +46,20 @@ Update resources allocation if information is incorrect.
 
 - **DATE: 21st February 2024**
 - **ASSISTANTS: Ivan Sanchez Milara**
+- **DATE: 21st February 2024**
+- **ASSISTANTS: Ivan Sanchez Milara**
 
 ### Minutes
 
+Duration of the meeting was 25 minutes. The agenda of the meeting was to receive feedback for deliverable 2 - database design and implementation. At the start of the meeting we discussed about what tools will be utilized in the implementation. The application will be implemented using Python, while the client will be running on Node. The ORM being used is Prisma. PostgreSQL is used for the database, but assistant alternatively recommended using SQLite instead, as it can be easier to set up. The feedback from assistant was overall positive, and only a few changes were suggested.
 Duration of the meeting was 25 minutes. The agenda of the meeting was to receive feedback for deliverable 2 - database design and implementation. At the start of the meeting we discussed about what tools will be utilized in the implementation. The application will be implemented using Python, while the client will be running on Node. The ORM being used is Prisma. PostgreSQL is used for the database, but assistant alternatively recommended using SQLite instead, as it can be easier to set up. The feedback from assistant was overall positive, and only a few changes were suggested.
 
 ### Action points
 
 Database design
 
-- `Role Enumeration` can be moved into `User model`.
-- Improve `Restrictions` column's REGEX and make sure `schema.prisma` matches it.
+- ```Role Enumeration``` can be moved into ```User model```.
+- Improve ```Restrictions``` column's REGEX and make sure ```schema.prisma``` matches it. 
 
 Resources allocation
 
