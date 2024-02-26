@@ -11,6 +11,17 @@ from inventorymanager.constants import *
 
 class ItemCollection(Resource):
     
+
+    def get(self):
+        body = []
+        for item in Item.query.all():
+            item_json = item.serialize()
+            item_json["uri"] = url_for("api.itemitem", item=item)
+            body.append(item_json)
+
+        return Response(json.dumps(body), 200)
+
+
     def post(self):
         try:
             validate(request.json, Item.get_schema())

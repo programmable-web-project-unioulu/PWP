@@ -143,43 +143,44 @@ def _get_item_json(number=1):
 #     resp = client.put(href, json=body)
 #     assert resp.status_code == 204
     
-def _check_control_post_method(ctrl, client, obj): # currently not used
-    """
-    Checks a POST type control from a JSON object be it root document or an item
-    in a collection. In addition to checking the "href" attribute, also checks
-    that method, encoding and schema can be found from the control. Also
-    validates a valid sensor against the schema of the control to ensure that
-    they match. Finally checks that using the control results in the correct
-    status code of 201.
-    """
+# def _check_control_post_method(ctrl, client, obj, obj_to_post): # currently not used
+#     """
+#     Checks a POST type control from a JSON object be it root document or an item
+#     in a collection. In addition to checking the "href" attribute, also checks
+#     that method, encoding and schema can be found from the control. Also
+#     validates a valid sensor against the schema of the control to ensure that
+#     they match. Finally checks that using the control results in the correct
+#     status code of 201.
+#     """
     
-    ctrl_obj = obj["@controls"][ctrl]
-    href = ctrl_obj["href"]
-    method = ctrl_obj["method"].lower()
-    encoding = ctrl_obj["encoding"].lower()
-    schema = ctrl_obj["schema"]
-    assert method == "post"
-    assert encoding == "json"
-    body = _get_item_json()
-    validate(body, schema)
-    resp = client.post(href, json=body)
-    assert resp.status_code == 201
+#     ctrl_obj = obj["@controls"][ctrl]
+#     href = ctrl_obj["href"]
+#     method = ctrl_obj["method"].lower()
+#     encoding = ctrl_obj["encoding"].lower()
+#     schema = ctrl_obj["schema"]
+#     assert method == "post"
+#     assert encoding == "json"
+#     body = obj_to_post
+#     validate(body, schema)
+#     resp = client.post(href, json=body)
+#     assert resp.status_code == 201
 
 
 class TestItemCollection(object):
     
     RESOURCE_URL = "/api/items/"
 
-    # def test_get(self, client):
-    #     resp = client.get(self.RESOURCE_URL)
-    #     assert resp.status_code == 200
-    #     body = json.loads(resp.data)
-    #     _check_namespace(client, body)
-    #     _check_control_post_method("senhub:add-sensor", client, body)
-    #     assert len(body["items"]) == 3
-    #     for item in body["items"]:
-    #         _check_control_get_method("self", client, item)
-    #         _check_control_get_method("profile", client, item)
+    def test_get(self, client):
+        resp = client.get(self.RESOURCE_URL)
+        assert resp.status_code == 200
+        body = json.loads(resp.data)
+        assert len(body) == 2
+
+        for item in body:
+
+            assert "uri" in item
+            resp = client.get(item["uri"]) 
+            assert resp.status_code == 200
 
     def test_post(self, client):
         valid = _get_item_json()
