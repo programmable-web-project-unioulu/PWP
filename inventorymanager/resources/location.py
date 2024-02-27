@@ -10,17 +10,38 @@ from flask_restful import Resource
 from inventorymanager import db
 from inventorymanager.models import Location
 #from inventorymanager.constants import *
-#from inventorymanager.utils import SensorhubBuilder, create_error_response
+
 
 
 class LocationCollection(Resource):
 
     def get(self):
-        locations = Location.query.all()
-        return [location.serialize() for location in locations], 200
+        body = []
+        for location in Location.query.all():
+            location_json = location.serialize()
+            location_json["uri"] = url_for("api.locationitem", location_id=location.location_id, _external=True)
+            body.append(location_json)
+
+        return Response(json.dumps(body), 200, mimetype='application/json')
 
     def post(self):
-        # Implementation for creating a new location
+        try:
+            validate(request.json, Location.get_schema())
+            location = Location()
+            location.deserialize(request.json)
+        
+            db.session.add(location)
+            db.session.commit()
+
+        except ValidationError as e:
+            return abort(400, e.message)
+
+        except IntegrityError: #Does this make it so there cant be another location that matches all fields exactly or can there be same street name, different address etc
+            return abort(409, "Location already exists")
+
+        return Response(status=201, headers={
+            "Location": url_for("api.locationitem", location=location)
+        })
         pass
 
 
@@ -32,7 +53,7 @@ class LocationItem(Resource):
             return {"message": "Location not found"}, 404
         return location.serialize(), 200
 
-    def post(self, location):
+    def post(self, location): #should this be PUT instead?
         def post(self):
         data = request.get_json(force=True)
 
@@ -62,4 +83,16 @@ class LocationItem(Resource):
 
 
     
-  
+  # class SensorItem(Resource):
+
+    # @cache.cached()
+    # def get(self, sensor):
+        # db_sensor = Sensor.query.filter_by(name=sensor).first()
+        # if db_sensor is None:
+            # raise NotFound
+        # body = {
+            # "name": db_sensor.name,
+            # "model": db_sensor.model,
+            # "location": db_sensor.location.description
+        # }
+        # return Response(json.dumps(body), 200, mimetype=JSON)
