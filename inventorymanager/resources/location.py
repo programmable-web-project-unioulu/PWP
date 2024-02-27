@@ -7,16 +7,20 @@ import json
 from jsonschema import validate, ValidationError
 from flask import Response, request, url_for, abort
 from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
 from inventorymanager import db
 from inventorymanager.models import Location
 #from inventorymanager.constants import *
 
 
 
+
 class LocationCollection(Resource):
+"""Class for collection of warehouse locations including addresses. /api/Locations/"""
 
     def get(self):
-        body = []
+        """Gets list of locations from database"""
+
         for location in Location.query.all():
             location_json = location.serialize()
             location_json["uri"] = url_for("api.locationitem", location_id=location.location_id, _external=True)
@@ -36,16 +40,19 @@ class LocationCollection(Resource):
         except ValidationError as e:
             return abort(400, e.message)
 
-        except IntegrityError: #Does this make it so there cant be another location that matches all fields exactly or can there be same street name, different address etc
+        except IntegrityError:
             return abort(409, "Location already exists")
 
-        return Response(status=201, headers={
-            "Location": url_for("api.locationitem", location=location)
-        })
-        pass
+        return Response(
+            status=201,
+            headers={
+                "Location": url_for("api.locationitem", location=location)
+            }
+        )
 
 
 class LocationItem(Resource):
+""" Class for a location resource. '/api/Locations/location_id/' """
 
     def get(self, location_id):
         location = Location.query.get(location_id)
@@ -53,8 +60,7 @@ class LocationItem(Resource):
             return {"message": "Location not found"}, 404
         return location.serialize(), 200
 
-    def post(self, location): #should this be PUT instead?
-        def post(self):
+    def post(self): #should this be PUT instead?
         data = request.get_json(force=True)
 
         try:
