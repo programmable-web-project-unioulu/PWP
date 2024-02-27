@@ -108,7 +108,12 @@ class LocationConverter(BaseConverter):
     def to_python(self, location_id):
         """Converts a location_id in a location object """
 
-        db_location = Location.query.filter_by(name=location_id).first()
+        try:
+            int_id = int(value)
+        except ValueError as exc:
+            raise NotFound from exc
+
+        db_location = Location.query.filter_by(location_id=int_id).first()
         if db_location is None:
             raise NotFound
         return db_location
@@ -117,6 +122,8 @@ class LocationConverter(BaseConverter):
         """Converts a location object to a location_id """
 
         return db_location.name
+
+
 
 app.url_map.converters['db_location'] = ProductConverter
 
