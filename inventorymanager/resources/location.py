@@ -1,6 +1,8 @@
 
-"""Code edited from course example 
-https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/sensorhub/resources/location.py"""
+"""
+Code edited from course example
+https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/sensorhub/resources/location.py
+"""
 
 
 import json
@@ -8,15 +10,15 @@ from jsonschema import validate, ValidationError
 from flask import Response, request, url_for, abort
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import NotFound
+from werkzeug.routing import BaseConverter
+
 from inventorymanager import db
 from inventorymanager.models import Location
-#from inventorymanager.constants import *
-
-
 
 
 class LocationCollection(Resource):
-"""Class for collection of warehouse locations including addresses. /api/Locations/"""
+    """Class for collection of warehouse locations including addresses. /api/Locations/"""
 
     def get(self):
         """Gets list of locations from database"""
@@ -52,9 +54,10 @@ class LocationCollection(Resource):
 
 
 class LocationItem(Resource):
-""" Class for a location resource. '/api/Locations/location_id/' """
+    """ Class for a location resource. '/api/Locations/location_id/' """
 
     def get(self, location_id):
+
         location = Location.query.get(location_id)
         if not location:
             return {"message": "Location not found"}, 404
@@ -86,9 +89,27 @@ class LocationItem(Resource):
             }
         }), 201
 
+    def delete(self, location):
 
 
+class LocationConverter(BaseConverter):
+
+    def to_python(self, location_id):
+        
+
+
+
+    def to_url(self, ):
+        return
     
+
+
+
+
+
+
+
+
   # class SensorItem(Resource):
 
     # @cache.cached()
