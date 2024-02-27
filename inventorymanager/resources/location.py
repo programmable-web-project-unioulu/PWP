@@ -113,7 +113,7 @@ class LocationConverter(BaseConverter):
             raise NotFound
         return db_location
 
-    def to_url(selfself, db_location):
+    def to_url(self, db_location):
         """Converts a location object to a location_id """
 
         return db_location.name
