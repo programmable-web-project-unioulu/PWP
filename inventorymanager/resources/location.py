@@ -106,7 +106,13 @@ class LocationConverter(BaseConverter):
     """
 
     def to_python(self, location_id):
-        """Converts a location_id in a location object """
+        """
+        Converts a location_id in a location object with information from database
+        :param value: str representing the location id
+        raises a NotFound error if it is impossible to convert the string in an int or if the
+        location is not found.
+        :return: a Location object corresponding to the location_id.
+        """
 
         try:
             int_id = int(value)
@@ -118,10 +124,14 @@ class LocationConverter(BaseConverter):
             raise NotFound
         return db_location
 
-    def to_url(self, db_location):
-        """Converts a location object to a location_id """
+    def to_url(self, value):
+        """
+        Converts a location object to a value used in the URI
+        :param value: Location Object
+        :return: the value
+        """
 
-        return db_location.name
+        return str(value.location_id)
 
 
 
