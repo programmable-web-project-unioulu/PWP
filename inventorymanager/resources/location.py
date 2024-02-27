@@ -1,7 +1,8 @@
-
 """
 Code edited from course example
 https://github.com/enkwolf/pwp-course-sensorhub-api-example/blob/master/sensorhub/resources/location.py
+Examples from PWP course exercise 2
+https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/implementing-rest-apis-with-flask/#dynamic-schemas-static-methods
 """
 
 
@@ -90,17 +91,35 @@ class LocationItem(Resource):
         }), 201
 
     def delete(self, location):
-
+        """
+        Deletes existing location. Returns status code 204 if deletion is successful.
+        """
+        db.session.delete(location)
+        db.session.commit()
+        return Response(status=204)
 
 class LocationConverter(BaseConverter):
+    """
+    URLConverter for a location resource.
+    to_python takes a location_id and returns a Location object.
+    to_url takes a Location object and returns the corresponding location_id
+    """
 
     def to_python(self, location_id):
-        
+        """Converts a location_id in a location object """
 
+        db_location = Location.query.filter_by(name=location_id).first()
+        if db_location is None:
+            raise NotFound
+        return db_location
 
+    def to_url(selfself, db_location):
+        """Converts a location object to a location_id """
 
-    def to_url(self, ):
-        return
+        return db_location.name
+
+app.url_map.converters['db_location'] = ProductConverter
+
     
 
 
