@@ -102,41 +102,6 @@ class LocationItem(Resource):
         return Response(status=204)
 
 
-class LocationConverter(BaseConverter):
-    """
-    URLConverter for a location resource.
-    to_python takes a location_id and returns a Location object.
-    to_url takes a Location object and returns the corresponding location_id
-    """
-
-    def to_python(self, value):
-        """
-        Converts a location_id in a location object with information from database
-        :parameter value: str representing the location id
-        raises a NotFound error if it is impossible to convert the string in an int or if the
-        location is not found.
-        :return: a Location object corresponding to the location_id.
-        """
-
-        try:
-            int_id = int(value)
-        except ValueError as exc:
-            raise NotFound from exc
-
-        db_location = Location.query.filter_by(location_id=int_id).first()
-        if db_location is None:
-            raise NotFound
-        return db_location
-
-    def to_url(self, value):
-        """
-        Converts a location object to a value used in the URI
-        :param value: Location Object
-        :return: the value
-        """
-
-        return str(value.location_id)
-
 # app.url_map.converters['db_location'] = LocationConverter
 
 
