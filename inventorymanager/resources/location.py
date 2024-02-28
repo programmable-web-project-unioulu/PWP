@@ -5,9 +5,8 @@ Examples from PWP course exercise 2
 https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/implementing-rest-apis-with-flask/#dynamic-schemas-static-methods
 """
 
-
 import json
-from jsonschema import validate, ValidationError
+
 from flask import Response, request, url_for, abort
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -16,6 +15,7 @@ from werkzeug.routing import BaseConverter
 
 from inventorymanager import db
 from inventorymanager.models import Location
+from jsonschema import validate, ValidationError
 
 
 class LocationCollection(Resource):
@@ -23,7 +23,7 @@ class LocationCollection(Resource):
 
     def get(self):
         """Gets list of locations from database"""
-
+        body = []
         for location in Location.query.all():
             location_json = location.serialize()
             location_json["uri"] = url_for("api.locationitem", location_id=location.location_id, _external=True)
@@ -36,7 +36,7 @@ class LocationCollection(Resource):
             validate(request.json, Location.get_schema())
             location = Location()
             location.deserialize(request.json)
-        
+
             db.session.add(location)
             db.session.commit()
 
@@ -64,39 +64,43 @@ class LocationItem(Resource):
             return {"message": "Location not found"}, 404
         return location.serialize(), 200
 
-    def post(self): #should this be PUT instead?
-        data = request.get_json(force=True)
+    def put(self, location_id):
+        """
+        Updates existing location_id. Validates against JSON schema.
+        :parameter location_id: integer ID of location object
+        """
+        if not request.is_json:
+            return {'message': 'Request must be JSON'}, 415
 
+        data = request.get_json()
         try:
             validate(instance=data, schema=Location.get_schema())
         except ValidationError as e:
             return {'message': 'Validation error', 'errors': str(e)}, 400
 
-        new_location = Location()
-        new_location.deserialize(data)
+        location = Location.query.get(location_id)
+        if not location:
+            return {'message': 'Location not found'}, 404
 
-        db.session.add(new_location)
+        location.deserialize(data)
+
         try:
+            db.session.add(location)
             db.session.commit()
         except Exception as e:
             db.session.rollback()
             return {'message': 'Database error', 'errors': str(e)}, 500
 
-        return jsonify({
-            'message': 'Location created successfully',
-            'location': new_location.serialize(),
-            'links': {
-                'self': url_for('api.locationitem', location_id=new_location.location_id, _external=True)
-            }
-        }), 201
+        return {}, 204
 
-    def delete(self, location):
+    def delete(self, location_id):
         """
         Deletes existing location. Returns status code 204 if deletion is successful.
         """
-        db.session.delete(location)
+        db.session.delete(location_id)
         db.session.commit()
         return Response(status=204)
+
 
 class LocationConverter(BaseConverter):
     """
@@ -105,10 +109,10 @@ class LocationConverter(BaseConverter):
     to_url takes a Location object and returns the corresponding location_id
     """
 
-    def to_python(self, location_id):
+    def to_python(self, value):
         """
         Converts a location_id in a location object with information from database
-        :param value: str representing the location id
+        :parameter value: str representing the location id
         raises a NotFound error if it is impossible to convert the string in an int or if the
         location is not found.
         :return: a Location object corresponding to the location_id.
@@ -133,29 +137,19 @@ class LocationConverter(BaseConverter):
 
         return str(value.location_id)
 
+# app.url_map.converters['db_location'] = LocationConverter
 
 
-app.url_map.converters['db_location'] = ProductConverter
+# class SensorItem(Resource):
 
-    
-
-
-
-
-
-
-
-
-  # class SensorItem(Resource):
-
-    # @cache.cached()
-    # def get(self, sensor):
-        # db_sensor = Sensor.query.filter_by(name=sensor).first()
-        # if db_sensor is None:
-            # raise NotFound
-        # body = {
-            # "name": db_sensor.name,
-            # "model": db_sensor.model,
-            # "location": db_sensor.location.description
-        # }
-        # return Response(json.dumps(body), 200, mimetype=JSON)
+# @cache.cached()
+# def get(self, sensor):
+# db_sensor = Sensor.query.filter_by(name=sensor).first()
+# if db_sensor is None:
+# raise NotFound
+# body = {
+# "name": db_sensor.name,
+# "model": db_sensor.model,
+# "location": db_sensor.location.description
+# }
+# return Response(json.dumps(body), 200, mimetype=JSON)
