@@ -40,18 +40,19 @@ class LocationCollection(Resource):
             db.session.add(location)
             db.session.commit()
 
+
         except ValidationError as e:
-            return abort(400, e.message)
+            return {'message': 'Validation error', 'errors': str(e)}, 400
+
 
         except IntegrityError:
-            return abort(409, "Location already exists")
+            db.session.rollback()
+            return {'message': 'Location already exists'}, 409
 
-        return Response(
-            status=201,
-            headers={
-                "Location": url_for("api.locationitem", location=location)
-            }
-        )
+        location_uri = url_for('api.locationitem', location_id=location.location_id, _external=True)
+        response = Response(status=201)
+        response.headers['Location'] = location_uri
+        return response
 
 
 class LocationItem(Resource):
@@ -97,7 +98,10 @@ class LocationItem(Resource):
         """
         Deletes existing location. Returns status code 204 if deletion is successful.
         """
-        db.session.delete(location_id)
+        location = Location.query.get(location_id)
+        if not location:
+            return {'message': 'Location not found'}, 404
+        db.session.delete(location)
         db.session.commit()
         return Response(status=204)
 
