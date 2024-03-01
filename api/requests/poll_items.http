@@ -1,0 +1,33 @@
+# @import auth.http
+# @import polls.http
+
+###
+# @ref poll
+# @name pollitem
+POST /pollitems
+Content-Type: application/json
+
+{
+    "pollId": "{{poll.poll_id}}",
+    "description": "IKARIAM"
+}
+
+###
+# @ref pollitem
+GET /pollitems/{{pollitem.id}}
+Content-Type: application/json
+
+###
+# @ref pollitem
+DELETE /pollitems/{{pollitem.id}}
+Content-Type: application/json
+
+###
+# @ref pollitem
+PATCH /pollitems/{{pollitem.id}}
+Content-Type: application/json
+
+{
+    "pollId": "{{poll.poll_id}}",
+    "description": "Star guardian Lulu"
+}

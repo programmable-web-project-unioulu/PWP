@@ -1,0 +1,22 @@
+# @import auth.http
+
+###
+# @name poll
+# @ref profile
+POST /polls
+Content-Type: application/json
+
+{
+    "userId": "{{ profile.id }}",
+    "title": "TESTIIIIII",
+    "description": "testing",
+    "expires": "2024-03-29T17:53:57.494Z",
+    "multipleAnswers": false,
+    "private": false
+}
+
+###
+# @ref poll
+
+GET /polls/{{poll.poll_id}}/pollitems
+Content-Type: application/json
