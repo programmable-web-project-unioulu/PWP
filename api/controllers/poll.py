@@ -1,9 +1,11 @@
-from prisma.models import Poll
-from api.models.poll_dtos import PollDto
+"""Module containing Poll routes"""
+
 from flask import make_response, request, Blueprint, Response
 from flask_restful import Api, Resource
 from prisma.errors import UniqueViolationError
+from prisma.models import Poll
 from werkzeug.exceptions import BadRequest
+from api.models.poll_dtos import PollDto
 
 poll = Blueprint("poll", __name__, url_prefix="/polls")
 poll_api = Api(poll)
