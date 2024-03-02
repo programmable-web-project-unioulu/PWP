@@ -2,9 +2,9 @@
 
 from flask import make_response, request, Blueprint, Response
 from flask_restful import Api, Resource
+from werkzeug.exceptions import BadRequest
 from prisma.errors import UniqueViolationError
 from prisma.models import Poll
-from werkzeug.exceptions import BadRequest
 from api.models.poll_dtos import PollDto
 
 poll = Blueprint("poll", __name__, url_prefix="/polls")

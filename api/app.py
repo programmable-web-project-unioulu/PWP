@@ -1,15 +1,18 @@
+"""Module for configuring the Flask application"""
+
 from flask import Flask
+from werkzeug.exceptions import HTTPException
 from api.controllers.auth import auth
 from api.controllers.poll import poll
 from api.controllers.poll_item import pollitem
 from api.database import connect_to_db
 from api.middleware.error_handler import handle_exception
-from werkzeug.exceptions import HTTPException
 from api.converters.poll import PollConverter
 from api.converters.poll_item import PollItemConverter
 
 
 def create_app() -> Flask:
+    """Factory function"""
     app = Flask(__name__)
     app.url_map.converters["poll_id"] = PollConverter
     app.url_map.converters["poll_item_id"] = PollItemConverter
@@ -21,4 +24,4 @@ def create_app() -> Flask:
 
 
 connect_to_db()
-app = create_app()
+application = create_app()
