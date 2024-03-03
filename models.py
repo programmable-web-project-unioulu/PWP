@@ -1,13 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import sqlalchemy
-from sqlalchemy import text
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_BASE_URI"] = "mysql+mysqldb://root@localhost/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqldb://root@localhost/workout_playlists"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
+from extensions import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +13,7 @@ class User(db.Model):
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
 class Workout(db.Model):
-    workout_id = db.Column(db.Integer, primary_key=True)
+    workout_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     workout_name = db.Column(db.String(64), nullable=False)
     duration = db.Column(db.Float, nullable=False)
     workout_intensity = db.Column(db.String(32), nullable=False)
@@ -40,7 +31,7 @@ class WorkoutPlanItem(db.Model):
     workout = db.relationship("Workout", back_populates="workout_plan_item")
 
 class WorkoutPlan(db.Model):
-    workout_plan_id = db.Column(db.Integer, primary_key=True)
+    workout_plan_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     plan_name = db.Column(db.String(64), nullable=False)
     duration = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -55,6 +46,7 @@ class Playlist(db.Model):
     playlist_duration = db.Column(db.Float, nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="playlist")
+    workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
 
 class PlaylistItem(db.Model):
     item_id = db.Column(db.Integer, primary_key=True)
@@ -72,22 +64,3 @@ class Song(db.Model):
     song_duration = db.Column(db.Float, nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="song")
-
-
-def create_database():
-    engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_BASE_URI'], echo=True)
-    conn = engine.connect()
-    try:
-        query = "CREATE DATABASE IF NOT EXISTS workout_playlists;"
-        conn.execute(text(query))
-        print("Database created successfully.")
-    except Exception as e:
-        print("Error creating database:", e)
-    conn.close()
-
-def create_tables():
-    db.metadata.create_all(bind=db.engine, checkfirst=True)
-
-with app.app_context():
-    create_database()
-    db.create_all()
