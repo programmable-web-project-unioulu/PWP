@@ -4,17 +4,14 @@ from extensions import db
 from api import api_bp
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config["SQLALCHEMY_DATABASE_BASE_URI"] = "mysql+mysqldb://root@localhost/"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqldb://admin:pwpdb7788@workoutplaylists.cpcoaea0i7dq.us-east-1.rds.amazonaws.com/workout_playlists"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
 app.register_blueprint(api_bp, url_prefix='/api')
-
-# def create_tables():
-#     with app.app_context():
-#         db.drop_all()
-#         db.create_all()
-# create_tables()
 
 if __name__ == "__main__":
     app.run(debug=True)
