@@ -1,3 +1,4 @@
+import hashlib
 from extensions import db
 
 class User(db.Model):
@@ -9,7 +10,8 @@ class User(db.Model):
     user_type = db.Column(db.String(32), nullable=False)
     user_token = db.Column(db.String(64), nullable=False)
     token_expiration = db.Column(db.DateTime, nullable=False)
-
+    
+    api_key = db.relationship("ApiKey", back_populates="api_key")
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
 class Workout(db.Model):
@@ -64,3 +66,14 @@ class Song(db.Model):
     song_duration = db.Column(db.Float, nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="song")
+
+class ApiKey(db.Model):
+    
+    key = db.Column(db.String(32), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    admin =  db.Column(db.Boolean, default=False)
+    user = db.relationship("User", back_populates="api_key", uselist=False)
+    
+    @staticmethod
+    def key_hash(key):
+        return hashlib.sha256(key.encode()).digest()
