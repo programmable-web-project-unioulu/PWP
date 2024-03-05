@@ -11,7 +11,7 @@ class User(db.Model):
     user_token = db.Column(db.String(64), nullable=False)
     token_expiration = db.Column(db.DateTime, nullable=False)
     
-    api_key = db.relationship("ApiKey", back_populates="api_key")
+    api_key = db.relationship("ApiKey", back_populates="user")
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
 class Workout(db.Model):
@@ -46,6 +46,7 @@ class WorkoutPlan(db.Model):
 class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True)
     playlist_duration = db.Column(db.Float, nullable=False)
+    playlist_name = db.Column(db.String(64), nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="playlist")
     workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
@@ -72,6 +73,7 @@ class ApiKey(db.Model):
     key = db.Column(db.String(32), nullable=False, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     admin =  db.Column(db.Boolean, default=False)
+    
     user = db.relationship("User", back_populates="api_key", uselist=False)
     
     @staticmethod
