@@ -1,6 +1,8 @@
+from http.client import FORBIDDEN
+import secrets
 from flask import jsonify, request, g
 from extensions import db
-from models import ApiKey  # Import your ApiKey model here
+from models import ApiKey 
 
 def authenticate():
     if request.endpoint != 'static':
