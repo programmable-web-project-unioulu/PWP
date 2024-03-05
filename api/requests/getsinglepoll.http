@@ -1,0 +1,4 @@
+### Get Single Poll
+GET http://localhost:5000/polls/cltelxcmb0002dgaaomdo5ub5
+Accept: application/json
+Content-Type: application/json

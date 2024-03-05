@@ -1,0 +1,12 @@
+### Update Poll
+PUT http://localhost:5000/polls/cltelxcmb0002dgaaomdo5ub5/update
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Germany ",
+  "description": "Germany",
+  "expires": "2025-12-31T23:59:59Z",
+  "private": true,
+  "multipleAnswers": false
+}

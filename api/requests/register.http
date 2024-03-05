@@ -1,0 +1,11 @@
+### Register a new user
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "abi",
+  "password": "abi",
+  "email": "abi@gmail.com",
+  "firstName": "abi",
+  "lastName": "abi"
+}
