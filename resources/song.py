@@ -1,15 +1,10 @@
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 from flask_restful import Resource
 from models import Song
 from extensions import db
 from sqlalchemy.exc import IntegrityError
-
-# endpoints
-# get song
-# update song
-# delete song
-# get all songs
-# add song
+from resources.playlist import CreatePlaylistResource
+import requests
 
 class SongResource(Resource):
     def get(self, song_id):           
@@ -24,7 +19,7 @@ class SongResource(Resource):
                     "song_genre": song.song_genre,
                     "song_duration": song.song_duration,
                 }
-                songs_list.append(song_dict)
+                songs_list.append(song_dict)       
             
         except KeyError:
             return jsonify({"message": "Invalid input data"}), 400
