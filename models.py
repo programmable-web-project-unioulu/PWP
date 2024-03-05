@@ -11,7 +11,7 @@ class User(db.Model):
     user_token = db.Column(db.String(64), nullable=False)
     token_expiration = db.Column(db.DateTime, nullable=False)
     
-    api_key = db.relationship("ApiKey", back_populates="api_key")
+    api_key = db.relationship("ApiKey", back_populates="user")
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
 class Workout(db.Model):
