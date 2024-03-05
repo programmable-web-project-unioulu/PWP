@@ -5,6 +5,7 @@ from api.services.jwt import JWTService
 from api.middleware.authguard import requires_authentication
 from prisma.models import User
 from werkzeug.exceptions import Unauthorized, BadRequest
+from flask import jsonify
 
 auth = Blueprint("auth", __name__)
 
@@ -13,10 +14,13 @@ auth = Blueprint("auth", __name__)
 def register():
     register_dto = RegisterDto.from_json(request.json)
     try:
-        User.prisma().create(data=register_dto.to_insertable())
+        # Create the user and capture the result, which includes the user ID
+        new_user = User.prisma().create(data=register_dto.to_insertable())
     except UniqueViolationError:
-        raise BadRequest("username not unique")
-    return Response(status=201)
+        raise BadRequest("Username not unique")
+
+    # Assuming the new_user object has an 'id' attribute that contains the user ID
+    return jsonify({"userId": new_user.id}), 201
 
 
 @auth.route("/auth/login", methods=["POST"])

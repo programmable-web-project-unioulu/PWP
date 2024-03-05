@@ -1,0 +1,13 @@
+
+### Create a new poll
+POST http://localhost:5000/polls
+Content-Type: application/json
+
+{
+  "userId": "cltejrzyu0000ie0tdzfuab4b",
+  "title": "Favorite Subject",
+  "description": "students choose favorite language",
+  "expires": "2028-05-01T00:00:00Z",
+  "private": true,
+  "multipleAnswers": true
+}

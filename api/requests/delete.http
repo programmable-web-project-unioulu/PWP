@@ -1,0 +1,4 @@
+### Delete Specific Poll
+DELETE http://localhost:5000/polls/cltejvzbr0002ie0t0bg4uquk/delete
+Accept: application/json
+Content-Type: application/json
