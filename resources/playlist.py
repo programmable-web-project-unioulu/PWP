@@ -6,10 +6,6 @@ from models import Workout
 from models import Song
 from extensions import db
 
-# endpoints
-
-# get a playlist with all songs
-
 
 class PlaylistResource(Resource):
     def get(self, playlist_id):
@@ -39,6 +35,35 @@ class PlaylistResource(Resource):
             }
         return jsonify(playlist_dict)
     
+    # user can change the playlist song order
+    def put(self, playlist_id):
+        data = request.json
+        if not data:
+            return {"message": "No input data provided"}, 400
+        playlist = Playlist.query.get(playlist_id)
+        if not playlist:
+            return {"message": "Playlist not found"}, 404
+        try:
+            if 'playlist_name' in data:
+                playlist.playlist_name = data['playlist_name']
+            if 'song_list' in data:
+                song_order = data['song_list']
+                # Delete existing records in the playlist_item table for the playlist id
+                PlaylistItem.query.filter_by(playlist_id=playlist_id).delete()
+
+                # Re-enter the incoming song ids with the updated order
+                for index, song_id in enumerate(song_order):
+                    playlist_item = PlaylistItem(
+                        playlist_id=playlist_id,
+                        song_id=song_id,
+                    )
+                    db.session.add(playlist_item)
+
+            db.session.commit()
+        except ValueError as e:
+            return {"message": str(e)}, 400
+        return "", 204
+    
     def delete(self, playlist_id):
         playlist = Playlist.query.get(playlist_id)
         if not playlist:
@@ -63,10 +88,8 @@ class CreatePlaylistResource(Resource):
         if not data or 'workout_ids' not in data:
             return {"message": "Invalid input data on CreatePlayList"}, 400
 
-        # playlist_name = data['playlist_name']
+        playlist_name_rec = data['playlist_name']
         workout_ids = data['workout_ids']
-
-        print(workout_ids)
 
         songs_list = []
         total_workouts_duration = 0.0
@@ -107,7 +130,7 @@ class CreatePlaylistResource(Resource):
                 total_workouts_duration = total_workouts_duration + temp_duration
 
         # Create playlist
-        playlist = Playlist(playlist_duration=total_workouts_duration)
+        playlist = Playlist(playlist_duration=total_workouts_duration, playlist_name=playlist_name_rec)
         db.session.add(playlist)
         db.session.commit()
 
@@ -121,40 +144,3 @@ class CreatePlaylistResource(Resource):
         db.session.commit()
 
         return {"message": "Playlist created successfully", "playlist_id": playlist.playlist_id}, 201
-    
-    # user can change the playlist song order
-
-    # def put(self, workout_plan_id):
-    #     data = request.json
-    #     if not data:
-    #         return {"message": "No input data provided"}, 400
-
-    #     workout = WorkoutPlan.query.get(workout_plan_id)
-    #     if not workout:
-    #         return {"message": "Workout plan not found"}, 404
-
-    #     try:
-    #         if 'plan_name' in data:
-    #             workout.plan_name = data['plan_name']
-    #         if 'duration' in data:
-    #             workout.duration = data['duration']
-    #         if 'user_id' in data:
-    #             workout.user_id = data['user_id']
-    #         if 'playlist_id' in data:
-    #             workout.playlist_id = data['playlist_id']
-
-    #         db.session.commit()
-    #     except ValueError as e:
-    #         return {"message": str(e)}, 400
-
-    #     return "", 204
-
-    # def delete(self, workout_plan_id):
-    #     workout = WorkoutPlan.query.get(workout_plan_id)
-    #     if not workout:
-    #         return {"message": "Workout plan not found"}, 404
-
-    #     db.session.delete(workout)
-    #     db.session.commit()
-
-    #     return "", 204

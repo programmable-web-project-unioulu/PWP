@@ -46,6 +46,7 @@ class WorkoutPlan(db.Model):
 class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True)
     playlist_duration = db.Column(db.Float, nullable=False)
+    playlist_name = db.Column(db.String(64), nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="playlist")
     workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
