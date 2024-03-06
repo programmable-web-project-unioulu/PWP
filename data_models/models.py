@@ -36,8 +36,6 @@ class WorkoutPlan(db.Model):
     workout_plan_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     plan_name = db.Column(db.String(64), nullable=False)
     duration = db.Column(db.Float, nullable=False)
-    # user_id = db.Column(db.Integer, nullable=False)
-    # playlist_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"))
 
