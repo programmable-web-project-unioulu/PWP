@@ -74,10 +74,11 @@ class UserLoginResource(Resource):
         access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
         return {"message": "Login successful", "access_token": access_token}, 200
 
-class UserDeleteResource(Resource):
+class UserResource(Resource):
     def delete(self, user_id):
         print("Current API key object:", g.current_api_key) # remove later
         print("",g.current_api_key.user.user_type) #remve later
+        
         if g.current_api_key.user.user_type != 'admin':
             return {"message": "Unauthorized access"}, 403
         
@@ -89,8 +90,9 @@ class UserDeleteResource(Resource):
         db.session.commit()
         return {"message": "User deleted successfully"}, 200
 
-class UserUpdateResource(Resource):
     def put(self, user_id):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data:
             return {"message": "No input data provided"}, 400
