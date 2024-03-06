@@ -1,4 +1,4 @@
-from flask import jsonify, request, url_for
+from flask import jsonify, request, url_for, g
 from flask_restful import Resource
 import requests
 from data_models.models import WorkoutPlan, WorkoutPlanItem, Workout
@@ -22,6 +22,8 @@ class WorkoutPlanResource(Resource):
             return "500", 500
 
     def put(self, workout_plan_id):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data:
             return {"message": "No input data provided"}, 400
