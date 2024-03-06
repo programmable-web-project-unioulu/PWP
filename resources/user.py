@@ -9,6 +9,9 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 import uuid
 
+def generate_api_key():
+    return str(uuid.uuid4())
+
 class UserRegistrationResource(Resource):
     def post(self):
         data = request.json
@@ -51,11 +54,6 @@ class UserRegistrationResource(Resource):
             return {"Failed to generate API key"}, 500
         
         return {"message": "User registered successfully", "user_id": user.id}, 201
-
-def generate_api_key():
-    return str(uuid.uuid4())
-
-
 
 class UserLoginResource(Resource):
     def post(self):
@@ -114,4 +112,27 @@ class UserUpdateResource(Resource):
             return {"message": str(e)}, 400
         
         return {"message": "User updated successfully"}, 200
+    
+class ApiKeyUpdateResource(Resource):
+    def put(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            return {"message": "User not found"}, 404
+        
+        new_api_key = generate_api_key()
+        api_key = ApiKey.query.filter_by(user_id=user_id).first()
+        if not api_key:
+            return {"message": "API key not found for the user"}, 404
+
+        api_key.key = new_api_key
+
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "Failed to update API key", "error": str(e)}, 500
+        
+        return {"message": "API key updated successfully", "new_api_key": new_api_key}, 200
+
+
     
