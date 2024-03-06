@@ -1,6 +1,6 @@
 from flask import jsonify, request, url_for
 from flask_restful import Resource
-from models import Song
+from data_models.models import Song
 from extensions import db
 from sqlalchemy.exc import IntegrityError
 from resources.playlist import CreatePlaylistResource

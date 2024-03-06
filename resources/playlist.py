@@ -1,9 +1,6 @@
 from flask import jsonify, request
 from flask_restful import Resource
-from models import Playlist
-from models import PlaylistItem
-from models import Workout
-from models import Song
+from data_models.models import Playlist, PlaylistItem, Workout, Song
 from extensions import db
 
 
