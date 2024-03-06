@@ -6,7 +6,7 @@ from resources.song import SongResource
 from resources.song import SongListResource
 from resources.playlist import PlaylistResource
 from resources.playlist import CreatePlaylistResource
-from resources.user import UserRegistrationResource, UserLoginResource, UserDeleteResource, UserUpdateResource, ApiKeyUpdateResource
+from resources.user import UserRegistrationResource, UserLoginResource, UserResource, ApiKeyUpdateResource
 
 
 
@@ -24,6 +24,5 @@ api.add_resource(PlaylistResource, "/playlist/<playlist_id>/")
 api.add_resource(CreatePlaylistResource, "/playlist/")
 api.add_resource(UserRegistrationResource, "/user/register")
 api.add_resource(UserLoginResource, "/user/login")
-api.add_resource(UserUpdateResource, "/user/update/<int:user_id>")
-api.add_resource(UserDeleteResource, "/user/delete/<int:user_id>")
+api.add_resource(UserResource, "/user/<int:user_id>")
 api.add_resource(ApiKeyUpdateResource, "/user/update_api_key/<int:user_id>")
