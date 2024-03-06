@@ -1,5 +1,6 @@
 import hashlib
 from extensions import db
+#from sqlalchemy import event
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +12,7 @@ class User(db.Model):
     user_token = db.Column(db.String(64), nullable=False)
     token_expiration = db.Column(db.DateTime, nullable=False)
     
-    api_key = db.relationship("ApiKey", back_populates="user")
+    api_key = db.relationship("ApiKey", back_populates="user", cascade="all, delete-orphan")
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
     @staticmethod
@@ -88,3 +89,9 @@ class ApiKey(db.Model):
     def key_hash(key):
         return hashlib.sha256(key.encode()).digest()
     
+    # @event.listens_for(User, 'after_delete')
+    # def delete_api_keys(mapper, connection, target):
+    #     api_keys = ApiKey.query.filter_by(user_id=target.id).all()
+    #     for api_key in api_keys:
+    #         db.session.delete(api_key)
+    #         db.session.commit()

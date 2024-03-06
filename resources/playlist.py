@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, g
 from flask_restful import Resource
 from data_models.models import Playlist, PlaylistItem, Workout, Song
 from extensions import db
@@ -34,6 +34,8 @@ class PlaylistResource(Resource):
     
     # user can change the playlist song order
     def put(self, playlist_id):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data:
             return {"message": "No input data provided"}, 400
@@ -81,6 +83,8 @@ class PlaylistResource(Resource):
 
 class CreatePlaylistResource(Resource):
     def post(self):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data or 'workout_ids' not in data:
             return {"message": "Invalid input data on CreatePlayList"}, 400

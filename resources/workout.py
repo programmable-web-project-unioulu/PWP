@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, g
 from flask_restful import Resource
 from data_models.models import Workout
 from extensions import db
@@ -21,6 +21,8 @@ class WorkoutResource(Resource):
         return jsonify(workout_list)
 
     def put(self, workout_id):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data:
             return {"message": "No input data provided"}, 400
@@ -48,6 +50,8 @@ class WorkoutResource(Resource):
         return "", 204
 
     def delete(self, workout_id):
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
         workout = Workout.query.get(workout_id)
         if not workout:
             return {"message": "Workout not found"}, 404
@@ -81,6 +85,8 @@ class WorkoutsResource(Resource):
             return jsonify(workout_list)
     
         def post(self):
+            if g.current_api_key.user.user_type != 'admin':
+                return {"message": "Unauthorized access"}, 403
             data = request.json
             if not data or 'workout_name' not in data:
                 return {"message": "No input data provided"}, 400

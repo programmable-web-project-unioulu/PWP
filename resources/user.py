@@ -1,7 +1,7 @@
 import datetime
 import hashlib
 from http.client import FORBIDDEN
-from flask import jsonify, request
+from flask import jsonify, request, g
 from flask_restful import Resource
 from data_models.models import ApiKey, User
 from extensions import db
@@ -76,14 +76,18 @@ class UserLoginResource(Resource):
 
 class UserDeleteResource(Resource):
     def delete(self, user_id):
+        print("Current API key object:", g.current_api_key) # remove later
+        print("",g.current_api_key.user.user_type) #remve later
+        if g.current_api_key.user.user_type != 'admin':
+            return {"message": "Unauthorized access"}, 403
+        
         user = User.query.get(user_id)
         if not user:
             return {"message": "User not found"}, 404
 
         db.session.delete(user)
         db.session.commit()
-
-        return {"message": "User deleted successfully"}, 204
+        return {"message": "User deleted successfully"}, 200
 
 class UserUpdateResource(Resource):
     def put(self, user_id):
