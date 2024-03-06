@@ -1,5 +1,6 @@
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 from flask_restful import Resource
+import requests
 from models import WorkoutPlan, WorkoutPlanItem, Workout
 from extensions import db
 
@@ -59,17 +60,29 @@ class WorkoutPlanAddingResource(Resource):
     def post(self):
         data = request.json
         totalDuration = 0
+        plan_name = data["plan_name"]
+        workout_ids = data.get('workout_ids', [])
+        
+        data = {
+            "playlist_name": f"{plan_name} Playlist",
+            "workout_ids": workout_ids
+        }
+        headers = {
+            "Content-Type": "application/json"
+        }
+        response = requests.post('http://127.0.0.1:5000/' + url_for('api.createplaylistresource'), json=data, headers=headers)
+        playlist_id = response.json()["playlist_id"]
         
         # Create workout plan
         workoutPlan = WorkoutPlan(
-            plan_name=data["plan_name"],
+            plan_name=plan_name,
             user_id=1,
-            duration=0
+            duration=0,
+            playlist_id = playlist_id
         )
         db.session.add(workoutPlan)
         db.session.commit()
         
-        workout_ids = data.get('workout_ids', [])
         for workout_id in workout_ids:
             # calculate total duration of the workout plan
             workout = Workout.query.get(workout_id)
