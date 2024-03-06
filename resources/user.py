@@ -3,7 +3,7 @@ import random
 import secrets
 import string
 from flask import jsonify, request
-from models import ApiKey, User
+from data_models.models import ApiKey, User
 from extensions import db
 
 

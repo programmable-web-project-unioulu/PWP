@@ -36,6 +36,8 @@ class WorkoutPlan(db.Model):
     workout_plan_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     plan_name = db.Column(db.String(64), nullable=False)
     duration = db.Column(db.Float, nullable=False)
+    # user_id = db.Column(db.Integer, nullable=False)
+    # playlist_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"))
 
@@ -46,6 +48,7 @@ class WorkoutPlan(db.Model):
 class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True)
     playlist_duration = db.Column(db.Float, nullable=False)
+    playlist_name = db.Column(db.String(64), nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="playlist")
     workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
@@ -72,6 +75,7 @@ class ApiKey(db.Model):
     key = db.Column(db.String(32), nullable=False, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     admin =  db.Column(db.Boolean, default=False)
+    
     user = db.relationship("User", back_populates="api_key", uselist=False)
     
     @staticmethod
