@@ -1,28 +1,97 @@
+import datetime
+import hashlib
 from http.client import FORBIDDEN
-import random
-import secrets
-import string
 from flask import jsonify, request
+from flask_restful import Resource
 from data_models.models import ApiKey, User
 from extensions import db
+from flask_jwt_extended import create_access_token
+from datetime import timedelta
 
 
-def generate_api_key():
-    """Generate a random API key."""
-    key_length = 32 
-    characters = string.ascii_letters + string.digits
-    api_key = ''.join(random.choice(characters) for _ in range(key_length))
-    return api_key
+class UserRegistrationResource(Resource):
+    def post(self):
+        data = request.json
+        if not data or not all(key in data for key in ['email', 'password', 'height', 'weight', 'user_type']):
+            return {"message": "Invalid input data for user registration"}, 400
+        
+        email = data['email']
+        password = data['password']
+        height = data['height']
+        weight = data['weight']
+        user_type = data['user_type']
+        
+        if User.query.filter_by(email=email).first():
+            return {"message": "Email already exists"}, 400
+        
+        hashed_password = User.password_hash(password)
+        user_token = hashlib.sha256(email.encode()).hexdigest()
+        token_expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=24)
 
-def assign_api_key_to_user(user_id):
-    """Assign a generated API key to the specified user."""
-    user = User.query.get(user_id)
-    if user:
-        api_key = generate_api_key()
-        hashed_key = ApiKey.key_hash(api_key)
-        new_api_key = ApiKey(key=hashed_key, user_id=user_id)
-        db.session.add(new_api_key)
+        user = User(email=email, password=hashed_password, height=height, weight=weight, user_type=user_type,
+                    user_token=user_token, token_expiration=token_expiration)
+        
+        db.session.add(user)
         db.session.commit()
-        return api_key
-    else:
-        return None
+        return {"message": "User registered successfully", "user_id": user.id}, 201
+
+
+
+class UserLoginResource(Resource):
+    def post(self):
+        data = request.json
+        if not data or not all(key in data for key in ['email', 'password']):
+            return {"message": "Invalid input data for user login"}, 400
+        
+        email = data['email']
+        password = data['password']
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return {"message": "No sucxh user in the system"}, 404
+        
+        if not user.verify_password(password):
+            return {"message": "Invalid password"}, 401
+        
+        access_token = create_access_token(identity=user.id, expires_delta=timedelta(days=1))
+        return {"message": "Login successful", "access_token": access_token}, 200
+
+class UserDeleteResource(Resource):
+    def delete(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            return {"message": "User not found"}, 404
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return {"message": "User deleted successfully"}, 204
+
+class UserUpdateResource(Resource):
+    def put(self, user_id):
+        data = request.json
+        if not data:
+            return {"message": "No input data provided"}, 400
+        
+        user = User.query.get(user_id)
+        if not user:
+            return {"message": "User not found"}, 404
+        
+        try:
+            if 'email' in data:
+                user.email = data['email']
+            if 'password' in data:
+                user.password = User.password_hash(data['password'])
+            if 'height' in data:
+                user.height = data['height']
+            if 'weight' in data:
+                user.weight = data['weight']
+            if 'user_type' in data:
+                user.user_type = data['user_type']
+            
+            db.session.commit()
+        except Exception as e:
+            return {"message": str(e)}, 400
+        
+        return {"message": "User updated successfully"}, 200
+    

@@ -6,6 +6,8 @@ from resources.song import SongResource
 from resources.song import SongListResource
 from resources.playlist import PlaylistResource
 from resources.playlist import CreatePlaylistResource
+from resources.user import UserResource, UserRegistrationResource, UserLoginResource
+
 
 
 api_bp = Blueprint('api', __name__)
@@ -20,3 +22,6 @@ api.add_resource(SongResource, "/song/<song_id>/")
 api.add_resource(SongListResource, "/song/")
 api.add_resource(PlaylistResource, "/playlist/<playlist_id>/")
 api.add_resource(CreatePlaylistResource, "/playlist/")
+api.add_resource(UserResource, "/user/<user_id>")
+api.add_resource(UserRegistrationResource, "/user/register")
+api.add_resource(UserLoginResource, "/user/login")

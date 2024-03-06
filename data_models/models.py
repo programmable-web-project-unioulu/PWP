@@ -14,6 +14,14 @@ class User(db.Model):
     api_key = db.relationship("ApiKey", back_populates="user")
     workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
+    @staticmethod
+    def password_hash(password):
+        return hashlib.sha256(password.encode()).hexdigest()
+    
+    def verify_password(self, password):
+        hashed_password = User.password_hash(password)
+        return self.password == hashed_password
+
 class Workout(db.Model):
     workout_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     workout_name = db.Column(db.String(64), nullable=False)
@@ -79,3 +87,4 @@ class ApiKey(db.Model):
     @staticmethod
     def key_hash(key):
         return hashlib.sha256(key.encode()).digest()
+    
