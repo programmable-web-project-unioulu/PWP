@@ -12,7 +12,7 @@ class User(db.Model):
     token_expiration = db.Column(db.DateTime, nullable=False)
     
     api_key = db.relationship("ApiKey", back_populates="user")
-    workout_plan = db.relationship("WorkoutPlan", back_populates="user")
+    # workout_plan = db.relationship("WorkoutPlan", back_populates="user")
 
 class Workout(db.Model):
     workout_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -36,12 +36,14 @@ class WorkoutPlan(db.Model):
     workout_plan_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     plan_name = db.Column(db.String(64), nullable=False)
     duration = db.Column(db.Float, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    playlist_id = db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"))
+    user_id = db.Column(db.Integer, nullable=False)
+    playlist_id = db.Column(db.Integer, nullable=False)
+    # user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # playlist_id = db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"))
 
     workout_plan_item = db.relationship("WorkoutPlanItem", back_populates="workout_plan")
-    user = db.relationship("User", back_populates="workout_plan")
-    playlist = db.relationship("Playlist", back_populates="workout_plan")
+    # user = db.relationship("User", back_populates="workout_plan")
+    # playlist = db.relationship("Playlist", back_populates="workout_plan")
 
 class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True)
@@ -49,7 +51,7 @@ class Playlist(db.Model):
     playlist_name = db.Column(db.String(64), nullable=False)
 
     playlist_item = db.relationship("PlaylistItem", back_populates="playlist")
-    workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
+    # workout_plan = db.relationship("WorkoutPlan", back_populates="playlist")  
 
 class PlaylistItem(db.Model):
     item_id = db.Column(db.Integer, primary_key=True)
