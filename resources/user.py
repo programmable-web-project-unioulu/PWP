@@ -7,7 +7,7 @@ from data_models.models import ApiKey, User
 from extensions import db
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
-
+import uuid
 
 class UserRegistrationResource(Resource):
     def post(self):
@@ -31,9 +31,29 @@ class UserRegistrationResource(Resource):
         user = User(email=email, password=hashed_password, height=height, weight=weight, user_type=user_type,
                     user_token=user_token, token_expiration=token_expiration)
         
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"Failed to register user"}, 500
+        
+       
+        api_key = generate_api_key()
+        is_admin = (user_type == 'admin')
+        new_api_key = ApiKey(key=api_key, user_id=user.id, admin=is_admin)
+        
+        try:
+            db.session.add(new_api_key)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return {"Failed to generate API key"}, 500
+        
         return {"message": "User registered successfully", "user_id": user.id}, 201
+
+def generate_api_key():
+    return str(uuid.uuid4())
 
 
 
