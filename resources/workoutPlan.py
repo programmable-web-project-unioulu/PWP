@@ -70,21 +70,23 @@ class WorkoutPlanAddingResource(Resource):
             "workout_ids": workout_ids
         }
         headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-API-Key": g.current_api_key.key
         }
+
         response = requests.post('http://127.0.0.1:5000/' + url_for('api.createplaylistresource'), json=data, headers=headers)
         playlist_id = response.json()["playlist_id"]
         
         # Create workout plan
         workoutPlan = WorkoutPlan(
             plan_name=plan_name,
-            user_id=1,
+            user_id= g.current_api_key.user.id,
             duration=0,
             playlist_id = playlist_id
         )
         db.session.add(workoutPlan)
         db.session.commit()
-        
+        print(g.current_api_key.user.id)
         for workout_id in workout_ids:
             # calculate total duration of the workout plan
             workout = Workout.query.get(workout_id)
