@@ -95,9 +95,9 @@ class WorkoutsResource(Resource):
                 return {"message": "Duration must be a float"}, 400
 
             workout_name = data['workout_name']
-            existing_workout = Workout.query.filter_by(workout_name=workout_name).first()
-            if existing_workout:
-                return {"error": "workout_name already exists"}, 409
+            #existing_workout = Workout.query.filter_by(workout_name=workout_name).first()
+            # if existing_workout:
+            #     return {"error": "workout_name already exists"}, 409
             
             # Check if workout_intensity is valid
             intensity = data.get('workout_intensity')

@@ -1,4 +1,7 @@
 import hashlib
+import click
+
+from flask.cli import with_appcontext
 from extensions import db
 #from sqlalchemy import event
 
@@ -95,3 +98,8 @@ class ApiKey(db.Model):
     #     for api_key in api_keys:
     #         db.session.delete(api_key)
     #         db.session.commit()
+
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    db.create_all()
