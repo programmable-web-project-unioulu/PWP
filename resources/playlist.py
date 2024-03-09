@@ -83,8 +83,6 @@ class PlaylistResource(Resource):
 
 class CreatePlaylistResource(Resource):
     def post(self):
-        if g.current_api_key.user.user_type != 'admin':
-            return {"message": "Unauthorized access"}, 403
         data = request.json
         if not data or 'workout_ids' not in data:
             return {"message": "Invalid input data on CreatePlayList"}, 400

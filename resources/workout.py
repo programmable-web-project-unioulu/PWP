@@ -72,7 +72,7 @@ class WorkoutsResource(Resource):
         def get(self):
             workout = Workout.query.all()
             workout_list = []
-            for w in workout:  # Iterate over each Workout instance
+            for w in workout:
                 workout_dict = {
                     "workout_id": w.workout_id,
                     "workout_name": w.workout_name,

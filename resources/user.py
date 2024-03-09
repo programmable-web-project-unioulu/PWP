@@ -76,9 +76,6 @@ class UserLoginResource(Resource):
 
 class UserResource(Resource):
     def delete(self, user_id):
-        print("Current API key object:", g.current_api_key) # remove later
-        print("",g.current_api_key.user.user_type) #remve later
-        
         if g.current_api_key.user.user_type != 'admin':
             return {"message": "Unauthorized access"}, 403
         
@@ -139,6 +136,3 @@ class ApiKeyUpdateResource(Resource):
             return {"message": "Failed to update API key", "error": str(e)}, 500
         
         return {"message": "API key updated successfully", "new_api_key": new_api_key}, 200
-
-
-    
