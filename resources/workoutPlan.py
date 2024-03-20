@@ -60,9 +60,19 @@ class WorkoutPlanResource(Resource):
 
 class WorkoutPlanAddingResource(Resource):
     def post(self):
-        data = request.json
         totalDuration = 0
+        data = request.json
+        if not data:
+            return {"message": "No input data provided"}, 400
+        
+        if not 'plan_name' in data:
+            return {"message": "Plan name not found"}, 400
+        
         plan_name = data["plan_name"]
+
+        if not 'workout_ids' in data:
+            return {"message": "Workout ids not found"}, 400
+        
         workout_ids = data.get('workout_ids', [])
         
         data = {
@@ -120,4 +130,7 @@ class WorkoutPlanItemResource(Resource):
                 workoutPlanItem_list.append(workout_dict)
             return jsonify(workoutPlanItem_list)
         except Exception as e:
-            return "500", 500   
+            return "500", 500
+
+
+        

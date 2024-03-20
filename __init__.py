@@ -49,7 +49,8 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI="mysql+mysqldb://admin:pwpdb7788@workoutplaylists.cpcoaea0i7dq.us-east-1.rds.amazonaws.com/workout_playlists",
         SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
-
+    app.config['JWT_SECRET_KEY'] = 'ireshisthe key'
+    jwt = JWTManager(app)
     if test_config is None:
         app.config.from_pyfile("config.py", silent=True)
     else:
@@ -63,10 +64,7 @@ def create_app(test_config=None):
     app.before_request(authenticate)
     db.init_app(app)
 
-    from data_models import models
     from . import api
-    app.cli.add_command(models.init_db_command)
-    #app.cli.add_command(models.generate_test_data)
     app.register_blueprint(api.api_bp, url_prefix='/api')
 
     return app
