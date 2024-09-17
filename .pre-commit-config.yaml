@@ -1,0 +1,34 @@
+repos:
+  # Prettier
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v4.0.0-alpha.8" # Use the sha or tag you want to point at
+    hooks:
+      - id: prettier
+        types_or: ["markdown", "python", "yaml"]
+        args: ["--no-cache"]
+  # Black formatter
+  - repo: https://github.com/psf/black
+    rev: 24.1.0
+    hooks:
+      - id: black
+  # Ruff linter
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Ruff version.
+    rev: "v0.1.14"
+    hooks:
+      - id: ruff
+  # Detect secrets
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: "v1.4.0"
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: package.lock.json
+
+  # Check newlines, yaml is valid
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+        exclude: ".hbs$"

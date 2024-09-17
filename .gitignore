@@ -1,0 +1,9 @@
+env
+venv
+.vscode
+*.db
+*.env
+__pycache__
+*.sqlite
+.ruff_cache
+.pytest_cache

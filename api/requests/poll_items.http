@@ -1,0 +1,52 @@
+# @import auth.http
+# @import polls.http
+
+
+###
+# @ref login
+GET /pollitems
+Authorization: Bearer {{login.access_token}}
+
+###
+# @ref poll
+# @ref login
+# @name pollitem
+POST /pollitems
+Content-Type: application/json
+Authorization: Bearer {{login.access_token}}
+
+{
+    "pollId": "{{poll.pollId}}",
+    "description": "IKARIAM"
+}
+
+###
+# @ref pollitem
+GET /pollitems/{{pollitem.id}}
+Content-Type: application/json
+
+
+### 
+# @name vote
+# @ref pollitem
+POST /pollitems/{{pollitem.id}}
+Content-Type: application/json
+
+###
+# @ref pollitem
+# @ref login
+DELETE /pollitems/{{pollitem.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.access_token}}
+
+###
+# @ref pollitem
+# @ref login
+PATCH /pollitems/{{pollitem.id}}
+Content-Type: application/json
+Authorization: Bearer {{login.access_token}}
+
+{
+    "pollId": "{{pollitem.pollId}}",
+    "description": "Star guardian Lulu"
+}

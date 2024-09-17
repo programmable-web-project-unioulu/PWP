@@ -1,0 +1,16 @@
+FROM node:alpine
+
+# Install necessities
+RUN apk upgrade
+RUN apk add python3 py3-pip
+
+# Copy files
+workdir api
+copy . .
+RUN pip install -r requirements.txt --break-system-packages
+
+# Generate client
+RUN prisma generate
+
+# Run server
+ENTRYPOINT ["waitress-serve", "app:app"]
