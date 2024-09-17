@@ -1,0 +1,1 @@
+This folder should contain html/css/js or any scripts related to front-end/end-user functionality
