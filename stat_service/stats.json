@@ -1,0 +1,20 @@
+{
+    "gigs_statistics": {
+        "total_completed": 1,
+        "completed_last_24h": 0,
+        "gigs_by_user": {
+            "3": 1
+        }
+    },
+    "postings_statistics": {
+        "total_postings": 4,
+        "open_postings": 1,
+        "expired_postings": 3,
+        "postings_by_user": {
+            "16": 1,
+            "2": 1,
+            "1": 1,
+            "18": 1
+        }
+    }
+}

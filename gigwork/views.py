@@ -43,7 +43,7 @@ class JsonSchemaMixin:  # pylint: disable=too-few-public-methods
     Mixin to add JSON schema validation to viewsets.
     """
 
-    def json_schema_validation(self, request):
+    def json_schema_validation(self, request, *args, **kwargs):
         """
         validate request data to make sure it's of correct json type
         """

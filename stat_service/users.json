@@ -1,0 +1,238 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "first_name": "Tony",
+            "last_name": "Stark",
+            "email": "tony@stark.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/1/"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "first_name": "Bruce",
+            "last_name": "Wayne",
+            "email": "bruce@wayne.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/2/"
+                }
+            }
+        },
+        {
+            "id": 3,
+            "first_name": "Clark",
+            "last_name": "Kent",
+            "email": "clark@kent.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/3/"
+                }
+            }
+        },
+        {
+            "id": 4,
+            "first_name": "Diana",
+            "last_name": "Prince",
+            "email": "diana@amazon.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/4/"
+                }
+            }
+        },
+        {
+            "id": 5,
+            "first_name": "Peter",
+            "last_name": "Parker",
+            "email": "peter@dailybugle.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/5/"
+                }
+            }
+        },
+        {
+            "id": 6,
+            "first_name": "Wanda",
+            "last_name": "Maximoff",
+            "email": "wanda@scarlet.com",
+            "phone_number": "0000000000",
+            "address": "123 Fictional St",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/6/"
+                }
+            }
+        },
+        {
+            "id": 7,
+            "first_name": "Big",
+            "last_name": "Labowsky",
+            "email": "dude@gmail.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/7/"
+                }
+            }
+        },
+        {
+            "id": 8,
+            "first_name": "new",
+            "last_name": "user",
+            "email": "newuser@gmail.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/8/"
+                }
+            }
+        },
+        {
+            "id": 9,
+            "first_name": "Saichi",
+            "last_name": "Sugimoto",
+            "email": "immortal@kamui.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/9/"
+                }
+            }
+        },
+        {
+            "id": 10,
+            "first_name": "psycho",
+            "last_name": "mantis",
+            "email": "testmain@mail.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/10/"
+                }
+            }
+        },
+        {
+            "id": 11,
+            "first_name": "Isshin",
+            "last_name": "Ashina",
+            "email": "tengu@ashina.com",
+            "phone_number": "123456",
+            "address": "Ashina castle",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/11/"
+                }
+            }
+        },
+        {
+            "id": 12,
+            "first_name": "something",
+            "last_name": "offfo",
+            "email": "gdii@m.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/12/"
+                }
+            }
+        },
+        {
+            "id": 14,
+            "first_name": "something",
+            "last_name": "offfo",
+            "email": "ppff@m.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/14/"
+                }
+            }
+        },
+        {
+            "id": 16,
+            "first_name": "Seto",
+            "last_name": "Kaiba",
+            "email": "bewd@kaiba.co",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/16/"
+                }
+            }
+        },
+        {
+            "id": 17,
+            "first_name": "new",
+            "last_name": "user",
+            "email": "new@user.com",
+            "phone_number": "",
+            "address": "",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/users/17/"
+                }
+            }
+        }
+    ],
+    "@controls": {
+        "self": {
+            "href": "http://127.0.0.1:8000/gigwork/api/users/"
+        },
+        "filter users by field": {
+            "href": "http://127.0.0.1:8000/gigwork/api/users/{?id,first_name,last_name,email,phone_number,address}"
+        },
+        "user: create": {
+            "method": "POST",
+            "encoding": "json",
+            "title": "add a new user",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                }
+            },
+            "href": "http://127.0.0.1:8000/gigwork/api/users/"
+        }
+    }
+}

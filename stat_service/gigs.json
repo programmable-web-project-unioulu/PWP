@@ -1,0 +1,82 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "owner": {
+                "id": 3,
+                "first_name": "Clark",
+                "last_name": "Kent",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/3/"
+                    }
+                }
+            },
+            "posting": 1,
+            "start_date": "2025-05-09T16:46:17.441363",
+            "end_date": "2025-05-09T16:46:16.146818",
+            "status": "completed",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/gigs/1/"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "owner": {
+                "id": 4,
+                "first_name": "Diana",
+                "last_name": "Prince",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/4/"
+                    }
+                }
+            },
+            "posting": 2,
+            "start_date": "2025-05-09T16:46:17.619975",
+            "end_date": "2025-05-16T16:46:16.146816",
+            "status": "in_progress",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/gigs/2/"
+                }
+            }
+        }
+    ],
+    "@controls": {
+        "self": {
+            "href": "http://127.0.0.1:8000/gigwork/api/gigs/"
+        },
+        "filter gigs by field": {
+            "href": "http://127.0.0.1:8000/gigwork/api/gigs/{?id, owner, posting, start_date, end_date, status}"
+        },
+        "gig: create": {
+            "method": "POST",
+            "encoding": "json",
+            "title": "add a new gig",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "posting"
+                ],
+                "properties": {
+                    "posting": {
+                        "type": "number"
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "href": "http://127.0.0.1:8000/gigwork/api/gigs/"
+        }
+    }
+}

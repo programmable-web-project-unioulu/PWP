@@ -1,0 +1,142 @@
+{
+    "items": [
+        {
+            "id": 5,
+            "title": "new duel",
+            "owner": {
+                "id": 16,
+                "first_name": "Seto",
+                "last_name": "Kaiba",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/16/"
+                    }
+                }
+            },
+            "description": "just for fun",
+            "created_at": "2025-05-13T21:59:32.464893",
+            "expires_at": null,
+            "price": "1.00",
+            "status": "accepted",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/postings/5/"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "title": "Assemble furniture",
+            "owner": {
+                "id": 2,
+                "first_name": "Bruce",
+                "last_name": "Wayne",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/2/"
+                    }
+                }
+            },
+            "description": "IKEA wardrobe assembly",
+            "created_at": "2025-05-09T16:46:17.263566",
+            "expires_at": "2025-05-02T16:46:16.146792",
+            "price": "90.00",
+            "status": "expired",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/postings/2/"
+                }
+            }
+        },
+        {
+            "id": 1,
+            "title": "Help with yard work",
+            "owner": {
+                "id": 1,
+                "first_name": "Tony",
+                "last_name": "Stark",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/1/"
+                    }
+                }
+            },
+            "description": "Trim bushes, mow lawn, 2-3 hours",
+            "created_at": "2025-05-09T16:46:17.108986",
+            "expires_at": "2025-05-16T16:46:16.146816",
+            "price": "120.00",
+            "status": "open",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/postings/1/"
+                }
+            }
+        },
+        {
+            "id": 6,
+            "title": "title",
+            "owner": {
+                "id": 18,
+                "first_name": "newuser",
+                "last_name": "something",
+                "@controls": {
+                    "self": {
+                        "href": "/gigwork/api/users/18/"
+                    }
+                }
+            },
+            "description": "something ",
+            "created_at": "2025-05-14T14:26:14.064378",
+            "expires_at": null,
+            "price": "225.00",
+            "status": "open",
+            "@controls": {
+                "self": {
+                    "href": "/gigwork/api/postings/6/"
+                }
+            }
+        }
+    ],
+    "@controls": {
+        "self": {
+            "href": "http://127.0.0.1:8000/gigwork/api/postings/"
+        },
+        "filter postings by field": {
+            "href": "http://127.0.0.1:8000/gigwork/api/postings/{?id, title, description, owner, created_at,expires_at, price, status}"
+        },
+        "posting: create": {
+            "method": "POST",
+            "encoding": "json",
+            "title": "add a new posting",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "description",
+                    "price"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "href": "http://127.0.0.1:8000/gigwork/api/postings/"
+        }
+    }
+}
